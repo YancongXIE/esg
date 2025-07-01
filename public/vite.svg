@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!-- 背景圆形 -->
+  <circle cx="16" cy="16" r="15" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  
+  <!-- 叶子图标 (代表环境) -->
+  <path d="M16 6C14 6 12 7 11 9C10 11 11 13 12 15C13 17 15 19 16 20C17 19 19 17 20 15C21 13 22 11 21 9C20 7 18 6 16 6Z" fill="#FFFFFF"/>
+  
+  <!-- 检查标记 (代表验证) -->
+  <path d="M12 18L14 20L20 14" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- ESG 文字 -->
+  <text x="16" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#FFFFFF">ESG</text>
+</svg>
