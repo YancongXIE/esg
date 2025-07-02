@@ -37,7 +37,7 @@ export default function Header() {
         >
           Home
         </Button>
-        <NavbarBreadcrumbs />
+      <NavbarBreadcrumbs />
       </Stack>
       <Stack direction="row" sx={{ gap: 1 }}>
         <Search />

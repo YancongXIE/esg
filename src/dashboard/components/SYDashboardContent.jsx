@@ -107,16 +107,52 @@ export default function SYDashboardContent() {
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Summary
       </Typography>
-      <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
+      
+      {/* 第一行 - 7个卡片 */}
+      <Grid container spacing={2} columns={12} sx={{ mb: 2 }}>
         {[
-          { label: 'SCOPE', value: '3 out of 4' },
+          { label: 'Scope', value: '3 out of 4' },
           { label: 'Governance', value: '8 out of 10' },
           { label: 'Strategy', value: '5 out of 6' },
           { label: 'Climate-related Risk and Opportunities', value: '5 out of 5' },
           { label: 'Business Model and Value Chain', value: '2 out of 2' },
           { label: 'Strategy and Decision Making', value: '7 out of 8' },
           { label: 'Greenwashing Risk', value: '5.75%', highlight: true, warning: true },
-          { label: 'Financial position, Financial Performance', value: '15 out of 15' },
+        ].map((item, idx) => (
+          <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
+            <Card 
+              variant="outlined" 
+              sx={{ 
+                height: '100%',
+                minHeight: 100,
+                position: 'relative',
+                ...(item.highlight && {
+                  bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
+                }),
+                ...(item.warning && {
+                  borderLeft: '4px solid #ff9800',
+                  borderTop: `1px solid ${theme.palette.divider}`,
+                  borderRight: `1px solid ${theme.palette.divider}`,
+                  borderBottom: `1px solid ${theme.palette.divider}`,
+                })
+              }}
+            >
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                <Typography variant="body2" color={item.highlight ? 'primary' : 'text.secondary'} fontWeight={500} noWrap>{item.label}</Typography>
+                <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
+                  {item.value}
+                </Typography>
+                {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      
+      {/* 第二行 - 7个卡片 */}
+      <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
+        {[
+          { label: 'Financial Position and Financial Performance', value: '15 out of 15' },
           { label: 'Climate Resilience', value: '7 out of 8' },
           { label: 'Risk Management', value: '11 out of 12' },
           { label: 'Metrics and Targets', value: '2 out of 3' },
@@ -124,7 +160,7 @@ export default function SYDashboardContent() {
           { label: 'Climate-related Targets', value: '22 out of 22' },
           { label: 'Compliant Rate', value: '85%', highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
         ].map((item, idx) => (
-          <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 2.4 }}>
+          <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
             <Card 
               variant="outlined" 
               sx={{ 
