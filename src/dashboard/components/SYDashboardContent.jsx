@@ -125,6 +125,89 @@ export default function SYDashboardContent() {
     content: ''
   });
 
+  // 过滤状态
+  const [filters, setFilters] = React.useState({
+    category: '',
+    criteria: '',
+    result: ''
+  });
+
+  // 获取所有唯一的类别
+  const getUniqueCategories = () => {
+    if (!esgData) return [];
+    return Object.keys(esgData).map(category => mapCategoryToDisplay(category));
+  };
+
+  // 获取所有唯一的结果
+  const getUniqueResults = () => {
+    if (!esgData) return [];
+    const results = new Set();
+    Object.keys(esgData).forEach(category => {
+      const criteria = esgData[category];
+      criteria.forEach(criterion => {
+        criterion.forEach(item => {
+          const [specificCriterion, auditResult, resultsData] = item;
+          results.add(auditResult);
+        });
+      });
+    });
+    return Array.from(results).sort();
+  };
+
+  // 过滤数据
+  const getFilteredData = () => {
+    if (!esgData) return {};
+    
+    return Object.keys(esgData).reduce((filtered, category) => {
+      const criteria = esgData[category];
+      const filteredCriteria = criteria.map(criterion => {
+        return criterion.filter(item => {
+          const [specificCriterion, auditResult, resultsData] = item;
+          
+          // 类别过滤
+          if (filters.category && mapCategoryToDisplay(category) !== filters.category) {
+            return false;
+          }
+          
+          // 标准过滤
+          if (filters.criteria && !specificCriterion.toLowerCase().includes(filters.criteria.toLowerCase())) {
+            return false;
+          }
+          
+          // 结果过滤
+          if (filters.result && auditResult !== filters.result) {
+            return false;
+          }
+          
+          return true;
+        });
+      }).filter(criterion => criterion.length > 0);
+      
+      if (filteredCriteria.length > 0) {
+        filtered[category] = filteredCriteria;
+      }
+      
+      return filtered;
+    }, {});
+  };
+
+  // 处理过滤变化
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  // 清除所有过滤
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      criteria: '',
+      result: ''
+    });
+  };
+
   // 加载数据
   React.useEffect(() => {
     const loadData = async () => {
@@ -451,388 +534,455 @@ export default function SYDashboardContent() {
           </Card>
         </Grid>
       </Grid>
+      
+      {/* Latest AASB S2 Standard Update */}
+      <Typography component="h2" variant="h6" sx={{ mb: 2, mt: 3 }}>
+        Latest AASB S2 Standard Update
+      </Typography>
+      <Card variant="outlined" sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
+        </CardContent>
+      </Card>
+      
       {/* Summary Cards 区 */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Summary
       </Typography>
       
-      {/* 第一行 - 7个卡片 */}
-      <Grid container spacing={2} columns={12} sx={{ mb: 2 }}>
-        {summaryCardsRow1.map((item, idx) => (
-          <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
-            <Card 
-              variant="outlined" 
-              sx={{ 
-                height: '100%',
-                minHeight: 100,
-                position: 'relative',
-                ...(item.highlight && {
-                  bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
-                }),
-                ...(item.warning && {
-                  borderLeft: '4px solid #ff9800',
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  borderRight: `1px solid ${theme.palette.divider}`,
-                  borderBottom: `1px solid ${theme.palette.divider}`,
-                })
-              }}
-            >
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                <Typography variant="body2" color="primary" fontWeight={500} noWrap>{item.label}</Typography>
-                <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
-                  {item.value}
-                </Typography>
-                {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
-              </CardContent>
-            </Card>
-          </Grid>
+      {/* 第一行和第二行 - 14个卡片，始终两行 */}
+      <Box sx={{ 
+        display: 'grid',
+        gridTemplateRows: 'repeat(2, 120px)',
+        gridTemplateColumns: 'repeat(7, 1fr)',
+        gap: 2,
+        mb: (theme) => theme.spacing(2),
+        minWidth: 'fit-content',
+        overflowX: 'auto',
+        '&::-webkit-scrollbar': {
+          height: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+          borderRadius: '4px',
+          '&:hover': {
+            background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+          },
+        },
+      }}>
+        {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => (
+          <Card 
+            key={idx}
+            variant="outlined" 
+            sx={{ 
+              height: '100%',
+              width: '100%',
+              minWidth: 120,
+              position: 'relative',
+              ...(item.highlight && {
+                bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
+              }),
+              ...(item.warning && {
+                borderLeft: '4px solid #ff9800',
+                borderTop: `1px solid ${theme.palette.divider}`,
+                borderRight: `1px solid ${theme.palette.divider}`,
+                borderBottom: `1px solid ${theme.palette.divider}`,
+              })
+            }}
+          >
+            <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+              <Typography variant="body2" color="primary" fontWeight={700} noWrap>{item.label}</Typography>
+              <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
+                {item.value}
+              </Typography>
+              {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+            </CardContent>
+          </Card>
         ))}
-      </Grid>
-      
-      {/* 第二行 - 7个卡片 */}
-      <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
-        {summaryCardsRow2.map((item, idx) => (
-          <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
-            <Card 
-              variant="outlined" 
-              sx={{ 
-                height: '100%',
-                minHeight: 100,
-                position: 'relative',
-                ...(item.highlight && {
-                  bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
-                }),
-                ...(item.warning && {
-                  borderLeft: '4px solid #ff9800',
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  borderRight: `1px solid ${theme.palette.divider}`,
-                  borderBottom: `1px solid ${theme.palette.divider}`,
-                })
-              }}
-            >
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                <Typography variant="body2" color="primary" fontWeight={500} noWrap>{item.label}</Typography>
-                <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
-                  {item.value}
-                </Typography>
-                {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      </Box>
       {/* Details Cards 区 */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details
       </Typography>
-      <Grid container spacing={2} columns={12}>
-        {/* 左侧表格 */}
-        <Grid size={{ xs: 12, lg: 6 }}>
-          <Card variant="outlined" sx={{ height: 800 }}>
-            <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>ESG Criteria Details</Typography>
-              <Box sx={{ 
-                flex: 1, 
-                overflow: 'hidden',
-                minHeight: 0 // 重要：确保flex子元素可以收缩
+      
+      {/* ESG Criteria Details - 全宽 */}
+      <Card variant="outlined" sx={{ height: 600, mb: 2 }}>
+        <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+          <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>ESG Criteria Details</Typography>
+          
+          {/* 过滤控件 */}
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 2, 
+            mb: 2, 
+            flexShrink: 0,
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}>
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <InputLabel>Category</InputLabel>
+              <Select
+                value={filters.category}
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+                input={<OutlinedInput label="Category" />}
+              >
+                <MenuItem value="">
+                  <em>All Categories</em>
+                </MenuItem>
+                {getUniqueCategories().map(category => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <TextField
+              size="small"
+              label="Criteria"
+              value={filters.criteria}
+              onChange={(e) => handleFilterChange('criteria', e.target.value)}
+              placeholder="Search criteria..."
+              sx={{ minWidth: 200 }}
+            />
+            
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Result</InputLabel>
+              <Select
+                value={filters.result}
+                onChange={(e) => handleFilterChange('result', e.target.value)}
+                input={<OutlinedInput label="Result" />}
+              >
+                <MenuItem value="">
+                  <em>All Results</em>
+                </MenuItem>
+                {getUniqueResults().map(result => (
+                  <MenuItem key={result} value={result}>
+                    {result}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={clearFilters}
+              sx={{ height: 40 }}
+            >
+              Clear Filters
+            </Button>
+          </Box>
+          
+          <Box sx={{ 
+            flex: 1, 
+            overflow: 'hidden',
+            minHeight: 0 // 重要：确保flex子元素可以收缩
+          }}>
+            <Box sx={{ 
+              height: '100%',
+              overflow: 'auto',
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+                borderRadius: '4px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+                borderRadius: '4px',
+                '&:hover': {
+                  background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+                },
+              },
+            }}>
+              <table style={{ 
+                width: '100%', 
+                borderCollapse: 'collapse',
+                minWidth: '600px'
               }}>
-                <Box sx={{ 
-                  height: '100%',
-                  overflow: 'auto',
-                  '&::-webkit-scrollbar': {
-                    width: '8px',
-                  },
-                  '&::-webkit-scrollbar-track': {
-                    background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
-                    borderRadius: '4px',
-                  },
-                  '&::-webkit-scrollbar-thumb': {
-                    background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
-                    borderRadius: '4px',
-                    '&:hover': {
-                      background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
-                    },
-                  },
-                }}>
-                  <table style={{ 
-                    width: '100%', 
-                    borderCollapse: 'collapse',
-                    minWidth: '600px'
+                <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                  <tr style={{ 
+                    background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
                   }}>
-                    <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-                      <tr style={{ 
-                        background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                        backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                      }}>
-                        <th style={{ 
-                          padding: 8, 
-                          border: `1px solid ${theme.palette.divider}`, 
-                          fontWeight: 700, 
-                          width: '20%',
-                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                        }}>Category</th>
-                        <th style={{ 
-                          padding: 8, 
-                          border: `1px solid ${theme.palette.divider}`, 
-                          fontWeight: 700, 
-                          width: '40%',
-                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                        }}>Criteria</th>
-                        <th style={{ 
-                          padding: 8, 
-                          border: `1px solid ${theme.palette.divider}`, 
-                          fontWeight: 700, 
-                          width: '15%',
-                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                        }}>Result</th>
-                        <th style={{ 
-                          padding: 8, 
-                          border: `1px solid ${theme.palette.divider}`, 
-                          fontWeight: 700, 
-                          width: '25%',
-                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                        }}>Details</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {esgData && Object.keys(esgData).map((category, categoryIndex) => {
-                        const criteria = esgData[category];
-                        return criteria.map((criterionGroup, criterionIndex) => {
-                          return criterionGroup.map((item, itemIndex) => {
-                            const [specificCriterion, auditResult, resultsData] = item;
-                            const isCompliant = auditResult.toLowerCase() !== 'no';
-                            const isRisk = auditResult.toLowerCase() === 'few' || auditResult.toLowerCase() === 'no';
-                            
-                            return (
-                              <tr key={`${categoryIndex}-${criterionIndex}-${itemIndex}`}>
-                                <td style={{ 
-                                  padding: 8, 
-                                  border: `1px solid ${theme.palette.divider}`, 
-                                  fontWeight: 500,
-                                  fontSize: '0.8rem',
-                                  verticalAlign: 'top',
-                                  background: theme.palette.mode === 'light' ? '#fafafa' : '#2d2d2d',
-                                  backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#fafafa'
-                                }}>
-                                  {mapCategoryToDisplay(category)}
-                                </td>
-                                <td style={{ 
-                                  padding: 8, 
-                                  border: `1px solid ${theme.palette.divider}`,
-                                  fontSize: '0.8rem',
-                                  verticalAlign: 'top'
-                                }}>
-                                  {specificCriterion}
-                                </td>
-                                <td style={{ 
-                                  padding: 8, 
-                                  border: `1px solid ${theme.palette.divider}`,
-                                  textAlign: 'center',
-                                  fontWeight: 600,
-                                  color: isCompliant ? 'success.main' : 'error.main',
-                                  fontSize: '0.8rem'
-                                }}>
-                                  {auditResult}
-                                </td>
-                                <td style={{ 
-                                  padding: 8, 
-                                  border: `1px solid ${theme.palette.divider}`,
-                                  fontSize: '0.75rem',
-                                  verticalAlign: 'top',
-                                  maxWidth: 200,
-                                  wordWrap: 'break-word'
-                                }}>
-                                  {resultsData ? (
-                                    <Box>
-                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-                                        {resultsData.length > 100 ? 
-                                          `${resultsData.substring(0, 100)}...` : 
-                                          resultsData
-                                        }
-                                      </Typography>
-                                      {resultsData.length > 100 && (
-                                        <Button 
-                                          size="small" 
-                                          variant="contained" 
-                                          color="primary"
-                                          sx={{ 
-                                            fontSize: '0.7rem', 
-                                            py: 0.5, 
-                                            px: 1, 
-                                            minWidth: 'auto',
-                                            height: '20px',
-                                            borderRadius: '4px',
-                                            textTransform: 'none',
-                                            fontWeight: 600,
-                                            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                                            '&:hover': {
-                                              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-                                              transform: 'translateY(-1px)'
-                                            },
-                                            transition: 'all 0.2s ease-in-out'
-                                          }}
-                                          onClick={() => handleDetailExpand(specificCriterion, resultsData)}
-                                        >
-                                          View Full
-                                        </Button>
-                                      )}
-                                    </Box>
-                                  ) : (
-                                    <Typography variant="caption" color="text.secondary">
-                                      No details available
+                    <th style={{ 
+                      padding: 8, 
+                      border: `1px solid ${theme.palette.divider}`, 
+                      fontWeight: 700, 
+                      width: '10%',
+                      background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                      backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                    }}>Category</th>
+                    <th style={{ 
+                      padding: 8, 
+                      border: `1px solid ${theme.palette.divider}`, 
+                      fontWeight: 700, 
+                      width: '30%',
+                      background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                      backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                    }}>Criteria</th>
+                    <th style={{ 
+                      padding: 8, 
+                      border: `1px solid ${theme.palette.divider}`, 
+                      fontWeight: 700, 
+                      width: '10%',
+                      background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                      backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                    }}>Result</th>
+                    <th style={{ 
+                      padding: 8, 
+                      border: `1px solid ${theme.palette.divider}`, 
+                      fontWeight: 700, 
+                      width: '50%',
+                      background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                      backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                    }}>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const filteredData = getFilteredData();
+                    return Object.keys(filteredData).map((category, categoryIndex) => {
+                      const criteria = filteredData[category];
+                      return criteria.map((criterionGroup, criterionIndex) => {
+                        return criterionGroup.map((item, itemIndex) => {
+                          const [specificCriterion, auditResult, resultsData] = item;
+                          const isCompliant = auditResult.toLowerCase() !== 'no';
+                          const isRisk = auditResult.toLowerCase() === 'few' || auditResult.toLowerCase() === 'no';
+                          
+                          return (
+                            <tr key={`${categoryIndex}-${criterionIndex}-${itemIndex}`}>
+                              <td style={{ 
+                                padding: 8, 
+                                border: `1px solid ${theme.palette.divider}`, 
+                                fontWeight: 500,
+                                fontSize: '0.8rem',
+                                verticalAlign: 'top',
+                                background: theme.palette.mode === 'light' ? '#fafafa' : '#2d2d2d',
+                                backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#fafafa'
+                              }}>
+                                {mapCategoryToDisplay(category)}
+                              </td>
+                              <td style={{ 
+                                padding: 8, 
+                                border: `1px solid ${theme.palette.divider}`,
+                                fontSize: '0.8rem',
+                                verticalAlign: 'top'
+                              }}>
+                                {specificCriterion}
+                              </td>
+                              <td style={{ 
+                                padding: 8, 
+                                border: `1px solid ${theme.palette.divider}`,
+                                textAlign: 'center',
+                                fontWeight: 600,
+                                color: isCompliant ? 'success.main' : 'error.main',
+                                fontSize: '0.8rem'
+                              }}>
+                                {auditResult}
+                              </td>
+                              <td style={{ 
+                                padding: 8, 
+                                border: `1px solid ${theme.palette.divider}`,
+                                fontSize: '0.75rem',
+                                verticalAlign: 'top',
+                                maxWidth: 200,
+                                wordWrap: 'break-word'
+                              }}>
+                                {resultsData ? (
+                                  <Box>
+                                    <Typography variant="caption" color="text.secondary" sx={{ 
+                                      display: 'block', 
+                                      mb: 0.5,
+                                      lineHeight: 1.2,
+                                      maxHeight: '3.6em', // 3行的高度 (1.2 * 3)
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      display: '-webkit-box',
+                                      WebkitLineClamp: 3,
+                                      WebkitBoxOrient: 'vertical'
+                                    }}>
+                                      {resultsData}
                                     </Typography>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          });
+                                    {resultsData.length > 150 && (
+                                      <Button 
+                                        size="small" 
+                                        variant="contained" 
+                                        color="primary"
+                                        sx={{ 
+                                          fontSize: '0.7rem', 
+                                          py: 0.5, 
+                                          px: 1, 
+                                          minWidth: 'auto',
+                                          height: '20px',
+                                          borderRadius: '4px',
+                                          textTransform: 'none',
+                                          fontWeight: 600,
+                                          boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                                          '&:hover': {
+                                            boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                                            transform: 'translateY(-1px)'
+                                          },
+                                          transition: 'all 0.2s ease-in-out'
+                                        }}
+                                        onClick={() => handleDetailExpand(specificCriterion, resultsData)}
+                                      >
+                                        View Full
+                                      </Button>
+                                    )}
+                                  </Box>
+                                ) : (
+                                  <Typography variant="caption" color="text.secondary">
+                                    No details available
+                                  </Typography>
+                                )}
+                              </td>
+                            </tr>
+                          );
                         });
+                      });
+                    });
+                  })()}
+                </tbody>
+              </table>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* 下方两列布局 */}
+      <Grid container spacing={2} columns={12}>
+        {/* AASB S2 and Materiality Matrix - 6列 */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Card variant="outlined" sx={{ height: 400 }}>
+            <CardContent>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
+              <Box sx={{ width: '100%', mb: 1 }}>
+                <Typography variant="caption" color="text.secondary">Title 1</Typography>
+                <Button size="small" variant="outlined" sx={{ ml: 1, fontSize: 12 }}>Metric 1</Button>
+              </Box>
+              {/* 热力图 */}
+              <Box sx={{ width: '100%', mb: 1 }}>
+                <Box sx={{ height: 16, bgcolor: theme.palette.mode === 'light' ? '#ede7f6' : 'rgba(124, 93, 250, 0.2)', borderRadius: 1, mb: 1 }}>
+                  <Box sx={{ width: '85%', height: '100%', bgcolor: '#7c5dfa', borderRadius: 1 }} />
+                </Box>
+                {/* 热力图网格 */}
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, mt: 1 }}>
+                  {/* 表头 */}
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}></Box>
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>A</Box>
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>B</Box>
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>C</Box>
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>D</Box>
+                  <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>E</Box>
+                  
+                  {/* 数据行 */}
+                  {[
+                    { label: 'Data 1', values: [86, 56, 21, 18, 67] },
+                    { label: 'Data 2', values: [46, 30, 77, 69, 20] },
+                    { label: 'Data 3', values: [87, 93, 47, 56, 44] },
+                    { label: 'Data 4', values: [24, 34, 10, 100, 15] },
+                    { label: 'Data 5', values: [65, 69, 29, 96, 78] },
+                  ].map((row, i) => (
+                    <React.Fragment key={i}>
+                      <Box sx={{ p: 1, fontSize: 10, fontWeight: 600, color: 'text.secondary', display: 'flex', alignItems: 'center' }}>
+                        {row.label}
+                      </Box>
+                      {row.values.map((value, j) => {
+                        // 根据数值计算颜色强度 (0-100)
+                        const intensity = Math.min(100, Math.max(0, value));
+                        const bgColor = `hsl(260, 70%, ${100 - intensity * 0.6}%)`; // 从浅紫到深紫
+                        return (
+                          <Box
+                            key={j}
+                            sx={{
+                              p: 1,
+                              fontSize: 10,
+                              textAlign: 'center',
+                              bgcolor: bgColor,
+                              color: intensity > 50 ? 'white' : 'text.primary',
+                              borderRadius: 0.5,
+                              fontWeight: 600,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              minHeight: 24,
+                            }}
+                          >
+                            {value}
+                          </Box>
+                        );
                       })}
-                    </tbody>
-                  </table>
+                    </React.Fragment>
+                  ))}
                 </Box>
               </Box>
             </CardContent>
           </Card>
         </Grid>
-        {/* 右侧信息区 */}
+        
+        {/* Recommendations - 6列 */}
         <Grid size={{ xs: 12, lg: 6 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-            {/* Latest AASB S2 Standard Update 卡片 */}
-            <Card variant="outlined" sx={{ flex: 0.3 }}>
-              <CardContent>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Latest AASB S2 Standard Update</Typography>
-                <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
-              </CardContent>
-            </Card>
-            
-            {/* AASB S2 and Materiality Matrix 卡片 */}
-            <Card variant="outlined" sx={{ flex: 1.2 }}>
-              <CardContent>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
-                <Box sx={{ width: '100%', mb: 1 }}>
-                  <Typography variant="caption" color="text.secondary">Title 1</Typography>
-                  <Button size="small" variant="outlined" sx={{ ml: 1, fontSize: 12 }}>Metric 1</Button>
-                </Box>
-                {/* 热力图 */}
-                <Box sx={{ width: '100%', mb: 1 }}>
-                  <Box sx={{ height: 16, bgcolor: theme.palette.mode === 'light' ? '#ede7f6' : 'rgba(124, 93, 250, 0.2)', borderRadius: 1, mb: 1 }}>
-                    <Box sx={{ width: '85%', height: '100%', bgcolor: '#7c5dfa', borderRadius: 1 }} />
-                  </Box>
-                  {/* 热力图网格 */}
-                  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, mt: 1 }}>
-                    {/* 表头 */}
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}></Box>
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>A</Box>
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>B</Box>
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>C</Box>
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>D</Box>
-                    <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>E</Box>
-                    
-                    {/* 数据行 */}
-                    {[
-                      { label: 'Data 1', values: [86, 56, 21, 18, 67] },
-                      { label: 'Data 2', values: [46, 30, 77, 69, 20] },
-                      { label: 'Data 3', values: [87, 93, 47, 56, 44] },
-                      { label: 'Data 4', values: [24, 34, 10, 100, 15] },
-                      { label: 'Data 5', values: [65, 69, 29, 96, 78] },
-                    ].map((row, i) => (
-                      <React.Fragment key={i}>
-                        <Box sx={{ p: 1, fontSize: 10, fontWeight: 600, color: 'text.secondary', display: 'flex', alignItems: 'center' }}>
-                          {row.label}
-                        </Box>
-                        {row.values.map((value, j) => {
-                          // 根据数值计算颜色强度 (0-100)
-                          const intensity = Math.min(100, Math.max(0, value));
-                          const bgColor = `hsl(260, 70%, ${100 - intensity * 0.6}%)`; // 从浅紫到深紫
-                          return (
-                            <Box
-                              key={j}
-                              sx={{
-                                p: 1,
-                                fontSize: 10,
-                                textAlign: 'center',
-                                bgcolor: bgColor,
-                                color: intensity > 50 ? 'white' : 'text.primary',
-                                borderRadius: 0.5,
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                minHeight: 24,
-                              }}
-                            >
-                              {value}
-                            </Box>
-                          );
-                        })}
-                      </React.Fragment>
-                    ))}
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-            
-            {/* Recommendations 卡片 */}
-            <Card variant="outlined" sx={{ flex: 0.8 }}>
-              <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1, flexShrink: 0 }}>Recommendations</Typography>
+          <Card variant="outlined" sx={{ height: 400 }}>
+            <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1, flexShrink: 0 }}>Recommendations</Typography>
+              <Box sx={{ 
+                flex: 1, 
+                overflow: 'hidden',
+                minHeight: 0
+              }}>
                 <Box sx={{ 
-                  flex: 1, 
-                  overflow: 'hidden',
-                  minHeight: 0
+                  height: '100%',
+                  overflow: 'auto',
+                  '&::-webkit-scrollbar': {
+                    width: '6px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+                    borderRadius: '3px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+                    borderRadius: '3px',
+                    '&:hover': {
+                      background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+                    },
+                  },
                 }}>
-                  <Box sx={{ 
-                    height: '100%',
-                    overflow: 'auto',
-                    '&::-webkit-scrollbar': {
-                      width: '6px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
-                      borderRadius: '3px',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
-                      borderRadius: '3px',
-                      '&:hover': {
-                        background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
-                      },
-                    },
-                  }}>
-                    {recommendations ? (
-                      <>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem' }}>
-                          {recommendations.summary.totalRecommendations} recommendations available
-                        </Typography>
-                        {recommendations.recommendations.map((rec, index) => (
-                          <Box key={index} sx={{ mb: 1, pb: 1, borderBottom: index < recommendations.recommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none' }}>
-                            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5 }}>
-                              {rec.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
-                              {rec.description}
-                            </Typography>
-                          </Box>
-                        ))}
-                      </>
-                    ) : (
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', lineHeight: 1.4 }}>
-                        {greenwashingRisk > 10 ? 
-                          `High greenwashing risk (${greenwashingRisk}%). Focus on improving transparency and disclosure quality.` :
-                          `Low greenwashing risk (${greenwashingRisk}%). Continue maintaining high disclosure standards.`
-                        }
+                  {recommendations ? (
+                    <>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem' }}>
+                        {recommendations.summary.totalRecommendations} recommendations available
                       </Typography>
-                    )}
-                  </Box>
+                      {recommendations.recommendations.map((rec, index) => (
+                        <Box key={index} sx={{ mb: 1, pb: 1, borderBottom: index < recommendations.recommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none' }}>
+                          <Typography variant="body2" color="text.primary" sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5 }}>
+                            {rec.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
+                            {rec.description}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', lineHeight: 1.4 }}>
+                      {greenwashingRisk > 10 ? 
+                        `High greenwashing risk (${greenwashingRisk}%). Focus on improving transparency and disclosure quality.` :
+                        `Low greenwashing risk (${greenwashingRisk}%). Continue maintaining high disclosure standards.`
+                      }
+                    </Typography>
+                  )}
                 </Box>
-              </CardContent>
-            </Card>
-          </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
 
