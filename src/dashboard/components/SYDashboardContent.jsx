@@ -1,8 +1,104 @@
 import * as React from 'react';
-import { Typography, Button, Grid, Box, TextField, MenuItem, Select, Checkbox, ListItemText, FormControl, InputLabel, OutlinedInput, Card, CardContent, useTheme } from '@mui/material';
+import { Typography, Button, Grid, Box, TextField, MenuItem, Select, Checkbox, ListItemText, FormControl, InputLabel, OutlinedInput, Card, CardContent, useTheme, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { fetchESGReportData, fetchComplianceAnalysis, fetchRecommendations } from '../services/apiService';
 
 const metricsOptions = ['Metric 1', 'Metric 2', 'Metric 3'];
 const esgOptions = ['ESG Standard 1', 'ESG Standard 2', 'ESG Standard 3'];
+
+// 数据处理函数
+const processData = (data) => {
+  const results = {};
+  
+  // 遍历每个类别
+  Object.keys(data).forEach(category => {
+    const criteria = data[category];
+    let totalCriteria = 0;
+    let compliantCriteria = 0;
+    
+    // 遍历每个标准
+    criteria.forEach(criterion => {
+      criterion.forEach(item => {
+        const [specificCriterion, auditResult, resultsData] = item;
+        totalCriteria++;
+        
+        // 如果审计结果不是"no"，则认为是合规的
+        if (auditResult.toLowerCase() !== 'no') {
+          compliantCriteria++;
+        }
+      });
+    });
+    
+    results[category] = {
+      total: totalCriteria,
+      compliant: compliantCriteria,
+      ratio: `${compliantCriteria} out of ${totalCriteria}`
+    };
+  });
+  
+  return results;
+};
+
+// 计算合规率
+const calculateComplianceRate = (data) => {
+  let totalCriteria = 0;
+  let compliantCriteria = 0;
+  
+  Object.keys(data).forEach(category => {
+    const criteria = data[category];
+    criteria.forEach(criterion => {
+      criterion.forEach(item => {
+        const [specificCriterion, auditResult, resultsData] = item;
+        totalCriteria++;
+        if (auditResult.toLowerCase() !== 'no') {
+          compliantCriteria++;
+        }
+      });
+    });
+  });
+  
+  return totalCriteria > 0 ? Math.round((compliantCriteria / totalCriteria) * 100) : 0;
+};
+
+// 计算绿洗风险（基于"Few"和"No"结果的比例）
+const calculateGreenwashingRisk = (data) => {
+  let totalCriteria = 0;
+  let riskCriteria = 0;
+  
+  Object.keys(data).forEach(category => {
+    const criteria = data[category];
+    criteria.forEach(criterion => {
+      criterion.forEach(item => {
+        const [specificCriterion, auditResult, resultsData] = item;
+        totalCriteria++;
+        if (auditResult.toLowerCase() === 'few' || auditResult.toLowerCase() === 'no') {
+          riskCriteria++;
+        }
+      });
+    });
+  });
+  
+  return totalCriteria > 0 ? Math.round((riskCriteria / totalCriteria) * 100 * 10) / 10 : 0;
+};
+
+// 数据映射函数 - 将JSON中的类别名称映射到显示名称
+const mapCategoryToDisplay = (categoryName) => {
+  const mapping = {
+    'Scope': 'Scope',
+    'Governance': 'Governance',
+    'Strategy': 'Strategy',
+    'Climate-related risk and opportunities': 'Climate-related Risk and Opportunities',
+    'Business model and value chain': 'Business Model and Value Chain',
+    'Strategy and decision-making': 'Strategy and Decision Making',
+    'Financial position, financial performance and cash flows': 'Financial Position and Financial Performance',
+    'Climate resilience': 'Climate Resilience',
+    'Risk Management': 'Risk Management',
+    'Metrics and Targets': 'Metrics and Targets',
+    'Climate-related metrics': 'Climate-related Metrics',
+    'Climate-related targets': 'Climate-related Targets'
+  };
+  
+  return mapping[categoryName] || categoryName;
+};
 
 export default function SYDashboardContent() {
   const theme = useTheme();
@@ -10,6 +106,125 @@ export default function SYDashboardContent() {
   const [esg, setEsg] = React.useState([]);
   const [date1, setDate1] = React.useState('2023-05-23');
   const [date2, setDate2] = React.useState('2023-07-16');
+  
+  // 文件上传状态
+  const [uploadedFile, setUploadedFile] = React.useState(null);
+  const [uploadedMetricsFile, setUploadedMetricsFile] = React.useState(null);
+  
+  // 数据状态
+  const [esgData, setEsgData] = React.useState(null);
+  const [complianceData, setComplianceData] = React.useState(null);
+  const [recommendations, setRecommendations] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  
+  // 详情对话框状态
+  const [detailDialog, setDetailDialog] = React.useState({
+    open: false,
+    title: '',
+    content: ''
+  });
+
+  // 加载数据
+  React.useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // 并行加载数据
+        const [esgResult, complianceResult] = await Promise.all([
+          fetchESGReportData('QAN_2024', { start: date1, end: date2 }),
+          fetchComplianceAnalysis()
+        ]);
+        
+        if (esgResult.success && complianceResult.success) {
+          setEsgData(esgResult.data);
+          setComplianceData(complianceResult.data);
+          
+          // 加载建议
+          const recommendationsResult = await fetchRecommendations(complianceResult.data);
+          if (recommendationsResult.success) {
+            setRecommendations(recommendationsResult.data);
+          }
+        } else {
+          throw new Error(esgResult.error || complianceResult.error || 'Failed to load data');
+        }
+      } catch (err) {
+        console.error('Error loading data:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [date1, date2]);
+
+  // 处理数据
+  const processedData = esgData ? processData(esgData) : {};
+  const complianceRate = complianceData?.overall?.complianceRate || 0;
+  const greenwashingRisk = complianceData?.overall?.greenwashingRisk || 0;
+
+  // 定义summary区域的卡片数据
+  const summaryCardsRow1 = [
+    { label: 'Scope', value: processedData['Scope']?.ratio || '0 out of 0' },
+    { label: 'Governance', value: processedData['Governance']?.ratio || '0 out of 0' },
+    { label: 'Strategy', value: processedData['Strategy']?.ratio || '0 out of 0' },
+    { label: 'Climate-related Risk and Opportunities', value: processedData['Climate-related risk and opportunities']?.ratio || '0 out of 0' },
+    { label: 'Business Model and Value Chain', value: processedData['Business model and value chain']?.ratio || '0 out of 0' },
+    { label: 'Strategy and Decision Making', value: processedData['Strategy and decision-making']?.ratio || '0 out of 0' },
+    { label: 'Greenwashing Risk', value: `${greenwashingRisk}%`, highlight: true, warning: true },
+  ];
+
+  const summaryCardsRow2 = [
+    { label: 'Financial Position and Financial Performance', value: processedData['Financial position, financial performance and cash flows']?.ratio || '0 out of 0' },
+    { label: 'Climate Resilience', value: processedData['Climate resilience']?.ratio || '0 out of 0' },
+    { label: 'Risk Management', value: processedData['Risk Management']?.ratio || '0 out of 0' },
+    { label: 'Metrics and Targets', value: processedData['Metrics and Targets']?.ratio || '0 out of 0' },
+    { label: 'Climate-related Metrics', value: processedData['Climate-related metrics']?.ratio || '0 out of 0' },
+    { label: 'Climate-related Targets', value: processedData['Climate-related targets']?.ratio || '0 out of 0' },
+    { label: 'Compliant Rate', value: `${complianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
+  ];
+
+  // 处理详情展开
+  const handleDetailExpand = (criterion, resultsData) => {
+    setDetailDialog({
+      open: true,
+      title: criterion,
+      content: resultsData
+    });
+  };
+
+  // 关闭详情对话框
+  const handleDetailClose = () => {
+    setDetailDialog({
+      open: false,
+      title: '',
+      content: ''
+    });
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -23,22 +238,89 @@ export default function SYDashboardContent() {
           <Card variant="outlined" sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Sustainability Report</Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <TextField
-                  type="date"
-                  size="small"
-                  value={date1}
-                  onChange={e => setDate1(e.target.value)}
-                  sx={{ flex: 1 }}
-                />
-                <TextField
-                  type="date"
-                  size="small"
-                  value={date2}
-                  onChange={e => setDate2(e.target.value)}
-                  sx={{ flex: 1 }}
-                />
-              </Box>
+              {!uploadedFile ? (
+                <Button
+                  variant="outlined"
+                  component="label"
+                  fullWidth
+                  sx={{ 
+                    height: 56, 
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    '&:hover': {
+                      borderStyle: 'solid',
+                      borderWidth: 2,
+                    }
+                  }}
+                >
+                  <input
+                    type="file"
+                    hidden
+                    accept=".pdf,.doc,.docx,.txt"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setUploadedFile(file);
+                        console.log('Uploaded file:', file.name);
+                        // 这里可以添加文件处理逻辑
+                      }
+                    }}
+                  />
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      📄 Upload Report
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      PDF, DOC, DOCX, TXT
+                    </Typography>
+                  </Box>
+                </Button>
+              ) : (
+                <Box sx={{ textAlign: 'center' }}>
+                  <Box sx={{ 
+                    p: 1, 
+                    mb: 1, 
+                    bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: 1,
+                    border: `1px solid ${theme.palette.divider}`
+                  }}>
+                    <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
+                      📄 {uploadedFile.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    size="small"
+                    sx={{ 
+                      borderStyle: 'dashed',
+                      borderWidth: 1,
+                      '&:hover': {
+                        borderStyle: 'solid',
+                        borderWidth: 1,
+                      }
+                    }}
+                  >
+                    <input
+                      type="file"
+                      hidden
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setUploadedFile(file);
+                          console.log('Re-uploaded file:', file.name);
+                          // 这里可以添加文件处理逻辑
+                        }
+                      }}
+                    />
+                    Re-upload
+                  </Button>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -47,23 +329,89 @@ export default function SYDashboardContent() {
           <Card variant="outlined" sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Upload Metrics</Typography>
-              <FormControl fullWidth size="small">
-                <InputLabel>Metrics</InputLabel>
-                <Select
-                  multiple
-                  value={metrics}
-                  onChange={e => setMetrics(e.target.value)}
-                  input={<OutlinedInput label="Metrics" />}
-                  renderValue={selected => selected.join(', ')}
+              {!uploadedMetricsFile ? (
+                <Button
+                  variant="outlined"
+                  component="label"
+                  fullWidth
+                  sx={{ 
+                    height: 56, 
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    '&:hover': {
+                      borderStyle: 'solid',
+                      borderWidth: 2,
+                    }
+                  }}
                 >
-                  {metricsOptions.map(option => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox checked={metrics.indexOf(option) > -1} />
-                      <ListItemText primary={option} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  <input
+                    type="file"
+                    hidden
+                    accept=".csv,.xlsx,.xls"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setUploadedMetricsFile(file);
+                        console.log('Uploaded metrics file:', file.name);
+                        // 这里可以添加文件处理逻辑
+                      }
+                    }}
+                  />
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      📊 Upload Metrics
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      CSV, XLSX, XLS
+                    </Typography>
+                  </Box>
+                </Button>
+              ) : (
+                <Box sx={{ textAlign: 'center' }}>
+                  <Box sx={{ 
+                    p: 1, 
+                    mb: 1, 
+                    bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: 1,
+                    border: `1px solid ${theme.palette.divider}`
+                  }}>
+                    <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
+                      📊 {uploadedMetricsFile.name}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {(uploadedMetricsFile.size / 1024 / 1024).toFixed(2)} MB
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    size="small"
+                    sx={{ 
+                      borderStyle: 'dashed',
+                      borderWidth: 1,
+                      '&:hover': {
+                        borderStyle: 'solid',
+                        borderWidth: 1,
+                      }
+                    }}
+                  >
+                    <input
+                      type="file"
+                      hidden
+                      accept=".csv,.xlsx,.xls,.json"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setUploadedMetricsFile(file);
+                          console.log('Re-uploaded metrics file:', file.name);
+                          // 这里可以添加文件处理逻辑
+                        }
+                      }}
+                    />
+                    Re-upload
+                  </Button>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -110,15 +458,7 @@ export default function SYDashboardContent() {
       
       {/* 第一行 - 7个卡片 */}
       <Grid container spacing={2} columns={12} sx={{ mb: 2 }}>
-        {[
-          { label: 'Scope', value: '3 out of 4' },
-          { label: 'Governance', value: '8 out of 10' },
-          { label: 'Strategy', value: '5 out of 6' },
-          { label: 'Climate-related Risk and Opportunities', value: '5 out of 5' },
-          { label: 'Business Model and Value Chain', value: '2 out of 2' },
-          { label: 'Strategy and Decision Making', value: '7 out of 8' },
-          { label: 'Greenwashing Risk', value: '5.75%', highlight: true, warning: true },
-        ].map((item, idx) => (
+        {summaryCardsRow1.map((item, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
             <Card 
               variant="outlined" 
@@ -138,7 +478,7 @@ export default function SYDashboardContent() {
               }}
             >
               <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                <Typography variant="body2" color={item.highlight ? 'primary' : 'text.secondary'} fontWeight={500} noWrap>{item.label}</Typography>
+                <Typography variant="body2" color="primary" fontWeight={500} noWrap>{item.label}</Typography>
                 <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
                   {item.value}
                 </Typography>
@@ -151,15 +491,7 @@ export default function SYDashboardContent() {
       
       {/* 第二行 - 7个卡片 */}
       <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
-        {[
-          { label: 'Financial Position and Financial Performance', value: '15 out of 15' },
-          { label: 'Climate Resilience', value: '7 out of 8' },
-          { label: 'Risk Management', value: '11 out of 12' },
-          { label: 'Metrics and Targets', value: '2 out of 3' },
-          { label: 'Climate-related Metrics', value: '15 out of 17' },
-          { label: 'Climate-related Targets', value: '22 out of 22' },
-          { label: 'Compliant Rate', value: '85%', highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
-        ].map((item, idx) => (
+        {summaryCardsRow2.map((item, idx) => (
           <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 1.7 }}>
             <Card 
               variant="outlined" 
@@ -179,7 +511,7 @@ export default function SYDashboardContent() {
               }}
             >
               <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                <Typography variant="body2" color={item.highlight ? 'primary' : 'text.secondary'} fontWeight={500} noWrap>{item.label}</Typography>
+                <Typography variant="body2" color="primary" fontWeight={500} noWrap>{item.label}</Typography>
                 <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
                   {item.value}
                 </Typography>
@@ -196,31 +528,173 @@ export default function SYDashboardContent() {
       <Grid container spacing={2} columns={12}>
         {/* 左侧表格 */}
         <Grid size={{ xs: 12, lg: 6 }}>
-          <Card variant="outlined" sx={{ height: '100%', minHeight: 350 }}>
-            <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB Scope2</Typography>
-              <Box sx={{ overflowX: 'auto', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', flex: 1 }}>
-                  <thead>
-                    <tr style={{ 
-                      background: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(37, 16, 104, 0.5) !important',
-                      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(37, 16, 104, 0.5)' : undefined
-                    }}>
-                      <th style={{ padding: 8, border: `1px solid ${theme.palette.divider}`, fontWeight: 700 }}>Criteria</th>
-                      <th style={{ padding: 8, border: `1px solid ${theme.palette.divider}`, fontWeight: 700 }}>Included</th>
-                      <th style={{ padding: 8, border: `1px solid ${theme.palette.divider}`, fontWeight: 700 }}>Excluded</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {['SCOPE', 'data', 'data', 'data', 'data', 'data', 'data', 'data', 'data'].map((row, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: 8, border: `1px solid ${theme.palette.divider}` }}>{row}</td>
-                        <td style={{ padding: 8, border: `1px solid ${theme.palette.divider}` }}>data</td>
-                        <td style={{ padding: 8, border: `1px solid ${theme.palette.divider}` }}>data</td>
+          <Card variant="outlined" sx={{ height: 800 }}>
+            <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>ESG Criteria Details</Typography>
+              <Box sx={{ 
+                flex: 1, 
+                overflow: 'hidden',
+                minHeight: 0 // 重要：确保flex子元素可以收缩
+              }}>
+                <Box sx={{ 
+                  height: '100%',
+                  overflow: 'auto',
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+                    borderRadius: '4px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+                    borderRadius: '4px',
+                    '&:hover': {
+                      background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+                    },
+                  },
+                }}>
+                  <table style={{ 
+                    width: '100%', 
+                    borderCollapse: 'collapse',
+                    minWidth: '600px'
+                  }}>
+                    <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                      <tr style={{ 
+                        background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                        backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                      }}>
+                        <th style={{ 
+                          padding: 8, 
+                          border: `1px solid ${theme.palette.divider}`, 
+                          fontWeight: 700, 
+                          width: '20%',
+                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                        }}>Category</th>
+                        <th style={{ 
+                          padding: 8, 
+                          border: `1px solid ${theme.palette.divider}`, 
+                          fontWeight: 700, 
+                          width: '40%',
+                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                        }}>Criteria</th>
+                        <th style={{ 
+                          padding: 8, 
+                          border: `1px solid ${theme.palette.divider}`, 
+                          fontWeight: 700, 
+                          width: '15%',
+                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                        }}>Result</th>
+                        <th style={{ 
+                          padding: 8, 
+                          border: `1px solid ${theme.palette.divider}`, 
+                          fontWeight: 700, 
+                          width: '25%',
+                          background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                          backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                        }}>Details</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {esgData && Object.keys(esgData).map((category, categoryIndex) => {
+                        const criteria = esgData[category];
+                        return criteria.map((criterionGroup, criterionIndex) => {
+                          return criterionGroup.map((item, itemIndex) => {
+                            const [specificCriterion, auditResult, resultsData] = item;
+                            const isCompliant = auditResult.toLowerCase() !== 'no';
+                            const isRisk = auditResult.toLowerCase() === 'few' || auditResult.toLowerCase() === 'no';
+                            
+                            return (
+                              <tr key={`${categoryIndex}-${criterionIndex}-${itemIndex}`}>
+                                <td style={{ 
+                                  padding: 8, 
+                                  border: `1px solid ${theme.palette.divider}`, 
+                                  fontWeight: 500,
+                                  fontSize: '0.8rem',
+                                  verticalAlign: 'top',
+                                  background: theme.palette.mode === 'light' ? '#fafafa' : '#2d2d2d',
+                                  backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#fafafa'
+                                }}>
+                                  {mapCategoryToDisplay(category)}
+                                </td>
+                                <td style={{ 
+                                  padding: 8, 
+                                  border: `1px solid ${theme.palette.divider}`,
+                                  fontSize: '0.8rem',
+                                  verticalAlign: 'top'
+                                }}>
+                                  {specificCriterion}
+                                </td>
+                                <td style={{ 
+                                  padding: 8, 
+                                  border: `1px solid ${theme.palette.divider}`,
+                                  textAlign: 'center',
+                                  fontWeight: 600,
+                                  color: isCompliant ? 'success.main' : 'error.main',
+                                  fontSize: '0.8rem'
+                                }}>
+                                  {auditResult}
+                                </td>
+                                <td style={{ 
+                                  padding: 8, 
+                                  border: `1px solid ${theme.palette.divider}`,
+                                  fontSize: '0.75rem',
+                                  verticalAlign: 'top',
+                                  maxWidth: 200,
+                                  wordWrap: 'break-word'
+                                }}>
+                                  {resultsData ? (
+                                    <Box>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+                                        {resultsData.length > 100 ? 
+                                          `${resultsData.substring(0, 100)}...` : 
+                                          resultsData
+                                        }
+                                      </Typography>
+                                      {resultsData.length > 100 && (
+                                        <Button 
+                                          size="small" 
+                                          variant="contained" 
+                                          color="primary"
+                                          sx={{ 
+                                            fontSize: '0.7rem', 
+                                            py: 0.5, 
+                                            px: 1, 
+                                            minWidth: 'auto',
+                                            height: '20px',
+                                            borderRadius: '4px',
+                                            textTransform: 'none',
+                                            fontWeight: 600,
+                                            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                                            '&:hover': {
+                                              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                                              transform: 'translateY(-1px)'
+                                            },
+                                            transition: 'all 0.2s ease-in-out'
+                                          }}
+                                          onClick={() => handleDetailExpand(specificCriterion, resultsData)}
+                                        >
+                                          View Full
+                                        </Button>
+                                      )}
+                                    </Box>
+                                  ) : (
+                                    <Typography variant="caption" color="text.secondary">
+                                      No details available
+                                    </Typography>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          });
+                        });
+                      })}
+                    </tbody>
+                  </table>
+                </Box>
               </Box>
             </CardContent>
           </Card>
@@ -229,7 +703,7 @@ export default function SYDashboardContent() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
             {/* Latest AASB S2 Standard Update 卡片 */}
-            <Card variant="outlined" sx={{ flex: 0.5 }}>
+            <Card variant="outlined" sx={{ flex: 0.3 }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Latest AASB S2 Standard Update</Typography>
                 <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
@@ -237,7 +711,7 @@ export default function SYDashboardContent() {
             </Card>
             
             {/* AASB S2 and Materiality Matrix 卡片 */}
-            <Card variant="outlined" sx={{ flex: 2 }}>
+            <Card variant="outlined" sx={{ flex: 1.2 }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
                 <Box sx={{ width: '100%', mb: 1 }}>
@@ -304,15 +778,78 @@ export default function SYDashboardContent() {
             </Card>
             
             {/* Recommendations 卡片 */}
-            <Card variant="outlined" sx={{ flex: 0.5 }}>
-              <CardContent>
-                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Recommendations</Typography>
-                <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
+            <Card variant="outlined" sx={{ flex: 0.8 }}>
+              <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1, flexShrink: 0 }}>Recommendations</Typography>
+                <Box sx={{ 
+                  flex: 1, 
+                  overflow: 'hidden',
+                  minHeight: 0
+                }}>
+                  <Box sx={{ 
+                    height: '100%',
+                    overflow: 'auto',
+                    '&::-webkit-scrollbar': {
+                      width: '6px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+                      borderRadius: '3px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+                      borderRadius: '3px',
+                      '&:hover': {
+                        background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+                      },
+                    },
+                  }}>
+                    {recommendations ? (
+                      <>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontSize: '0.75rem' }}>
+                          {recommendations.summary.totalRecommendations} recommendations available
+                        </Typography>
+                        {recommendations.recommendations.map((rec, index) => (
+                          <Box key={index} sx={{ mb: 1, pb: 1, borderBottom: index < recommendations.recommendations.length - 1 ? `1px solid ${theme.palette.divider}` : 'none' }}>
+                            <Typography variant="body2" color="text.primary" sx={{ fontWeight: 600, fontSize: '0.75rem', mb: 0.5 }}>
+                              {rec.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.7rem', lineHeight: 1.4 }}>
+                              {rec.description}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', lineHeight: 1.4 }}>
+                        {greenwashingRisk > 10 ? 
+                          `High greenwashing risk (${greenwashingRisk}%). Focus on improving transparency and disclosure quality.` :
+                          `Low greenwashing risk (${greenwashingRisk}%). Continue maintaining high disclosure standards.`
+                        }
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
               </CardContent>
             </Card>
           </Box>
         </Grid>
       </Grid>
+
+      {/* 详情对话框 */}
+      <Dialog open={detailDialog.open} onClose={handleDetailClose} maxWidth="md" fullWidth>
+        <DialogTitle>{detailDialog.title}</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
+            {detailDialog.content}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDetailClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 } 
