@@ -8,35 +8,93 @@ const esgOptions = ['ESG Standard 1', 'ESG Standard 2', 'ESG Standard 3'];
 
 // Data processing function
 const processData = (data) => {
+  // Validate data structure
+  if (!data || typeof data !== 'object') {
+    console.error('Invalid data structure:', data);
+    return {};
+  }
+  
   const results = {};
   
   // Iterate through each category (metric and standard)
   Object.keys(data).forEach(category => {
     const categoryData = data[category];
+    
+    // Validate category data
+    if (!categoryData || typeof categoryData !== 'object') {
+      console.warn(`Invalid category data for ${category}:`, categoryData);
+      return;
+    }
+    
     results[category] = {};
     
     // Iterate through each subcategory
     Object.keys(categoryData).forEach(subCategory => {
       const subCategoryData = categoryData[subCategory];
+      
+      // Validate subcategory data
+      if (!subCategoryData || typeof subCategoryData !== 'object') {
+        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
+        return;
+      }
+      
       let totalCriteria = 0;
       let compliantCriteria = 0;
       
       // Iterate through each standard
       Object.keys(subCategoryData).forEach(criterion => {
-        const [result, details] = subCategoryData[criterion];
-        totalCriteria++;
+        const criterionData = subCategoryData[criterion];
         
-        // If result is "yes", consider it compliant
-        if (result.toLowerCase() === 'yes') {
-          compliantCriteria++;
+        // Skip if criterion data is None/null
+        if (criterionData === null || criterionData === undefined) {
+          return;
+        }
+        
+        // Validate criterion data format
+        if (!criterionData) {
+          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
+          return;
+        }
+        
+        // Handle different data formats
+        let result, details;
+        if (Array.isArray(criterionData)) {
+          // Handle array format: ['criteria_name', 'result', 'details', 'value']
+          if (criterionData.length >= 2) {
+            [, result] = criterionData; // Skip criteria name, get result
+          } else {
+            result = criterionData[0];
+          }
+        } else if (typeof criterionData === 'object') {
+          result = criterionData.compliance || criterionData.result;
+          details = criterionData.text || criterionData.details;
+        } else {
+          result = criterionData;
+          details = '';
+        }
+        
+        if (result !== undefined && result !== null) {
+          totalCriteria++;
+          
+          // Check for compliant results - "yes" and "few" are compliant
+          const resultLower = result.toLowerCase();
+          if (resultLower === 'yes') {
+            compliantCriteria++;
+          } else if (resultLower === 'few') {
+            compliantCriteria ++;
+          }
+          // "no" is not compliant (0 weight)
         }
       });
       
-      results[category][subCategory] = {
-        total: totalCriteria,
-        compliant: compliantCriteria,
-        ratio: `${compliantCriteria} out of ${totalCriteria}`
-      };
+      // Only add subcategory if it has valid criteria
+      if (totalCriteria > 0) {
+        results[category][subCategory] = {
+          total: totalCriteria,
+          compliant: compliantCriteria,
+          ratio: `${compliantCriteria} out of ${totalCriteria}`
+        };
+      }
     });
   });
   
@@ -45,18 +103,73 @@ const processData = (data) => {
 
 // Calculate compliance rate
 const calculateComplianceRate = (data) => {
+  // Validate data structure
+  if (!data || typeof data !== 'object') {
+    console.error('Invalid data structure in calculateComplianceRate:', data);
+    return 0;
+  }
+  
   let totalCriteria = 0;
   let compliantCriteria = 0;
   
   Object.keys(data).forEach(category => {
     const categoryData = data[category];
+    
+    // Validate category data
+    if (!categoryData || typeof categoryData !== 'object') {
+      console.warn(`Invalid category data for ${category}:`, categoryData);
+      return;
+    }
+    
     Object.keys(categoryData).forEach(subCategory => {
       const subCategoryData = categoryData[subCategory];
+      
+      // Validate subcategory data
+      if (!subCategoryData || typeof subCategoryData !== 'object') {
+        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
+        return;
+      }
+      
       Object.keys(subCategoryData).forEach(criterion => {
-        const [result, details] = subCategoryData[criterion];
-        totalCriteria++;
-        if (result.toLowerCase() === 'yes') {
-          compliantCriteria++;
+        const criterionData = subCategoryData[criterion];
+        
+        // Skip if criterion data is None/null
+        if (criterionData === null || criterionData === undefined) {
+          return;
+        }
+        
+        // Validate criterion data format
+        if (!criterionData) {
+          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
+          return;
+        }
+        
+        // Handle different data formats
+        let result, details;
+        if (Array.isArray(criterionData)) {
+          // Handle array format: ['criteria_name', 'result', 'details', 'value']
+          if (criterionData.length >= 2) {
+            [, result] = criterionData; // Skip criteria name, get result
+          } else {
+            result = criterionData[0];
+          }
+        } else if (typeof criterionData === 'object') {
+          result = criterionData.compliance || criterionData.result;
+          details = criterionData.text || criterionData.details;
+        } else {
+          result = criterionData;
+          details = '';
+        }
+        
+        if (result !== undefined && result !== null) {
+          totalCriteria++;
+          const resultLower = result.toLowerCase();
+          if (resultLower === 'yes') {
+            compliantCriteria++;
+          } else if (resultLower === 'few') {
+            // Consider "few" as partially compliant (0.5 weight)
+            compliantCriteria += 0.5;
+          }
         }
       });
     });
@@ -67,18 +180,70 @@ const calculateComplianceRate = (data) => {
 
 // Calculate greenwashing risk (based on "Few" and "No" result ratios)
 const calculateGreenwashingRisk = (data) => {
+  // Validate data structure
+  if (!data || typeof data !== 'object') {
+    console.error('Invalid data structure in calculateGreenwashingRisk:', data);
+    return 0;
+  }
+  
   let totalCriteria = 0;
   let riskCriteria = 0;
   
   Object.keys(data).forEach(category => {
     const categoryData = data[category];
+    
+    // Validate category data
+    if (!categoryData || typeof categoryData !== 'object') {
+      console.warn(`Invalid category data for ${category}:`, categoryData);
+      return;
+    }
+    
     Object.keys(categoryData).forEach(subCategory => {
       const subCategoryData = categoryData[subCategory];
+      
+      // Validate subcategory data
+      if (!subCategoryData || typeof subCategoryData !== 'object') {
+        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
+        return;
+      }
+      
       Object.keys(subCategoryData).forEach(criterion => {
-        const [result, details] = subCategoryData[criterion];
-        totalCriteria++;
-        if (result.toLowerCase() === 'few' || result.toLowerCase() === 'no') {
-          riskCriteria++;
+        const criterionData = subCategoryData[criterion];
+        
+        // Skip if criterion data is None/null
+        if (criterionData === null || criterionData === undefined) {
+          return;
+        }
+        
+        // Validate criterion data format
+        if (!criterionData) {
+          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
+          return;
+        }
+        
+        // Handle different data formats
+        let result, details;
+        if (Array.isArray(criterionData)) {
+          // Handle array format: ['criteria_name', 'result', 'details', 'value']
+          if (criterionData.length >= 2) {
+            [, result] = criterionData; // Skip criteria name, get result
+          } else {
+            result = criterionData[0];
+          }
+        } else if (typeof criterionData === 'object') {
+          result = criterionData.compliance || criterionData.result;
+          details = criterionData.text || criterionData.details;
+        } else {
+          result = criterionData;
+          details = '';
+        }
+        
+        if (result !== undefined && result !== null) {
+          totalCriteria++;
+          const resultLower = result.toLowerCase();
+          if (resultLower === 'few' || resultLower === 'no') {
+            riskCriteria++;
+          }
         }
       });
     });
@@ -171,17 +336,27 @@ export default function SYDashboardContent() {
       }
       
       if (result.success) {
-        // Process returned data
-        setEsgData(result.data);
+        // Extract the actual data from the server response
+        // Server returns: { standard: {...} } or { results: { standard: {...} } }
+        const serverData = result.data;
         
-        // Calculate compliance data
-        const complianceResult = calculateComplianceFromData(result.data);
-        setComplianceData(complianceResult);
-        
-        console.log('Verification completed successfully:', result.data);
-        console.log('Processed data:', processData(result.data));
-        console.log('Compliance result:', complianceResult);
+        // Check if data has the expected structure
+        if (serverData && typeof serverData === 'object') {
+          // Use the data directly (server returns {standard: {...}})
+          const processedData = serverData;
+          
+          // Process returned data
+          setEsgData(processedData);
+          
+          // Calculate compliance data
+          const complianceResult = calculateComplianceFromData(processedData);
+          setComplianceData(complianceResult);
+        } else {
+          console.error('Invalid data structure received from server:', serverData);
+          setVerificationError('Invalid data structure received from server');
+        }
       } else {
+        console.error('Server returned error:', result.error);
         setVerificationError(result.error || 'Failed to verify report');
       }
     } catch (error) {
@@ -194,6 +369,19 @@ export default function SYDashboardContent() {
 
   // Calculate compliance from API returned data
   const calculateComplianceFromData = (data) => {
+    // Validate data structure
+    if (!data || typeof data !== 'object') {
+      console.error('Invalid data structure in calculateComplianceFromData:', data);
+      return {
+        overall: {
+          totalCriteria: 0,
+          compliantCriteria: 0,
+          complianceRate: 0,
+          greenwashingRisk: 0
+        }
+      };
+    }
+    
     let totalCriteria = 0;
     let compliantCriteria = 0;
     let riskCriteria = 0;
@@ -201,16 +389,65 @@ export default function SYDashboardContent() {
     // Iterate through metric and standard data
     Object.keys(data).forEach(category => {
       const categoryData = data[category];
+      
+      // Validate category data
+      if (!categoryData || typeof categoryData !== 'object') {
+        console.warn(`Invalid category data for ${category}:`, categoryData);
+        return;
+      }
+      
       Object.keys(categoryData).forEach(subCategory => {
         const subCategoryData = categoryData[subCategory];
+        
+        // Validate subcategory data
+        if (!subCategoryData || typeof subCategoryData !== 'object') {
+          console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
+          return;
+        }
+        
         Object.keys(subCategoryData).forEach(criterion => {
-          const [result, details] = subCategoryData[criterion];
-          totalCriteria++;
+          const criterionData = subCategoryData[criterion];
           
-          if (result.toLowerCase() === 'yes') {
-            compliantCriteria++;
-          } else if (result.toLowerCase() === 'few' || result.toLowerCase() === 'no') {
-            riskCriteria++;
+          // Skip if criterion data is None/null
+          if (criterionData === null || criterionData === undefined) {
+            return;
+          }
+          
+          // Validate criterion data format
+          if (!criterionData) {
+            console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
+            return;
+          }
+          
+          // Handle different data formats
+          let result, details;
+          if (Array.isArray(criterionData)) {
+            // Handle array format: ['criteria_name', 'result', 'details', 'value']
+            if (criterionData.length >= 2) {
+              [, result] = criterionData; // Skip criteria name, get result
+            } else {
+              result = criterionData[0];
+            }
+          } else if (typeof criterionData === 'object') {
+            result = criterionData.compliance || criterionData.result;
+            details = criterionData.text || criterionData.details;
+          } else {
+            result = criterionData;
+            details = '';
+          }
+          
+          if (result !== undefined && result !== null) {
+            totalCriteria++;
+            
+            const resultLower = result.toLowerCase();
+            if (resultLower === 'yes') {
+              compliantCriteria++;
+            } else if (resultLower === 'few') {
+              // Consider "few" as partially compliant (0.5 weight)
+              compliantCriteria += 0.5;
+            } else if (resultLower === 'few' || resultLower === 'no') {
+              riskCriteria++;
+            }
           }
         });
       });
@@ -241,11 +478,48 @@ export default function SYDashboardContent() {
     const results = new Set();
     Object.keys(esgData).forEach(category => {
       const categoryData = esgData[category];
+      
+      // Validate category data
+      if (!categoryData || typeof categoryData !== 'object') {
+        return;
+      }
+      
       Object.keys(categoryData).forEach(subCategory => {
         const subCategoryData = categoryData[subCategory];
+        
+        // Validate subcategory data
+        if (!subCategoryData || typeof subCategoryData !== 'object') {
+          return;
+        }
+        
         Object.keys(subCategoryData).forEach(criterion => {
-          const [result, details] = subCategoryData[criterion];
-          results.add(result);
+          const criterionData = subCategoryData[criterion];
+          
+          // Skip if criterion data is None/null
+          if (criterionData === null || criterionData === undefined) {
+            return;
+          }
+          
+          // Handle different data formats
+          let result, details;
+          if (Array.isArray(criterionData)) {
+            // Handle array format: ['criteria_name', 'result', 'details', 'value']
+            if (criterionData.length >= 2) {
+              [, result] = criterionData; // Skip criteria name, get result
+            } else {
+              result = criterionData[0];
+            }
+          } else if (typeof criterionData === 'object') {
+            result = criterionData.compliance || criterionData.result;
+            details = criterionData.text || criterionData.details;
+          } else {
+            result = criterionData;
+            details = '';
+          }
+          
+          if (result !== undefined && result !== null) {
+            results.add(result);
+          }
         });
       });
     });
@@ -258,14 +532,59 @@ export default function SYDashboardContent() {
     
     return Object.keys(esgData).reduce((filtered, category) => {
       const categoryData = esgData[category];
+      
+      // Validate category data
+      if (!categoryData || typeof categoryData !== 'object') {
+        return filtered;
+      }
+      
       const filteredCategoryData = {};
       
       Object.keys(categoryData).forEach(subCategory => {
         const subCategoryData = categoryData[subCategory];
+        
+        // Validate subcategory data
+        if (!subCategoryData || typeof subCategoryData !== 'object') {
+          return;
+        }
+        
         const filteredSubCategoryData = {};
         
         Object.keys(subCategoryData).forEach(criterion => {
-          const [result, details] = subCategoryData[criterion];
+          const criterionData = subCategoryData[criterion];
+          
+          // Skip if criterion data is None/null
+          if (criterionData === null || criterionData === undefined) {
+            return;
+          }
+          
+          // Handle different data formats
+          let criteriaName, result, details, value;
+          if (Array.isArray(criterionData)) {
+            // Handle array format: ['criteria_name', 'result', 'details', 'value']
+            if (criterionData.length >= 4) {
+              [criteriaName, result, details, value] = criterionData;
+            } else if (criterionData.length === 2) {
+              [result, details] = criterionData;
+              criteriaName = criterion; // Use criterion key as criteria name
+            } else {
+              result = criterionData[0];
+              details = criterionData[1] || '';
+              criteriaName = criterion;
+            }
+          } else if (typeof criterionData === 'object') {
+            result = criterionData.compliance || criterionData.result;
+            details = criterionData.text || criterionData.details;
+            criteriaName = criterion;
+          } else {
+            result = criterionData;
+            details = '';
+            criteriaName = criterion;
+          }
+          
+          if (result === undefined || result === null) {
+            return;
+          }
           
           // Category filter
           if (filters.category && mapCategoryToDisplay(category) !== filters.category) {
@@ -273,7 +592,7 @@ export default function SYDashboardContent() {
           }
           
           // Criteria filter
-          if (filters.criteria && !criterion.toLowerCase().includes(filters.criteria.toLowerCase())) {
+          if (filters.criteria && !criteriaName.toLowerCase().includes(filters.criteria.toLowerCase())) {
             return;
           }
           
@@ -282,7 +601,7 @@ export default function SYDashboardContent() {
             return;
           }
           
-          filteredSubCategoryData[criterion] = [result, details];
+          filteredSubCategoryData[criterion] = [criteriaName, result, details, value];
         });
         
         if (Object.keys(filteredSubCategoryData).length > 0) {
@@ -356,24 +675,54 @@ export default function SYDashboardContent() {
   const complianceRate = complianceData?.overall?.complianceRate || 0;
   const greenwashingRisk = complianceData?.overall?.greenwashingRisk || 0;
 
+  // Helper function to get ratio from processed data
+  const getRatioFromData = (categoryName) => {
+    // Try different possible data structures
+    const possiblePaths = [
+      processedData['standard']?.[categoryName]?.ratio,
+      processedData[categoryName]?.ratio,
+      // Try with mapped category names
+      Object.values(processedData).find(cat => 
+        Object.keys(cat).some(subCat => 
+          subCat.toLowerCase().includes(categoryName.toLowerCase())
+        )
+      )?.ratio
+    ];
+    
+    for (const path of possiblePaths) {
+      if (path) return path;
+    }
+    
+    // If no direct match, try to find by partial name matching
+    for (const category in processedData) {
+      for (const subCategory in processedData[category]) {
+        if (subCategory.toLowerCase().includes(categoryName.toLowerCase())) {
+          return processedData[category][subCategory].ratio;
+        }
+      }
+    }
+    
+    return '0 out of 0';
+  };
+
   // Define summary card data
   const summaryCardsRow1 = [
-    { label: 'Scope', value: processedData['standard']?.Scope?.ratio || '0 out of 0' },
-    { label: 'Governance', value: processedData['standard']?.Governance?.ratio || '0 out of 0' },
-    { label: 'Strategy', value: processedData['standard']?.Strategy?.ratio || '0 out of 0' },
-    { label: 'Climate-related Risk and Opportunities', value: processedData['standard']?.['Climate-related risk and opportunities']?.ratio || '0 out of 0' },
-    { label: 'Business Model and Value Chain', value: processedData['standard']?.['Business model and value chain']?.ratio || '0 out of 0' },
-    { label: 'Strategy and Decision Making', value: processedData['standard']?.['Strategy and decision-making']?.ratio || '0 out of 0' },
+    { label: 'Scope', value: getRatioFromData('Scope') },
+    { label: 'Governance', value: getRatioFromData('Governance') },
+    { label: 'Strategy', value: getRatioFromData('Strategy') },
+    { label: 'Climate-related Risk and Opportunities', value: getRatioFromData('Climate-related risk and opportunities') },
+    { label: 'Business Model and Value Chain', value: getRatioFromData('Business model and value chain') },
+    { label: 'Strategy and Decision Making', value: getRatioFromData('Strategy and decision-making') },
     { label: 'Greenwashing Risk', value: `${greenwashingRisk}%`, highlight: true, warning: true },
   ];
 
   const summaryCardsRow2 = [
-    { label: 'Financial Position and Financial Performance', value: processedData['standard']?.['Financial position, financial performance and cash flows']?.ratio || '0 out of 0' },
-    { label: 'Climate Resilience', value: processedData['standard']?.['Climate resilience']?.ratio || '0 out of 0' },
-    { label: 'Risk Management', value: processedData['standard']?.['Risk Management']?.ratio || '0 out of 0' },
-    { label: 'Metrics and Targets', value: processedData['standard']?.['Metrics and Targets']?.ratio || '0 out of 0' },
-    { label: 'Climate-related Metrics', value: processedData['standard']?.['Climate-related metrics']?.ratio || '0 out of 0' },
-    { label: 'Climate-related Targets', value: processedData['standard']?.['Climate-related targets']?.ratio || '0 out of 0' },
+    { label: 'Financial Position and Financial Performance', value: getRatioFromData('Financial position, financial performance and cash flows') },
+    { label: 'Climate Resilience', value: getRatioFromData('Climate resilience') },
+    { label: 'Risk Management', value: getRatioFromData('Risk Management') },
+    { label: 'Metrics and Targets', value: getRatioFromData('Metrics and Targets') },
+    { label: 'Climate-related Metrics', value: getRatioFromData('Climate-related metrics') },
+    { label: 'Climate-related Targets', value: getRatioFromData('Climate-related targets') },
     { label: 'Compliant Rate', value: `${complianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
   ];
 
@@ -449,7 +798,7 @@ export default function SYDashboardContent() {
                   />
                   <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      📄 Upload Report
+                      Upload Report
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       PDF, DOC, DOCX, TXT
@@ -466,7 +815,7 @@ export default function SYDashboardContent() {
                     border: `1px solid ${theme.palette.divider}`
                   }}>
                     <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
-                      📄 {uploadedFile.name}
+                      {uploadedFile.name}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
@@ -507,7 +856,7 @@ export default function SYDashboardContent() {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <Card variant="outlined" sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Upload Metrics (Optional)</Typography>
+              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Additional Metrics (Optional)</Typography>
               {!uploadedMetricsFile ? (
                 <Button
                   variant="outlined"
@@ -536,10 +885,10 @@ export default function SYDashboardContent() {
                   />
                   <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      📊 Upload Metrics
+                      Add Custom Metrics
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      JSON (optional - will merge with standard criteria)
+                      JSON (optional - adds to standard criteria)
                     </Typography>
                   </Box>
                 </Button>
@@ -553,7 +902,7 @@ export default function SYDashboardContent() {
                     border: `1px solid ${theme.palette.divider}`
                   }}>
                     <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
-                      📊 {uploadedMetricsFile.name}
+                      {uploadedMetricsFile.name}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {(uploadedMetricsFile.size / 1024 / 1024).toFixed(2)} MB
@@ -722,10 +1071,10 @@ export default function SYDashboardContent() {
       {!esgData && !isVerifying && (
         <Box sx={{ textAlign: 'center', py: 8 }}>
           <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-            Upload your sustainability report and metrics to get started
+            Upload your sustainability report to get started
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Please upload a PDF report and JSON metrics file, then click "Verify Report"
+            Please upload a PDF report (required) and optionally add custom metrics, then click "Verify Report"
           </Typography>
         </Box>
       )}
@@ -866,7 +1215,7 @@ export default function SYDashboardContent() {
                               padding: 8, 
                               border: `1px solid ${theme.palette.divider}`, 
                               fontWeight: 700, 
-                              width: '30%',
+                              width: '20%',
                               background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
                               backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
                             }}>Criteria</th>
@@ -882,7 +1231,7 @@ export default function SYDashboardContent() {
                               padding: 8, 
                               border: `1px solid ${theme.palette.divider}`, 
                               fontWeight: 700, 
-                              width: '50%',
+                              width: '60%',
                               background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
                               backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
                             }}>Details</th>
@@ -895,7 +1244,7 @@ export default function SYDashboardContent() {
                               const criteria = filteredData[category];
                               return Object.keys(criteria).map((subCategory, subCategoryIndex) => {
                                 return Object.keys(criteria[subCategory]).map((criterion, criterionIndex) => {
-                                  const [result, details] = criteria[subCategory][criterion];
+                                  const [criteriaName, result, details, value] = criteria[subCategory][criterion];
                                   const isCompliant = result.toLowerCase() !== 'no';
                                   const isRisk = result.toLowerCase() === 'few' || result.toLowerCase() === 'no';
                                   
@@ -918,7 +1267,7 @@ export default function SYDashboardContent() {
                                         fontSize: '0.8rem',
                                         verticalAlign: 'top'
                                       }}>
-                                        {criterion}
+                                        {criteriaName}
                                       </td>
                                       <td style={{ 
                                         padding: 8, 
@@ -973,7 +1322,7 @@ export default function SYDashboardContent() {
                                                   },
                                                   transition: 'all 0.2s ease-in-out'
                                                 }}
-                                                onClick={() => handleDetailExpand(criterion, details)}
+                                                onClick={() => handleDetailExpand(criteriaName, details)}
                                               >
                                                 View Full
                                               </Button>
