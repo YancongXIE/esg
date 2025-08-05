@@ -4,7 +4,7 @@ import { fetchESGReportData, fetchComplianceAnalysis, fetchRecommendations, send
 import LLMRecommendations from './LLMRecommendations';
 
 const metricsOptions = ['Metric 1', 'Metric 2', 'Metric 3'];
-const esgOptions = ['ESG Standard 1', 'ESG Standard 2', 'ESG Standard 3'];
+const esgOptions = ['GRI', 'AASBScope 2', 'AASBScope 3'];
 
 // Data processing function
 const processData = (data) => {
@@ -76,12 +76,10 @@ const processData = (data) => {
         if (result !== undefined && result !== null) {
           totalCriteria++;
           
-          // Check for compliant results - "yes" and "few" are compliant
+          // Check for compliant results - "yes" and "few" are compliant with weight 1
           const resultLower = result.toLowerCase();
-          if (resultLower === 'yes') {
+          if (resultLower === 'yes' || resultLower === 'few') {
             compliantCriteria++;
-          } else if (resultLower === 'few') {
-            compliantCriteria ++;
           }
           // "no" is not compliant (0 weight)
         }
@@ -164,11 +162,9 @@ const calculateComplianceRate = (data) => {
         if (result !== undefined && result !== null) {
           totalCriteria++;
           const resultLower = result.toLowerCase();
-          if (resultLower === 'yes') {
+          if (resultLower === 'yes' || resultLower === 'few') {
+            // Both "yes" and "few" are compliant with weight 1
             compliantCriteria++;
-          } else if (resultLower === 'few') {
-            // Consider "few" as partially compliant (0.5 weight)
-            compliantCriteria += 0.5;
           }
         }
       });
@@ -241,7 +237,8 @@ const calculateGreenwashingRisk = (data) => {
         if (result !== undefined && result !== null) {
           totalCriteria++;
           const resultLower = result.toLowerCase();
-          if (resultLower === 'few' || resultLower === 'no') {
+          if (resultLower === 'no') {
+            // Only "no" is considered a risk
             riskCriteria++;
           }
         }
@@ -272,7 +269,7 @@ const mapCategoryToDisplay = (categoryName) => {
   return mapping[categoryName] || categoryName;
 };
 
-export default function SYDashboardContent() {
+export default function ESGdashboardContent() {
   const theme = useTheme();
   const [metrics, setMetrics] = React.useState([]);
   const [esg, setEsg] = React.useState([]);
@@ -440,12 +437,11 @@ export default function SYDashboardContent() {
             totalCriteria++;
             
             const resultLower = result.toLowerCase();
-            if (resultLower === 'yes') {
+            if (resultLower === 'yes' || resultLower === 'few') {
+              // Both "yes" and "few" are compliant with weight 1
               compliantCriteria++;
-            } else if (resultLower === 'few') {
-              // Consider "few" as partially compliant (0.5 weight)
-              compliantCriteria += 0.5;
-            } else if (resultLower === 'few' || resultLower === 'no') {
+            } else if (resultLower === 'no') {
+              // Only "no" is considered a risk
               riskCriteria++;
             }
           }
@@ -761,76 +757,28 @@ export default function SYDashboardContent() {
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
       {/* Inputs Area */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Inputs
-      </Typography>
-      <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
-        {/* Sustainability Report */}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <Card variant="outlined" sx={{ height: '100%' }}>
-            <CardContent>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Sustainability Report</Typography>
-              {!uploadedFile ? (
-                <Button
-                  variant="outlined"
-                  component="label"
-                  fullWidth
-                  sx={{ 
-                    height: 56, 
-                    borderStyle: 'dashed',
-                    borderWidth: 2,
-                    '&:hover': {
-                      borderStyle: 'solid',
-                      borderWidth: 2,
-                    }
-                  }}
-                >
-                  <input
-                    type="file"
-                    hidden
-                    accept=".pdf,.doc,.docx,.txt"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        handleFileUpload(file, 'pdf');
-                      }
-                    }}
-                  />
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Upload Report
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      PDF, DOC, DOCX, TXT
-                    </Typography>
-                  </Box>
-                </Button>
-              ) : (
-                <Box sx={{ textAlign: 'center' }}>
-                  <Box sx={{ 
-                    p: 1, 
-                    mb: 1, 
-                    bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
-                    borderRadius: 1,
-                    border: `1px solid ${theme.palette.divider}`
-                  }}>
-                    <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
-                      {uploadedFile.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
-                    </Typography>
-                  </Box>
+      <Box id="input">
+        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+          Inputs
+        </Typography>
+        <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
+          {/* Sustainability Report */}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Sustainability Report</Typography>
+                {!uploadedFile ? (
                   <Button
                     variant="outlined"
                     component="label"
-                    size="small"
+                    fullWidth
                     sx={{ 
+                      height: 56, 
                       borderStyle: 'dashed',
-                      borderWidth: 1,
+                      borderWidth: 2,
                       '&:hover': {
                         borderStyle: 'solid',
-                        borderWidth: 1,
+                        borderWidth: 2,
                       }
                     }}
                   >
@@ -845,79 +793,79 @@ export default function SYDashboardContent() {
                         }
                       }}
                     />
-                    Re-upload
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                        Upload Report
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        PDF, DOC, DOCX, TXT
+                      </Typography>
+                    </Box>
                   </Button>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
-        {/* Upload Metrics */}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <Card variant="outlined" sx={{ height: '100%' }}>
-            <CardContent>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Additional Metrics (Optional)</Typography>
-              {!uploadedMetricsFile ? (
-                <Button
-                  variant="outlined"
-                  component="label"
-                  fullWidth
-                  sx={{ 
-                    height: 56, 
-                    borderStyle: 'dashed',
-                    borderWidth: 2,
-                    '&:hover': {
-                      borderStyle: 'solid',
-                      borderWidth: 2,
-                    }
-                  }}
-                >
-                  <input
-                    type="file"
-                    hidden
-                    accept=".json"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        handleFileUpload(file, 'metrics');
-                      }
-                    }}
-                  />
+                ) : (
                   <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                      Add Custom Metrics
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      JSON (optional - adds to standard criteria)
-                    </Typography>
+                    <Box sx={{ 
+                      p: 1, 
+                      mb: 1, 
+                      bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
+                      borderRadius: 1,
+                      border: `1px solid ${theme.palette.divider}`
+                    }}>
+                      <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        {uploadedFile.name}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </Typography>
+                    </Box>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      size="small"
+                      sx={{ 
+                        borderStyle: 'dashed',
+                        borderWidth: 1,
+                        '&:hover': {
+                          borderStyle: 'solid',
+                          borderWidth: 1,
+                        }
+                      }}
+                    >
+                      <input
+                        type="file"
+                        hidden
+                        accept=".pdf,.doc,.docx,.txt"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            handleFileUpload(file, 'pdf');
+                          }
+                        }}
+                      />
+                      Re-upload
+                    </Button>
                   </Box>
-                </Button>
-              ) : (
-                <Box sx={{ textAlign: 'center' }}>
-                  <Box sx={{ 
-                    p: 1, 
-                    mb: 1, 
-                    bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
-                    borderRadius: 1,
-                    border: `1px solid ${theme.palette.divider}`
-                  }}>
-                    <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
-                      {uploadedMetricsFile.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {(uploadedMetricsFile.size / 1024 / 1024).toFixed(2)} MB
-                    </Typography>
-                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+          {/* Upload Metrics */}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Additional Metrics (Optional)</Typography>
+                {!uploadedMetricsFile ? (
                   <Button
                     variant="outlined"
                     component="label"
-                    size="small"
+                    fullWidth
                     sx={{ 
+                      height: 56, 
                       borderStyle: 'dashed',
-                      borderWidth: 1,
+                      borderWidth: 2,
                       '&:hover': {
                         borderStyle: 'solid',
-                        borderWidth: 1,
+                        borderWidth: 2,
                       }
                     }}
                   >
@@ -932,156 +880,210 @@ export default function SYDashboardContent() {
                         }
                       }}
                     />
-                    Re-upload
+                    <Box sx={{ textAlign: 'center' }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                        Add Custom Metrics
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        JSON (optional - adds to standard criteria)
+                      </Typography>
+                    </Box>
                   </Button>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
-        {/* Select ESG Standards */}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <Card variant="outlined" sx={{ height: '100%' }}>
-            <CardContent>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Select ESG Standards</Typography>
-              <FormControl fullWidth size="small">
-                <InputLabel>ESG Standards</InputLabel>
-                <Select
-                  multiple
-                  value={esg}
-                  onChange={e => setEsg(e.target.value)}
-                  input={<OutlinedInput label="ESG Standards" />}
-                  renderValue={selected => selected.join(', ')}
-                >
-                  {esgOptions.map(option => (
-                    <MenuItem key={option} value={option}>
-                      <Checkbox checked={esg.indexOf(option) > -1} />
-                      <ListItemText primary={option} />
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </CardContent>
-          </Card>
-        </Grid>
-        {/* Verify Report */}
-        <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <CardContent sx={{ width: '100%' }}>
-              <Button 
-                variant="contained" 
-                color="primary" 
-                sx={{ width: '100%', height: 56, fontWeight: 700, fontSize: 18 }}
-                onClick={handleVerifyReport}
-              >
-                Verify Report
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-      
-      {/* Latest AASB S2 Standard Update */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2, mt: 3 }}>
-        Latest AASB S2 Standard Update
-      </Typography>
-      <Card variant="outlined" sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
-        </CardContent>
-      </Card>
-      
-      {/* Summary Cards Area */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        Summary
-      </Typography>
-      
-      {/* If verifying, show loading state */}
-      {isVerifying ? (
-        <Box sx={{ textAlign: 'center', py: 8 }}>
-          <CircularProgress size={60} sx={{ mb: 2 }} />
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
-            Verifying Report...
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Please wait while we analyze your sustainability report
-          </Typography>
-        </Box>
-      ) : esgData ? (
-        /* If data exists, show Summary cards */
-        <Box sx={{ 
-          display: 'grid',
-          gridTemplateRows: 'repeat(2, 120px)',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gap: 2,
-          mb: (theme) => theme.spacing(2),
-          minWidth: 'fit-content',
-          overflowX: 'auto',
-          '&::-webkit-scrollbar': {
-            height: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
-            borderRadius: '4px',
-            '&:hover': {
-              background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
-            },
-          },
-        }}>
-          {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => (
-            <Card 
-              key={idx}
-              variant="outlined" 
-              sx={{ 
-                height: '100%',
-                width: '100%',
-                minWidth: 120,
-                position: 'relative',
-                ...(item.highlight && {
-                  bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
-                }),
-                ...(item.warning && {
-                  borderLeft: '4px solid #ff9800',
-                  borderTop: `1px solid ${theme.palette.divider}`,
-                  borderRight: `1px solid ${theme.palette.divider}`,
-                  borderBottom: `1px solid ${theme.palette.divider}`,
-                })
-              }}
-            >
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                <Typography variant="body2" color="primary" fontWeight={700} noWrap>{item.label}</Typography>
-                <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
-                  {item.value}
-                </Typography>
-                {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+                ) : (
+                  <Box sx={{ textAlign: 'center' }}>
+                    <Box sx={{ 
+                      p: 1, 
+                      mb: 1, 
+                      bgcolor: theme.palette.mode === 'light' ? '#f5f5f5' : 'rgba(255, 255, 255, 0.08)',
+                      borderRadius: 1,
+                      border: `1px solid ${theme.palette.divider}`
+                    }}>
+                      <Typography variant="body2" color="text.primary" sx={{ fontWeight: 500, mb: 0.5 }}>
+                        {uploadedMetricsFile.name}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {(uploadedMetricsFile.size / 1024 / 1024).toFixed(2)} MB
+                      </Typography>
+                    </Box>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      size="small"
+                      sx={{ 
+                        borderStyle: 'dashed',
+                        borderWidth: 1,
+                        '&:hover': {
+                          borderStyle: 'solid',
+                          borderWidth: 1,
+                        }
+                      }}
+                    >
+                      <input
+                        type="file"
+                        hidden
+                        accept=".json"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            handleFileUpload(file, 'metrics');
+                          }
+                        }}
+                      />
+                      Re-upload
+                    </Button>
+                  </Box>
+                )}
               </CardContent>
             </Card>
-          ))}
-        </Box>
-      ) : (
-        /* Initial state: show no content */
-        null
-      )}
+          </Grid>
+          {/* Select ESG Standards */}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <Card variant="outlined" sx={{ height: '100%' }}>
+              <CardContent>
+                <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Select ESG Standards</Typography>
+                <FormControl fullWidth size="small">
+                  <InputLabel>ESG Standards</InputLabel>
+                  <Select
+                    multiple
+                    value={esg}
+                    onChange={e => setEsg(e.target.value)}
+                    input={<OutlinedInput label="ESG Standards" />}
+                    renderValue={selected => selected.join(', ')}
+                  >
+                    {esgOptions.map(option => (
+                      <MenuItem key={option} value={option}>
+                        <Checkbox checked={esg.indexOf(option) > -1} />
+                        <ListItemText primary={option} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </CardContent>
+            </Card>
+          </Grid>
+          {/* Verify Report */}
+          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <CardContent sx={{ width: '100%' }}>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  sx={{ width: '100%', height: 56, fontWeight: 700, fontSize: 18 }}
+                  onClick={handleVerifyReport}
+                >
+                  Verify Report
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Box>
+      
+      {/* Latest Standard Update */}
+      <Box id="standard-update">
+        <Typography component="h2" variant="h6" sx={{ mb: 2, mt: 3 }}>
+          Latest Standard Update
+        </Typography>
+        <Card variant="outlined" sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
+          </CardContent>
+        </Card>
+      </Box>
+      
+      {/* Summary Cards Area */}
+      <Box id="summary">
+        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+          Summary
+        </Typography>
+        
+        {/* If verifying, show loading state */}
+        {isVerifying ? (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <CircularProgress size={60} sx={{ mb: 2 }} />
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+              Verifying Report...
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Please wait while we analyze your sustainability report
+            </Typography>
+          </Box>
+        ) : esgData ? (
+          /* If data exists, show Summary cards */
+          <Box sx={{ 
+            display: 'grid',
+            gridTemplateRows: 'repeat(2, 120px)',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: 2,
+            mb: (theme) => theme.spacing(2),
+            minWidth: 'fit-content',
+            overflowX: 'auto',
+            '&::-webkit-scrollbar': {
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+              borderRadius: '4px',
+              '&:hover': {
+                background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+              },
+            },
+          }}>
+            {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => (
+              <Card 
+                key={idx}
+                variant="outlined" 
+                sx={{ 
+                  height: '100%',
+                  width: '100%',
+                  minWidth: 120,
+                  position: 'relative',
+                  ...(item.highlight && {
+                    bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
+                  }),
+                  ...(item.warning && {
+                    borderLeft: '4px solid #ff9800',
+                    borderTop: `1px solid ${theme.palette.divider}`,
+                    borderRight: `1px solid ${theme.palette.divider}`,
+                    borderBottom: `1px solid ${theme.palette.divider}`,
+                  })
+                }}
+              >
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                  <Typography variant="body2" color="primary" fontWeight={700} noWrap>{item.label}</Typography>
+                  <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
+                    {item.value}
+                  </Typography>
+                  {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        ) : (
+          /* Initial state: show no content */
+          null
+        )}
 
-      {/* If no data and not verifying, show prompt message */}
-      {!esgData && !isVerifying && (
-        <Box sx={{ textAlign: 'center', py: 8 }}>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-            Upload your sustainability report to get started
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Please upload a PDF report (required) and optionally add custom metrics, then click "Verify Report"
-          </Typography>
-        </Box>
-      )}
+        {/* If no data and not verifying, show prompt message */}
+        {!esgData && !isVerifying && (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+              Upload your sustainability report to get started
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Please upload a PDF report (required) and optionally add custom metrics, then click "Verify Report"
+            </Typography>
+          </Box>
+        )}
+      </Box>
 
       {/* Details Section */}
       {(esgData || isVerifying) && (
-        <>
+        <Box id="details">
           {/* Details Cards Area */}
           <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
             Details
@@ -1245,8 +1247,8 @@ export default function SYDashboardContent() {
                               return Object.keys(criteria).map((subCategory, subCategoryIndex) => {
                                 return Object.keys(criteria[subCategory]).map((criterion, criterionIndex) => {
                                   const [criteriaName, result, details, value] = criteria[subCategory][criterion];
-                                  const isCompliant = result.toLowerCase() !== 'no';
-                                  const isRisk = result.toLowerCase() === 'few' || result.toLowerCase() === 'no';
+                                  const isCompliant = result.toLowerCase() === 'yes' || result.toLowerCase() === 'few';
+                                  const isRisk = result.toLowerCase() === 'no';
                                   
                                   return (
                                     <tr key={`${categoryIndex}-${subCategoryIndex}-${criterionIndex}`}>
@@ -1432,7 +1434,7 @@ export default function SYDashboardContent() {
             /* Initial state: show no content */
             null
           )}
-        </>
+        </Box>
       )}
 
       {/* Detail dialog */}

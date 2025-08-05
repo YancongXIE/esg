@@ -72,9 +72,9 @@ export default function AppAppBar() {
                 variant="text" 
                 color="info" 
                 size="small" 
-                onClick={() => handleNavigation('/SYdashboard')}
+                onClick={() => handleNavigation('/ESGdashboard')}
               >
-                SY's Dashboard
+                ESG Dashboard
               </Button>
             </Box>
           </Box>

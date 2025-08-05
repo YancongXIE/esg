@@ -14,9 +14,8 @@ import {
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations,
-} from './theme/customizations/index.js';
-import { Typography, Button, Grid } from '@mui/material';
-import SYDashboardContent from './components/SYDashboardContent.jsx';
+} from './theme/customizations';
+import ESGdashboardContent from './components/ESGdashboardContent.jsx';
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -25,7 +24,7 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function SYDashboard(props) {
+export default function ESGdashboard(props) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
@@ -53,7 +52,7 @@ export default function SYDashboard(props) {
             }}
           >
             <Header />
-            <SYDashboardContent />
+            <ESGdashboardContent />
           </Stack>
         </Box>
       </Box>
