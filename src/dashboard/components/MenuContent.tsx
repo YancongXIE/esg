@@ -19,11 +19,13 @@ import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
 import DetailsRoundedIcon from '@mui/icons-material/DetailsRounded';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 interface MenuItem {
   text: string;
   icon: React.ReactElement;
   hasSubMenu?: boolean;
+  link?: string;
 }
 
 interface SubMenuItem {
@@ -48,8 +50,8 @@ const homeSubMenuItems: SubMenuItem[] = [
 
 const secondaryListItems: MenuItem[] = [
   { text: 'Settings', icon: <SettingsRoundedIcon /> },
-  { text: 'About', icon: <InfoRoundedIcon /> },
-  { text: 'Feedback', icon: <HelpRoundedIcon /> },
+  { text: 'About', icon: <InfoRoundedIcon />, link: 'https://rmit-aihub.org.au/' },
+  { text: 'FAQs', icon: <HelpRoundedIcon /> },
 ];
 
 export default function MenuContent() {
@@ -64,6 +66,10 @@ export default function MenuContent() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleExternalLink = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -106,9 +112,10 @@ export default function MenuContent() {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton>
+            <ListItemButton onClick={item.link ? () => handleExternalLink(item.link!) : undefined}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
+              {item.link && <OpenInNewIcon sx={{ fontSize: 16, ml: 1 }} />}
             </ListItemButton>
           </ListItem>
         ))}
