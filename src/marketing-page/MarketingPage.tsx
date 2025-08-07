@@ -1,30 +1,29 @@
 import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import AppTheme from '../shared-theme/AppTheme';
-import AppAppBar from './components/AppAppBar';
-import Hero from './components/Hero';
-import LogoCollection from './components/LogoCollection';
-import Highlights from './components/Highlights';
-import Pricing from './components/Pricing';
-import Features from './components/Features';
-import Testimonials from './components/Testimonials';
-import FAQ from './components/FAQ';
-import Footer from './components/Footer';
+import AppTheme from '../shared-theme/AppTheme.jsx';
+import AppAppBar from './components/AppAppBar.jsx';
+import Hero from './components/Hero.jsx';
+// import LogoCollection from './components/LogoCollection.jsx';
+import Highlights from './components/Highlights.jsx';
+import Pricing from './components/Pricing.jsx';
+import Features from './components/Features.jsx';
+// import Testimonials from './components/Testimonials.jsx';
+import FAQ from './components/FAQ.jsx';
+import Footer from './components/Footer.jsx';
 
-export default function MarketingPage(props: { disableCustomTheme?: boolean }) {
+export default function MarketingPage(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-
       <AppAppBar />
       <Hero />
       <div>
-        <LogoCollection />
+        {/* <LogoCollection /> */}
         <Features />
         <Divider />
-        <Testimonials />
-        <Divider />
+        {/* <Testimonials /> */}
+        {/* <Divider /> */}
         <Highlights />
         <Divider />
         <Pricing />

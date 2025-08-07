@@ -73,7 +73,7 @@ export default function Hero() {
               fontSize: 'clamp(3rem, 10vw, 3.5rem)',
             }}
           >
-            Our&nbsp;latest&nbsp;
+            Trusted&nbsp;
             <Typography
               component="span"
               variant="h1"
@@ -85,8 +85,9 @@ export default function Hero() {
                 }),
               })}
             >
-              products
+              ESG&nbsp;Insights,&nbsp;
             </Typography>
+            Backed&nbsp;by&nbsp;Research
           </Typography>
           <Typography
             sx={{
@@ -95,15 +96,13 @@ export default function Hero() {
               width: { sm: '100%', md: '80%' },
             }}
           >
-            Explore our cutting-edge dashboard, delivering high-quality solutions
-            tailored to your needs. Elevate your experience with top-tier features
-            and services.
+            Explore our AI-powered ESG dashboard, built by RMIT experts to deliver unbiased, evidence-based verification. 
           </Typography>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={1}
             useFlexGap
-            sx={{ pt: 2, width: { xs: '100%', sm: '350px' } }}
+            sx={{ pt: 2, width: { xs: '100%', sm: '500px' } }}
           >
             <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
               Email
@@ -129,7 +128,7 @@ export default function Hero() {
               size="small"
               sx={{ minWidth: 'fit-content' }}
             >
-              Start now
+              Start your ESG journey with confidence.
             </Button>
           </Stack>
           <Typography

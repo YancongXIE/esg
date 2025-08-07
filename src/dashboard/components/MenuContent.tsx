@@ -82,8 +82,8 @@ export default function MenuContent() {
                 selected={index === 0}
                 onClick={item.hasSubMenu ? handleClick : undefined}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
                 {item.hasSubMenu && (open ? <ExpandLess /> : <ExpandMore />)}
               </ListItemButton>
             </ListItem>
@@ -100,8 +100,8 @@ export default function MenuContent() {
                           {subItem.icon}
                         </ListItemIcon>
                         <ListItemText primary={subItem.text} />
-                      </ListItemButton>
-                    </ListItem>
+            </ListItemButton>
+          </ListItem>
                   ))}
                 </List>
               </Collapse>

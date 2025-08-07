@@ -186,19 +186,19 @@ export const sendReportToServer = async (pdfFile, metricsFile) => {
     // If metrics file is provided, add metric section
     if (metricsFile) {
       try {
-        const customMetrics = await readJsonFile(metricsFile);
-        
+      const customMetrics = await readJsonFile(metricsFile);
+      
         // Add custom metrics if they exist
-        if (customMetrics.metric) {
-          criteria.metric = customMetrics.metric;
-        }
-        
+      if (customMetrics.metric) {
+        criteria.metric = customMetrics.metric;
+      }
+      
         // If custom file has standard section, merge it with built-in (custom takes precedence for overlapping keys)
-        if (customMetrics.standard) {
-          criteria.standard = {
-            ...BUILT_IN_STANDARD_CRITERIA,
-            ...customMetrics.standard
-          };
+      if (customMetrics.standard) {
+        criteria.standard = {
+          ...BUILT_IN_STANDARD_CRITERIA,
+          ...customMetrics.standard
+        };
         }
       } catch (error) {
         console.error('Error reading metrics file:', error);

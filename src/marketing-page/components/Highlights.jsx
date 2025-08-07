@@ -1,53 +1,56 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+
+import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
+import ScienceRoundedIcon from '@mui/icons-material/ScienceRounded';
+import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded';
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon />,
-    title: 'Adaptable performance',
+    icon: <VerifiedUserRoundedIcon />,
+    title: 'Unbiased & Trustworthy',
     description:
-      'Our product effortlessly adjusts to your needs, boosting efficiency and simplifying your tasks.',
+      'Built by a university, this tool provides credible ESG verification backed by peer-reviewed research—free from vendor or investor influence. ',
   },
   {
-    icon: <ConstructionRoundedIcon />,
-    title: 'Built to last',
+    icon: <ScienceRoundedIcon />,
+    title: 'Research-Backed Intelligence',
     description:
-      'Experience unmatched durability that goes above and beyond with lasting investment.',
+      'Developed on the strength of ongoing ESG and AI research, delivering insights aligned with global reporting standards and emerging ESG risks.',
   },
   {
-    icon: <ThumbUpAltRoundedIcon />,
-    title: 'Great user experience',
+    icon: <SecurityRoundedIcon />,
+    title: 'Tested & Validated',
     description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+      'Extensively tested across diverse scenarios—so you can rely on the results for ESG assurance, compliance, and disclosure accuracy. ',
   },
   {
     icon: <AutoFixHighRoundedIcon />,
-    title: 'Innovative functionality',
+    title: 'Adaptable & Scalable',
     description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+      'From small organisations to large institutions, the tool adjusts to your workflows, data sources, and regulatory requirements.',
   },
   {
-    icon: <SupportAgentRoundedIcon />,
-    title: 'Reliable support',
+    icon: <DashboardRoundedIcon />,
+    title: 'Intuitive Interface',
     description:
-      'Count on our responsive customer support, offering assistance that goes beyond the purchase.',
+      "Whether you're a sustainability officer, risk manager, or analyst, the interface simplifies complexity and accelerates ESG reporting tasks.",
   },
   {
-    icon: <QueryStatsRoundedIcon />,
-    title: 'Precision in every detail',
+    icon: <UpdateRoundedIcon />,
+    title: 'Long-Term Support & Evolution',
     description:
-      'Enjoy a meticulously crafted product where small touches make a significant impact on your overall experience.',
+      "With continuous updates, responsive expert support, and alignment with changing standards (ISSB, CSRD, etc.), you're always future-ready.",
   },
 ];
 
@@ -81,9 +84,9 @@ export default function Highlights() {
             Highlights
           </Typography>
           <Typography variant="body1" sx={{ color: 'grey.400' }}>
-            Explore why our product stands out: adaptability, durability,
-            user-friendly design, and innovation. Enjoy reliable customer support and
-            precision in every detail.
+          Developed by RMIT AI and Data Analytics Hub, our ESG tool delivers independent, academically validated insights, 
+          free from commercial bias. For organisations that demand evidence over marketing spin, 
+          we provide the research-backed credibility you need. 
           </Typography>
         </Box>
         <Grid container spacing={2}>

@@ -2,6 +2,9 @@ import * as React from 'react';
 import { Typography, Button, Grid, Box, TextField, MenuItem, Select, Checkbox, ListItemText, FormControl, InputLabel, OutlinedInput, Card, CardContent, useTheme, CircularProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { fetchESGReportData, fetchComplianceAnalysis, fetchRecommendations, sendReportToServer } from '../services/apiService';
 import LLMRecommendations from './LLMRecommendations';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
 const metricsOptions = ['Metric 1', 'Metric 2', 'Metric 3'];
 const esgOptions = ['GRI', 'AASBScope 2', 'AASBScope 3'];
@@ -361,6 +364,394 @@ export default function ESGdashboardContent() {
       setVerificationError(error.message || 'An error occurred during verification');
     } finally {
       setIsVerifying(false);
+    }
+  };
+
+  // Generate and download PDF report
+  const generatePDFReport = () => {
+    console.log('PDF generation started');
+    console.log('esgData:', esgData);
+    console.log('complianceData:', complianceData);
+    
+    if (!esgData || !complianceData) {
+      console.error('Missing data for PDF generation');
+      alert('No analysis data available. Please run the analysis first.');
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      let yPosition = 20;
+
+      // Title
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.text('ESG Verification Report', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 20;
+
+      // Date
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      const currentDate = new Date().toLocaleDateString();
+      doc.text(`Generated on: ${currentDate}`, pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 20;
+
+      // Summary section
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Executive Summary', margin, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Overall Compliance Rate: ', margin, yPosition);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${complianceData.overall.complianceRate}%`, margin + 85, yPosition);
+      yPosition += 8;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.text('Greenwashing Risk: ', margin, yPosition);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${complianceData.overall.greenwashingRisk}%`, margin + 65, yPosition);
+      yPosition += 8;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.text('Total Criteria: ', margin, yPosition);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${complianceData.overall.totalCriteria}`, margin + 55, yPosition);
+      yPosition += 8;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.text('Compliant Criteria: ', margin, yPosition);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${complianceData.overall.compliantCriteria}`, margin + 70, yPosition);
+      yPosition += 20;
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 100) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Category-wise Summary
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Category-wise Summary', margin, yPosition);
+      yPosition += 15;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      
+      // Get processed data for category summary
+      const processedData = processData(esgData);
+      Object.keys(processedData).forEach(category => {
+        const categoryData = processedData[category];
+        Object.keys(categoryData).forEach(subCategory => {
+          const summary = categoryData[subCategory];
+          if (summary && summary.ratio) {
+            // Split the ratio to highlight numbers
+            const ratioParts = summary.ratio.split(' out of ');
+            if (ratioParts.length === 2) {
+              const categoryText = `${mapCategoryToDisplay(category)} - ${subCategory}`;
+              
+              // Check if text is too long and needs to be split
+              if (categoryText.length > 50) {
+                // Split long text into multiple lines
+                const words = categoryText.split(' ');
+                let line1 = '';
+                let line2 = '';
+                
+                for (let i = 0; i < words.length; i++) {
+                  if (i < words.length / 2) {
+                    line1 += words[i] + ' ';
+                  } else {
+                    line2 += words[i] + ' ';
+                  }
+                }
+                
+                // First line
+                doc.text(line1.trim(), margin, yPosition);
+                yPosition += 6;
+                
+                // Second line with numbers
+                doc.text(line2.trim() + ': ', margin, yPosition);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${ratioParts[0]} out of `, margin + 120, yPosition);
+                doc.text(ratioParts[1], margin + 140, yPosition);
+                doc.setFont('helvetica', 'normal');
+              } else {
+                // Short text, single line
+                doc.text(categoryText + ': ', margin, yPosition);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${ratioParts[0]} out of `, margin + 120, yPosition);
+                doc.text(ratioParts[1], margin + 140, yPosition);
+                doc.setFont('helvetica', 'normal');
+              }
+            } else {
+              doc.text(`${mapCategoryToDisplay(category)} - ${subCategory}: ${summary.ratio}`, margin, yPosition);
+            }
+            yPosition += 8;
+          }
+        });
+      });
+      yPosition += 15;
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 100) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // AASB S2 and Materiality Matrix section
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('AASB S2 and Materiality Matrix', margin, yPosition);
+      yPosition += 15;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text('This section provides analysis of AASB S2 compliance and materiality assessment.', margin, yPosition);
+      yPosition += 10;
+      doc.text('For detailed materiality matrix and heatmap visualization, please refer to the dashboard.', margin, yPosition);
+      yPosition += 20;
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 100) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // AI Recommendations section
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('AI-Powered Recommendations', margin, yPosition);
+      yPosition += 15;
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Based on the comprehensive ESG analysis, here are detailed recommendations:', margin, yPosition);
+      yPosition += 10;
+      
+      // Add detailed recommendations based on compliance rate
+      if (complianceData.overall.complianceRate < 50) {
+        doc.setFont('helvetica', 'bold');
+        doc.text('CRITICAL PRIORITY - Immediate Action Required:', margin, yPosition);
+        yPosition += 8;
+        doc.setFont('helvetica', 'normal');
+        doc.text('• Implement comprehensive ESG reporting framework immediately', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Establish dedicated ESG team and governance structure', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Conduct gap analysis to identify specific compliance deficiencies', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Develop action plan with clear timelines and responsibilities', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Consider engaging external ESG consultants for expertise', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Implement regular ESG training for all staff levels', margin, yPosition);
+        yPosition += 10;
+      } else if (complianceData.overall.complianceRate < 80) {
+        doc.setFont('helvetica', 'bold');
+        doc.text('IMPROVEMENT PRIORITY - Focus on Specific Areas:', margin, yPosition);
+        yPosition += 8;
+        doc.setFont('helvetica', 'normal');
+        doc.text('• Identify and address specific ESG criteria with low compliance', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Enhance data collection and reporting processes', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Strengthen ESG risk management and monitoring systems', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Improve stakeholder engagement and communication strategies', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Consider setting up ESG performance metrics and KPIs', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Review and update ESG policies and procedures', margin, yPosition);
+        yPosition += 10;
+      } else {
+        doc.setFont('helvetica', 'bold');
+        doc.text('EXCELLENCE MAINTENANCE - Advanced ESG Initiatives:', margin, yPosition);
+        yPosition += 8;
+        doc.setFont('helvetica', 'normal');
+        doc.text('• Maintain high ESG standards and continue monitoring', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Consider advanced ESG initiatives and stakeholder engagement', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Explore innovative sustainability practices and technologies', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Lead industry best practices and share knowledge', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Consider ESG certification and third-party verification', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Develop long-term sustainability strategy and roadmap', margin, yPosition);
+        yPosition += 10;
+      }
+      
+      // Add general recommendations for all compliance levels
+      doc.setFont('helvetica', 'bold');
+      doc.text('GENERAL RECOMMENDATIONS FOR ALL ORGANIZATIONS:', margin, yPosition);
+      yPosition += 8;
+      doc.setFont('helvetica', 'normal');
+      doc.text('• Regular review and updates of ESG policies (quarterly recommended)', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Consider third-party ESG verification for enhanced credibility', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Implement ESG performance tracking and reporting systems', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Develop ESG communication strategy for stakeholders', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Stay updated with evolving ESG standards and regulations', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Integrate ESG considerations into business strategy and decision-making', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Establish ESG risk assessment and mitigation procedures', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Consider ESG impact on financial performance and valuation', margin, yPosition);
+      yPosition += 10;
+      
+      // Add specific recommendations based on greenwashing risk
+      if (complianceData.overall.greenwashingRisk > 20) {
+        doc.setFont('helvetica', 'bold');
+        doc.text('GREENWASHING RISK MITIGATION:', margin, yPosition);
+        yPosition += 8;
+        doc.setFont('helvetica', 'normal');
+        doc.text('• Ensure all ESG claims are substantiated with evidence', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Implement transparent reporting and disclosure practices', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Avoid overstating ESG achievements or commitments', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Consider independent ESG verification and certification', margin, yPosition);
+        yPosition += 6;
+        doc.text('• Develop clear ESG communication guidelines', margin, yPosition);
+        yPosition += 10;
+      }
+      
+      // Add technology and AI recommendations
+      doc.setFont('helvetica', 'bold');
+      doc.text('TECHNOLOGY AND AI ENHANCEMENT:', margin, yPosition);
+      yPosition += 8;
+      doc.setFont('helvetica', 'normal');
+      doc.text('• Leverage AI-powered ESG analysis tools for continuous monitoring', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Implement automated ESG data collection and reporting systems', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Use predictive analytics for ESG risk assessment', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Consider blockchain for ESG data transparency and verification', margin, yPosition);
+      yPosition += 6;
+      doc.text('• Explore ESG-focused fintech solutions and platforms', margin, yPosition);
+      yPosition += 20;
+
+      // Check if we need a new page
+      if (yPosition > pageHeight - 100) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      // Detailed Analysis section
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Detailed Analysis', margin, yPosition);
+      yPosition += 15;
+
+      // Prepare table data
+      const tableData = [];
+      const filteredData = getFilteredData();
+      console.log('filteredData:', filteredData);
+      
+      Object.keys(filteredData).forEach(category => {
+        const categoryData = filteredData[category];
+        Object.keys(categoryData).forEach(subCategory => {
+          const subCategoryData = categoryData[subCategory];
+          Object.keys(subCategoryData).forEach(criterion => {
+            const [criteriaName, result, details, value] = subCategoryData[criterion];
+            tableData.push([
+              mapCategoryToDisplay(category),
+              criteriaName || 'N/A',
+              result || 'N/A',
+              details || 'No details available'
+            ]);
+          });
+        });
+      });
+
+      console.log('tableData:', tableData);
+
+      // Add table
+      if (tableData.length > 0) {
+        try {
+          autoTable(doc, {
+            startY: yPosition,
+            head: [['Category', 'Criteria', 'Result', 'Details']],
+            body: tableData,
+            theme: 'grid',
+            styles: {
+              fontSize: 8,
+              cellPadding: 2,
+            },
+            headStyles: {
+              fillColor: [41, 128, 185],
+              textColor: 255,
+              fontStyle: 'bold',
+            },
+            columnStyles: {
+              0: { cellWidth: 30 },
+              1: { cellWidth: 50 },
+              2: { cellWidth: 20 },
+              3: { cellWidth: 80 },
+            },
+            didDrawPage: function (data) {
+              // Add page numbers
+              doc.setFontSize(10);
+              doc.text(
+                `Page ${doc.internal.getNumberOfPages()}`,
+                pageWidth - margin,
+                pageHeight - 10
+              );
+            },
+          });
+        } catch (tableError) {
+          console.warn('AutoTable failed, using simple text format:', tableError);
+          // Fallback to simple text format
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'normal');
+          doc.text('Detailed Analysis Results:', margin, yPosition);
+          yPosition += 10;
+          
+          tableData.forEach((row, index) => {
+            if (yPosition > pageHeight - 50) {
+              doc.addPage();
+              yPosition = 20;
+            }
+            doc.setFontSize(10);
+            doc.text(`${row[0]} - ${row[1]}: ${row[2]}`, margin, yPosition);
+            yPosition += 6;
+            if (row[3] && row[3] !== 'No details available') {
+              doc.setFontSize(8);
+              doc.text(`  Details: ${row[3]}`, margin + 5, yPosition);
+              yPosition += 5;
+            }
+            yPosition += 3;
+          });
+        }
+      } else {
+        // If no table data, add a message
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text('No detailed analysis data available.', margin, yPosition);
+      }
+
+      // Download the PDF
+      const fileName = `ESG_Verification_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+      console.log('Saving PDF as:', fileName);
+      doc.save(fileName);
+      console.log('PDF generation completed successfully');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF report. Please try again.');
     }
   };
 
@@ -993,9 +1384,27 @@ export default function ESGdashboardContent() {
       
       {/* Summary Cards Area */}
       <Box id="summary">
-        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-          Summary
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography component="h2" variant="h6">
+            Summary
+          </Typography>
+          {esgData && !isVerifying && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={generatePDFReport}
+              startIcon={<DownloadRoundedIcon />}
+              sx={{ 
+                fontWeight: 600,
+                textTransform: 'none',
+                px: 3,
+                py: 1
+              }}
+            >
+              Download PDF Report
+            </Button>
+          )}
+        </Box>
         
         {/* If verifying, show loading state */}
         {isVerifying ? (
