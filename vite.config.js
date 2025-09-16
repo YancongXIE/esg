@@ -4,6 +4,18 @@ import react from '@vitejs/plugin-react';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    target: 'es2015',
+    rollupOptions: {
+      external: (id) => {
+        // Externalize Node.js modules that shouldn't be bundled for browser
+        if (id.includes('jsdom') || id.includes('cssstyle') || id.includes('agent-base')) {
+          return true;
+        }
+        return false;
+      }
+    }
+  },
   server: {
     proxy: {
       // Proxy for AASB news

@@ -4,18 +4,12 @@ const NEWS_UPDATE_INTERVAL = 30 * 60 * 1000; // 30 minutes
 // Helper function to get DOMParser
 const getDOMParser = async () => {
   if (typeof window !== 'undefined') {
-    // Browser environment
+    // Browser environment - use native DOMParser
     return window.DOMParser;
   } else {
-    // Node.js environment
-    try {
-      const { JSDOM } = await import('jsdom');
-      const dom = new JSDOM();
-      return dom.window.DOMParser;
-    } catch (error) {
-      // console.log('JSDOM not available, using fallback data');
-      return null;
-    }
+    // Node.js environment - not supported in browser builds
+    // console.log('DOMParser not available in Node.js environment');
+    return null;
   }
 };
 
