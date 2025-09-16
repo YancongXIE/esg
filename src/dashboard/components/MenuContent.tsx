@@ -17,6 +17,8 @@ import InputRoundedIcon from '@mui/icons-material/InputRounded';
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded';
 import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
 import DetailsRoundedIcon from '@mui/icons-material/DetailsRounded';
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+import PsychologyRoundedIcon from '@mui/icons-material/PsychologyRounded';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -46,6 +48,8 @@ const homeSubMenuItems: SubMenuItem[] = [
   { text: 'Latest AASB S2 Standard Update', icon: <UpdateRoundedIcon />, anchor: 'standard-update' },
   { text: 'Summary', icon: <AssessmentRoundedIcon />, anchor: 'summary' },
   { text: 'Details', icon: <DetailsRoundedIcon />, anchor: 'details' },
+  { text: 'Materiality Matrix', icon: <GridViewRoundedIcon />, anchor: 'materiality-matrix' },
+  { text: 'AI Recommendations', icon: <PsychologyRoundedIcon />, anchor: 'ai-recommendations' },
 ];
 
 const secondaryListItems: MenuItem[] = [

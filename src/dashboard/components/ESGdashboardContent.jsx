@@ -1761,7 +1761,7 @@ export default function ESGdashboardContent() {
               {/* Two-column layout below */}
               <Grid container spacing={2} columns={12}>
                 {/* AASB S2 and Materiality Matrix - 6 columns */}
-                <Grid size={{ xs: 12, lg: 6 }}>
+                <Grid size={{ xs: 12, lg: 6 }} id="materiality-matrix">
                   <Card variant="outlined" sx={{ height: 400 }}>
                     <CardContent>
                       <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
@@ -1830,7 +1830,7 @@ export default function ESGdashboardContent() {
                 </Grid>
                 
                 {/* Recommendations - 6 columns */}
-                <Grid size={{ xs: 12, lg: 6 }}>
+                <Grid size={{ xs: 12, lg: 6 }} id="ai-recommendations">
                   <LLMRecommendations 
                     esgData={esgData} 
                     complianceData={complianceData} 

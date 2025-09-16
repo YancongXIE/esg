@@ -66,7 +66,7 @@ export default function AppAppBar() {
                 size="small" 
                 onClick={() => handleNavigation('/dashboard')}
               >
-                Dashboard
+                My Dashboard
               </Button>
               <Button 
                 variant="text" 
@@ -136,7 +136,7 @@ export default function AppAppBar() {
                 <MenuItem>Pricing</MenuItem>
                 <MenuItem>FAQ</MenuItem>
                 <MenuItem>Blog</MenuItem>
-                <MenuItem onClick={() => handleNavigation('/dashboard')}>Dashboard</MenuItem>
+                <MenuItem onClick={() => handleNavigation('/dashboard')}>My Dashboard</MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
                   <Button 
