@@ -305,6 +305,14 @@ export default function ESGdashboardContent() {
     result: ''
   });
 
+  // Card selection state for filtering
+  const [selectedCard, setSelectedCard] = React.useState(null);
+
+  // Monitor filter changes
+  React.useEffect(() => {
+    // Filter state changed
+  }, [filters, selectedCard]);
+
   // Handle file upload
   const handleFileUpload = (file, type) => {
     if (type === 'pdf') {
@@ -973,8 +981,32 @@ export default function ESGdashboardContent() {
             return;
           }
           
-          // Category filter
-          if (filters.category && mapCategoryToDisplay(category) !== filters.category) {
+          // Category filter - check both main category and subcategory
+          const mappedCategory = mapCategoryToDisplay(category);
+          
+          // For "standard" category, we need to check if the subcategory matches the card
+          if (filters.category === 'standard' && category === 'standard') {
+            // Check if this subcategory matches the selected card
+            const cardToSubCategoryMap = {
+              'Scope': 'Scope',
+              'Governance': 'Governance',
+              'Strategy': 'Strategy',
+              'Climate-related Risk and Opportunities': 'Climate-related risk and opportunities',
+              'Business Model and Value Chain': 'Business model and value chain',
+              'Strategy and Decision Making': 'Strategy and decision-making',
+              'Financial Position and Financial Performance': 'Financial position, financial performance and cash flows',
+              'Climate Resilience': 'Climate resilience',
+              'Risk Management': 'Risk Management',
+              'Metrics and Targets': 'Metrics and Targets',
+              'Climate-related Metrics': 'Climate-related metrics',
+              'Climate-related Targets': 'Climate-related targets'
+            };
+            
+            const expectedSubCategory = cardToSubCategoryMap[selectedCard];
+            if (expectedSubCategory && subCategory !== expectedSubCategory) {
+              return;
+            }
+          } else if (filters.category && mappedCategory !== filters.category) {
             return;
           }
           
@@ -1019,6 +1051,64 @@ export default function ESGdashboardContent() {
       criteria: '',
       result: ''
     });
+    setSelectedCard(null);
+  };
+
+  // Handle card click for filtering
+  const handleCardClick = (cardLabel) => {
+    // Find the actual category name in esgData that corresponds to this card
+    let actualCategoryName = null;
+    
+    // First, try to find by exact match in processedData
+    for (const category in processedData) {
+      for (const subCategory in processedData[category]) {
+        const ratio = processedData[category][subCategory].ratio;
+        // Check if this ratio matches what's displayed on the card
+        if (getRatioFromData(cardLabel) === ratio) {
+          actualCategoryName = category;
+          break;
+        }
+      }
+      if (actualCategoryName) break;
+    }
+    
+    // If not found by ratio matching, try direct mapping
+    if (!actualCategoryName) {
+      // Based on the actual data structure: cards map to subcategories within "standard" category
+      const cardToCategoryMap = {
+        'Scope': 'standard',
+        'Governance': 'standard', 
+        'Strategy': 'standard',
+        'Climate-related Risk and Opportunities': 'standard',
+        'Business Model and Value Chain': 'standard',
+        'Strategy and Decision Making': 'standard',
+        'Financial Position and Financial Performance': 'standard',
+        'Climate Resilience': 'standard',
+        'Risk Management': 'standard',
+        'Metrics and Targets': 'standard',
+        'Climate-related Metrics': 'standard',
+        'Climate-related Targets': 'standard'
+      };
+      actualCategoryName = cardToCategoryMap[cardLabel];
+    }
+    
+    if (selectedCard === cardLabel) {
+      // If clicking the same card, deselect it
+      setSelectedCard(null);
+      setFilters(prev => ({
+        ...prev,
+        category: ''
+      }));
+    } else {
+      // Select the new card and filter by category
+      setSelectedCard(cardLabel);
+      setFilters(prev => ({
+        ...prev,
+        category: actualCategoryName ? mapCategoryToDisplay(actualCategoryName) : '',
+        criteria: '', // Clear other filters when selecting a card
+        result: ''
+      }));
+    }
   };
 
   // Load data - commented out auto-loading, only load data when user actively verifies
@@ -1154,7 +1244,7 @@ export default function ESGdashboardContent() {
         </Typography>
         <Grid container spacing={2} columns={12} sx={{ mb: (theme) => theme.spacing(2) }}>
           {/* Sustainability Report */}
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Sustainability Report</Typography>
@@ -1240,8 +1330,8 @@ export default function ESGdashboardContent() {
               </CardContent>
             </Card>
           </Grid>
-          {/* Upload Metrics */}
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          {/* Upload Metrics - Commented out */}
+          {/* <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Additional Metrics (Optional)</Typography>
@@ -1326,9 +1416,9 @@ export default function ESGdashboardContent() {
                 )}
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
           {/* Select ESG Standards */}
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>Select ESG Standards</Typography>
@@ -1353,7 +1443,7 @@ export default function ESGdashboardContent() {
             </Card>
           </Grid>
           {/* Verify Report */}
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
               <CardContent sx={{ width: '100%' }}>
                 <Button 
@@ -1370,8 +1460,8 @@ export default function ESGdashboardContent() {
         </Grid>
       </Box>
       
-      {/* Latest Standard Update */}
-      <Box id="standard-update">
+      {/* Latest Standard Update - Commented out */}
+      {/* <Box id="standard-update">
         <Typography component="h2" variant="h6" sx={{ mb: 2, mt: 3 }}>
           Latest Standard Update
         </Typography>
@@ -1380,7 +1470,7 @@ export default function ESGdashboardContent() {
             <Typography variant="body2" color="text.secondary">Edit text in left pane...</Typography>
           </CardContent>
         </Card>
-      </Box>
+      </Box> */}
       
       {/* Summary Cards Area */}
       <Box id="summary">
@@ -1442,35 +1532,79 @@ export default function ESGdashboardContent() {
               },
             },
           }}>
-            {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => (
-              <Card 
-                key={idx}
-                variant="outlined" 
-                sx={{ 
-                  height: '100%',
-                  width: '100%',
-                  minWidth: 120,
-                  position: 'relative',
-                  ...(item.highlight && {
-                    bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
-                  }),
-                  ...(item.warning && {
-                    borderLeft: '4px solid #ff9800',
-                    borderTop: `1px solid ${theme.palette.divider}`,
-                    borderRight: `1px solid ${theme.palette.divider}`,
-                    borderBottom: `1px solid ${theme.palette.divider}`,
-                  })
-                }}
-              >
-                <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                  <Typography variant="body2" color="primary" fontWeight={700} noWrap>{item.label}</Typography>
-                  <Typography variant="h6" color={item.highlight ? 'primary' : 'text.primary'} fontWeight={700}>
-                    {item.value}
-                  </Typography>
-                  {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
-                </CardContent>
-              </Card>
-            ))}
+            {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => {
+              const isSelected = selectedCard === item.label;
+              const isClickable = !item.highlight; // Don't make highlight cards clickable (Greenwashing Risk, Compliant Rate)
+              
+              return (
+                <Card 
+                  key={idx}
+                  variant="outlined" 
+                  onClick={isClickable ? () => handleCardClick(item.label) : undefined}
+                  sx={{ 
+                    height: '100%',
+                    width: '100%',
+                    minWidth: 120,
+                    position: 'relative',
+                    cursor: isClickable ? 'pointer' : 'default',
+                    transition: 'all 0.2s ease-in-out',
+                    ...(item.highlight && {
+                      bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
+                    }),
+                    ...(item.warning && {
+                      borderLeft: '4px solid #ff9800',
+                      borderTop: `1px solid ${theme.palette.divider}`,
+                      borderRight: `1px solid ${theme.palette.divider}`,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    }),
+                    ...(isClickable && {
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: theme.palette.mode === 'light' 
+                          ? '0 4px 12px rgba(0, 0, 0, 0.15)' 
+                          : '0 4px 12px rgba(255, 255, 255, 0.1)',
+                        borderColor: theme.palette.primary.main,
+                      }
+                    }),
+                    ...(isSelected && {
+                      bgcolor: theme.palette.mode === 'light' 
+                        ? 'rgba(25, 118, 210, 0.08)' 
+                        : 'rgba(25, 118, 210, 0.2)',
+                      borderColor: theme.palette.primary.main,
+                      borderWidth: 2,
+                      transform: 'translateY(-1px)',
+                      boxShadow: theme.palette.mode === 'light' 
+                        ? '0 2px 8px rgba(25, 118, 210, 0.3)' 
+                        : '0 2px 8px rgba(25, 118, 210, 0.4)',
+                    })
+                  }}
+                >
+                  <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                    <Typography 
+                      variant="body2" 
+                      color={isSelected ? 'primary' : 'primary'} 
+                      fontWeight={700} 
+                      noWrap
+                    >
+                      {item.label}
+                    </Typography>
+                    <Typography 
+                      variant="h6" 
+                      color={item.highlight ? 'primary' : (isSelected ? 'primary' : 'text.primary')} 
+                      fontWeight={700}
+                    >
+                      {item.value}
+                    </Typography>
+                    {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+                    {isSelected && (
+                      <Typography variant="caption" color="primary" fontWeight={600} sx={{ mt: 0.5 }}>
+                        ✓ Selected
+                      </Typography>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </Box>
         ) : (
           /* Initial state: show no content */
@@ -1526,6 +1660,42 @@ export default function ESGdashboardContent() {
                     flexWrap: 'wrap',
                     alignItems: 'center'
                   }}>
+                    {/* Selected card indicator */}
+                    {selectedCard && (
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 1,
+                        px: 2,
+                        py: 1,
+                        bgcolor: theme.palette.mode === 'light' 
+                          ? 'rgba(25, 118, 210, 0.08)' 
+                          : 'rgba(25, 118, 210, 0.2)',
+                        borderRadius: 1,
+                        border: `1px solid ${theme.palette.primary.main}`,
+                        flexShrink: 0
+                      }}>
+                        <Typography variant="caption" color="primary" fontWeight={600}>
+                          Filtering by: {selectedCard}
+                        </Typography>
+                        <Button
+                          size="small"
+                          variant="text"
+                          color="primary"
+                          onClick={() => setSelectedCard(null)}
+                          sx={{ 
+                            minWidth: 'auto', 
+                            p: 0.5,
+                            fontSize: '0.75rem',
+                            '&:hover': {
+                              bgcolor: 'rgba(25, 118, 210, 0.1)'
+                            }
+                          }}
+                        >
+                          ✕
+                        </Button>
+                      </Box>
+                    )}
                     <FormControl size="small" sx={{ minWidth: 150 }}>
                       <InputLabel>Category</InputLabel>
                       <Select
@@ -1758,10 +1928,10 @@ export default function ESGdashboardContent() {
                 </CardContent>
               </Card>
 
-              {/* Two-column layout below */}
+              {/* Two-column layout below - Commented out AASB S2 and Materiality Matrix */}
               <Grid container spacing={2} columns={12}>
-                {/* AASB S2 and Materiality Matrix - 6 columns */}
-                <Grid size={{ xs: 12, lg: 6 }} id="materiality-matrix">
+                {/* AASB S2 and Materiality Matrix - 6 columns - Commented out */}
+                {/* <Grid size={{ xs: 12, lg: 6 }} id="materiality-matrix">
                   <Card variant="outlined" sx={{ height: 400 }}>
                     <CardContent>
                       <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
@@ -1769,22 +1939,17 @@ export default function ESGdashboardContent() {
                         <Typography variant="caption" color="text.secondary">Title 1</Typography>
                         <Button size="small" variant="outlined" sx={{ ml: 1, fontSize: 12 }}>Metric 1</Button>
                       </Box>
-                      {/* Heatmap */}
                       <Box sx={{ width: '100%', mb: 1 }}>
                         <Box sx={{ height: 16, bgcolor: theme.palette.mode === 'light' ? '#ede7f6' : 'rgba(124, 93, 250, 0.2)', borderRadius: 1, mb: 1 }}>
                           <Box sx={{ width: '85%', height: '100%', bgcolor: '#7c5dfa', borderRadius: 1 }} />
                         </Box>
-                        {/* Heatmap grid */}
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, mt: 1 }}>
-                          {/* Header */}
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}></Box>
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>A</Box>
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>B</Box>
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>C</Box>
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>D</Box>
                           <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>E</Box>
-                          
-                          {/* Data rows */}
                           {[
                             { label: 'Data 1', values: [86, 56, 21, 18, 67] },
                             { label: 'Data 2', values: [46, 30, 77, 69, 20] },
@@ -1797,9 +1962,8 @@ export default function ESGdashboardContent() {
                                 {row.label}
                               </Box>
                               {row.values.map((value, j) => {
-                                // Calculate color intensity based on value (0-100)
                                 const intensity = Math.min(100, Math.max(0, value));
-                                const bgColor = `hsl(260, 70%, ${100 - intensity * 0.6}%)`; // From light purple to dark purple
+                                const bgColor = `hsl(260, 70%, ${100 - intensity * 0.6}%)`;
                                 return (
                                   <Box
                                     key={j}
@@ -1827,10 +1991,10 @@ export default function ESGdashboardContent() {
                       </Box>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid> */}
                 
-                {/* Recommendations - 6 columns */}
-                <Grid size={{ xs: 12, lg: 6 }} id="ai-recommendations">
+                {/* Recommendations - 12 columns (full width) */}
+                <Grid size={{ xs: 12 }} id="ai-recommendations">
                   <LLMRecommendations 
                     esgData={esgData} 
                     complianceData={complianceData} 

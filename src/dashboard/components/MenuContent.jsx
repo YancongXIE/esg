@@ -31,16 +31,16 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 const mainListItems = [
   { text: 'My Dashboard', icon: <DashboardRoundedIcon />, hasSubMenu: true, path: '/dashboard' },
   { text: 'ESG Dashboard', icon: <HomeRoundedIcon />, hasSubMenu: true, path: '/ESGdashboard' },
-  { text: 'Analytics', icon: <AnalyticsRoundedIcon /> },
-  { text: 'Users', icon: <PeopleRoundedIcon /> },
+  // { text: 'Analytics', icon: <AnalyticsRoundedIcon /> }, // Commented out
+  // { text: 'Users', icon: <PeopleRoundedIcon /> }, // Commented out
 ];
 
 const homeSubMenuItems = [
   { text: 'Input', icon: <InputRoundedIcon />, anchor: 'input' },
-  { text: 'Latest AASB S2 Standard Update', icon: <UpdateRoundedIcon />, anchor: 'standard-update' },
+  // { text: 'Latest AASB S2 Standard Update', icon: <UpdateRoundedIcon />, anchor: 'standard-update' }, // Commented out
   { text: 'Summary', icon: <AssessmentRoundedIcon />, anchor: 'summary' },
   { text: 'Details', icon: <DetailsRoundedIcon />, anchor: 'details' },
-  { text: 'Materiality Matrix', icon: <GridViewRoundedIcon />, anchor: 'materiality-matrix' },
+  // { text: 'Materiality Matrix', icon: <GridViewRoundedIcon />, anchor: 'materiality-matrix' }, // Commented out
   { text: 'AI Recommendations', icon: <PsychologyRoundedIcon />, anchor: 'ai-recommendations' },
 ];
 
@@ -52,9 +52,9 @@ const myDashboardSubMenuItems = [
 ];
 
 const secondaryListItems = [
-  { text: 'Settings', icon: <SettingsRoundedIcon /> },
-  { text: 'FAQs', icon: <HelpRoundedIcon /> },
-  { text: 'About', icon: <InfoRoundedIcon />, link: 'https://rmit-aihub.org.au/' },
+  // { text: 'Settings', icon: <SettingsRoundedIcon /> }, // Commented out
+  { text: 'FAQs', icon: <HelpRoundedIcon />, path: '/faqs' },
+  { text: 'About Us', icon: <InfoRoundedIcon />, link: 'https://rmit-aihub.org.au/' },
 ];
 
 export default function MenuContent() {
@@ -172,7 +172,10 @@ export default function MenuContent() {
       <List dense>
         {secondaryListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton onClick={item.link ? () => handleExternalLink(item.link) : undefined}>
+            <ListItemButton 
+              onClick={item.link ? () => handleExternalLink(item.link) : (item.path ? () => window.location.href = item.path : undefined)}
+              selected={item.path === location.pathname}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
               {item.link && <OpenInNewIcon sx={{ fontSize: 16, ml: 1 }} />}

@@ -12,26 +12,44 @@ import { styled } from '@mui/material/styles';
 
 const StyledBox = styled('div')(({ theme }) => ({
   alignSelf: 'center',
-  width: '140%',
-  height: 400,
-  marginTop: theme.spacing(8),
+  width: '90%',
+  height: 200,
+  marginTop: theme.spacing(3),
   borderRadius: (theme.vars || theme).shape.borderRadius,
-  outline: '6px solid',
-  outlineColor: 'hsla(220, 25%, 80%, 0.2)',
-  border: '1px solid',
-  borderColor: (theme.vars || theme).palette.grey[200],
-  boxShadow: '0 0 12px 8px hsla(220, 25%, 80%, 0.2)',
-  backgroundImage: `url('/Dashboard screenshot.png')`,
-  backgroundSize: 'cover',
+  boxShadow: '0 0 8px 4px hsla(220, 25%, 80%, 0.2)',
+  backgroundColor: theme.palette.grey[100],
+  minHeight: 200,
+  display: 'block',
+  overflow: 'hidden',
   [theme.breakpoints.up('sm')]: {
-    marginTop: theme.spacing(10),
+    width: '100%',
+    height: 350,
+    marginTop: theme.spacing(4),
+    minHeight: 350,
+    boxShadow: '0 0 10px 6px hsla(220, 25%, 80%, 0.2)',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '120%',
+    height: 500,
+    marginTop: theme.spacing(6),
+    minHeight: 500,
+    boxShadow: '0 0 12px 8px hsla(220, 25%, 80%, 0.2)',
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: '140%',
     height: 700,
+    marginTop: theme.spacing(8),
+    minHeight: 700,
   },
   ...theme.applyStyles('dark', {
-    boxShadow: '0 0 24px 12px hsla(210, 100%, 25%, 0.2)',
-    backgroundImage: `url('/Dashboard screenshot.png')`,
-    outlineColor: 'hsla(220, 20%, 42%, 0.1)',
-    borderColor: (theme.vars || theme).palette.grey[700],
+    boxShadow: '0 0 16px 8px hsla(210, 100%, 25%, 0.2)',
+    backgroundColor: theme.palette.grey[800],
+    [theme.breakpoints.up('sm')]: {
+      boxShadow: '0 0 20px 10px hsla(210, 100%, 25%, 0.2)',
+    },
+    [theme.breakpoints.up('md')]: {
+      boxShadow: '0 0 24px 12px hsla(210, 100%, 25%, 0.2)',
+    },
   }),
 }));
 
@@ -70,7 +88,9 @@ export default function Hero() {
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               alignItems: 'center',
-              fontSize: 'clamp(3rem, 10vw, 3.5rem)',
+              fontSize: { xs: 'clamp(2rem, 8vw, 2.5rem)', sm: 'clamp(2.5rem, 6vw, 3.5rem)' },
+              lineHeight: 1.2,
+              textAlign: 'center',
             }}
           >
             Trusted&nbsp;
@@ -143,7 +163,19 @@ export default function Hero() {
             .
           </Typography>
         </Stack>
-        <StyledBox id="image" />
+        <StyledBox id="image">
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url('Dashboard screenshot.png')`,
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              borderRadius: 'inherit',
+            }}
+          />
+        </StyledBox>
       </Container>
     </Box>
   );

@@ -32,9 +32,9 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import ArticleIcon from '@mui/icons-material/Article';
 import PublicIcon from '@mui/icons-material/Public';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import NatureIcon from '@mui/icons-material/Nature';
+import ParkIcon from '@mui/icons-material/Park';
 import GroupsIcon from '@mui/icons-material/Groups';
-import BusinessIcon from '@mui/icons-material/Business';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -108,7 +108,7 @@ const taskReminderData = [
 const esgScores = {
   Environmental: { score: 78, status: 'good', color: '#4caf50' },
   Social: { score: 65, status: 'warning', color: '#ff9800' },
-  Governance: { score: 82, status: 'good', color: '#4caf50' },
+  Governance: { score: 82, status: 'good', color: '#ccc6c6' },
 };
 
 const priorityActions = [
@@ -709,7 +709,7 @@ function EnvironmentalScoreCard() {
     <Card sx={{ height: '100%' }}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <NatureIcon sx={{ color: data.color, mr: 1, fontSize: 24 }} />
+          <ParkIcon sx={{ color: data.color, mr: 1, fontSize: 24 }} />
           <Typography variant="h6" sx={{ color: data.color }}>
             Environmental
           </Typography>
@@ -787,7 +787,7 @@ function GovernanceScoreCard() {
     <Card sx={{ height: '100%' }}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <BusinessIcon sx={{ color: data.color, mr: 1, fontSize: 24 }} />
+          <AccountBalanceIcon sx={{ color: data.color, mr: 1, fontSize: 24 }} />
           <Typography variant="h6" sx={{ color: data.color }}>
             Governance
           </Typography>
