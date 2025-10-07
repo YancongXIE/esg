@@ -345,26 +345,23 @@ const extractNewsFromHTML = async (html, source, baseUrl) => {
 // Real news fetching functions
 const fetchAASBNews = async () => {
   try {
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
     const newsItems = [];
     
     const aasbPages = [
-      'https://www.aasb.gov.au/news/',
-      'https://www.aasb.gov.au/',
-      'https://www.aasb.gov.au/about-us/news/'
+      '/api/aasb/news/',
+      '/api/aasb/',
+      '/api/aasb/about-us/news/'
     ];
     
     for (const pageUrl of aasbPages) {
       try {
         // console.log(`AASB: Trying to fetch from ${pageUrl}`);
         
-        const aasbUrl = encodeURIComponent(pageUrl);
-        
         // Add timeout to fetch request
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
         
-        const response = await fetch(proxyUrl + aasbUrl, {
+        const response = await fetch(pageUrl, {
           signal: controller.signal,
           headers: {
             'Accept': 'application/json',
@@ -378,9 +375,9 @@ const fetchAASBNews = async () => {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const data = await response.json();
+        const htmlContent = await response.text();
         
-        // console.log(`AASB: Parsing HTML content (${data.contents.length} characters)`);
+        // console.log(`AASB: Parsing HTML content (${htmlContent.length} characters)`);
         
         const DOMParser = await getDOMParser();
         if (!DOMParser) {
@@ -389,7 +386,7 @@ const fetchAASBNews = async () => {
         }
         
         const parser = new DOMParser();
-        const doc = parser.parseFromString(data.contents, 'text/html');
+        const doc = parser.parseFromString(htmlContent, 'text/html');
         
         // Wait for dynamic content to load
         // console.log(`AASB: Waiting for dynamic content on ${pageUrl}...`);
@@ -578,10 +575,10 @@ const fetchGlobalESGNews = async () => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
-    const response = await fetch('https://api.allorigins.win/get?url=https://www.esgtoday.com/category/esg-news/', {
+    const response = await fetch('/api/esgtoday/category/esg-news/', {
       signal: controller.signal,
       headers: {
-        'Accept': 'application/json',
+        'Accept': 'text/html',
         'User-Agent': 'Mozilla/5.0 (compatible; ESG-News-Bot/1.0)'
       }
     });
@@ -595,8 +592,7 @@ const fetchGlobalESGNews = async () => {
       }));
     }
     
-    const data = await response.json();
-    const html = data.contents;
+    const html = await response.text();
     
     const DOMParser = await getDOMParser();
     if (!DOMParser) {
