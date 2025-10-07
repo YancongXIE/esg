@@ -85,7 +85,7 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button 
+            {/* <Button 
               color="primary" 
               variant="text" 
               size="small"
@@ -100,7 +100,7 @@ export default function AppAppBar() {
               onClick={() => handleNavigation('/signup')}
             >
               Sign up
-            </Button>
+            </Button> */}
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1, alignItems: 'center' }}>
@@ -139,13 +139,14 @@ export default function AppAppBar() {
                   </IconButton>
                 </Box>
 
-                <MenuItem>Features</MenuItem>
+                <MenuItem onClick={() => handleNavigation('/dashboard')}>My Dashboard</MenuItem>
+                <MenuItem onClick={() => handleNavigation('/ESGdashboard')}>ESG Dashboard</MenuItem>
+                {/* <MenuItem>Features</MenuItem>
                 <MenuItem>Testimonials</MenuItem>
                 <MenuItem>Highlights</MenuItem>
                 <MenuItem>Pricing</MenuItem>
                 <MenuItem>FAQ</MenuItem>
                 <MenuItem>Blog</MenuItem>
-                <MenuItem onClick={() => handleNavigation('/dashboard')}>My Dashboard</MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
                   <Button 
@@ -166,7 +167,7 @@ export default function AppAppBar() {
                   >
                     Sign in
                   </Button>
-                </MenuItem>
+                </MenuItem> */}
               </Box>
             </Drawer>
           </Box>
