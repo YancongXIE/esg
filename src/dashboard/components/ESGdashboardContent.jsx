@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
 const metricsOptions = ['Metric 1', 'Metric 2', 'Metric 3'];
-const esgOptions = ['GRI', 'AASBScope 2', 'AASBScope 3'];
+const esgOptions = ['GRI', 'AASB S2', 'AASB S3'];
 
 // Data processing function
 const processData = (data) => {
