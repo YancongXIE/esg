@@ -25,7 +25,18 @@ const buildESGPrompt = (esgData, complianceData) => {
   // Process ESG data, extract key information
   const processedData = processESGDataForLLM(esgData);
   
+  // 检测涉及的标准
+  const standardsInvolved = [];
+  if (esgData.gri) standardsInvolved.push('GRI (Global Reporting Initiative)');
+  if (esgData.s2) standardsInvolved.push('AASB S2 (Climate-related Financial Disclosures)');
+  if (esgData.s3 && !esgData.s3.error) standardsInvolved.push('AASB S3 (Scope 3 Emissions)');
+  const standardsText = standardsInvolved.length > 0 
+    ? `The analysis covers the following ESG standards: ${standardsInvolved.join(', ')}.`
+    : 'The analysis covers multiple ESG standards.';
+  
   return `You are a professional ESG (Environmental, Social, and Governance) analyst. Please provide specific, actionable improvement recommendations based on the following sustainability report analysis results.
+
+${standardsText}
 
 IMPORTANT: All output must be in ENGLISH ONLY. Do not use any other languages in your response.
 
@@ -70,40 +81,186 @@ Please ensure recommendations are specific, practical, and address the specific 
 };
 
 // Process ESG data, extract key information for LLM analysis
+// 支持两种数据格式：
+// 1. 原始标准数据：{ gri: {...}, s2: {...}, s3: {...} }
+// 2. 归一化数据：{ category: { subCategory: { criterion: [...] } } }
 const processESGDataForLLM = (esgData) => {
   let analysis = '';
   
-  Object.keys(esgData).forEach(category => {
-    const categoryData = esgData[category];
-    analysis += `\n### ${category.toUpperCase()} CATEGORY\n`;
+  // 检查是否是原始标准数据格式（包含 gri, s2, s3 键）
+  const isRawStandardsFormat = esgData.gri !== undefined || esgData.s2 !== undefined || esgData.s3 !== undefined;
+  
+  if (isRawStandardsFormat) {
+    // 处理原始标准数据格式
+    analysis += '# ESG STANDARDS ANALYSIS\n\n';
     
-    Object.keys(categoryData).forEach(subCategory => {
-      const subCategoryData = categoryData[subCategory];
-      let compliantCount = 0;
-      let totalCount = 0;
-      const issues = [];
+    // 处理 GRI 数据
+    if (esgData.gri && typeof esgData.gri === 'object') {
+      analysis += '## GRI (Global Reporting Initiative) Standards\n\n';
+      analysis += processStandardData(esgData.gri, 'GRI');
+    }
+    
+    // 处理 S2 数据
+    if (esgData.s2 && typeof esgData.s2 === 'object') {
+      analysis += '\n## AASB S2 (Climate-related Financial Disclosures) Standards\n\n';
+      analysis += processStandardData(esgData.s2, 'AASB S2');
+    }
+    
+    // 处理 S3 数据（如果有且没有错误）
+    if (esgData.s3 && typeof esgData.s3 === 'object' && !esgData.s3.error) {
+      analysis += '\n## AASB S3 (Scope 3 Emissions) Standards\n\n';
+      analysis += processStandardData(esgData.s3, 'AASB S3');
+    }
+  } else {
+    // 处理归一化数据格式
+    Object.keys(esgData).forEach(category => {
+      const categoryData = esgData[category];
+      if (!categoryData || typeof categoryData !== 'object') return;
       
-      Object.keys(subCategoryData).forEach(criterion => {
-        const [result, details] = subCategoryData[criterion];
-        totalCount++;
+      analysis += `\n### ${category.toUpperCase()} CATEGORY\n`;
+      
+      Object.keys(categoryData).forEach(subCategory => {
+        const subCategoryData = categoryData[subCategory];
+        if (!subCategoryData || typeof subCategoryData !== 'object') return;
         
-        if (result.toLowerCase() === 'yes') {
-          compliantCount++;
-        } else {
-          issues.push(`- ${criterion}: ${result} (${details || 'No detailed information'})`);
+        let compliantCount = 0;
+        let totalCount = 0;
+        const issues = [];
+        
+        Object.keys(subCategoryData).forEach(criterion => {
+          const raw = subCategoryData[criterion];
+          const parsed = parseCriterionData(raw, criterion);
+          
+          if (!parsed || parsed.result === undefined || parsed.result === null) {
+            return;
+          }
+
+          const resultStr = typeof parsed.result === 'string' ? parsed.result : String(parsed.result);
+          totalCount++;
+          
+          if (resultStr.toLowerCase() === 'yes' || resultStr.toLowerCase() === 'few') {
+            compliantCount++;
+          } else {
+            const label = parsed.criteriaName || criterion;
+            issues.push(`- ${label}: ${resultStr} (${parsed.details || 'No detailed information'})`);
+          }
+        });
+        
+        const complianceRate = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 0;
+        analysis += `\n**${subCategory}**: ${compliantCount}/${totalCount} compliant (${complianceRate}%)\n`;
+        
+        if (issues.length > 0) {
+          analysis += `**Main Issues**:\n${issues.join('\n')}\n`;
         }
       });
-      
-      const complianceRate = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 0;
-      analysis += `\n**${subCategory}**: ${compliantCount}/${totalCount} compliant (${complianceRate}%)\n`;
-      
-      if (issues.length > 0) {
-        analysis += `**Main Issues**:\n${issues.join('\n')}\n`;
-      }
     });
+  }
+  
+  return analysis;
+};
+
+// 处理标准数据（GRI、S2、S3 的原始格式）
+const processStandardData = (standardData, standardName) => {
+  let analysis = '';
+  
+  Object.keys(standardData).forEach(categoryName => {
+    const categoryData = standardData[categoryName];
+    if (!categoryData || typeof categoryData !== 'object') return;
+    
+    analysis += `### ${categoryName}\n`;
+    
+    let compliantCount = 0;
+    let totalCount = 0;
+    const issues = [];
+    
+    // S2 数据是数组格式
+    if (Array.isArray(categoryData)) {
+      categoryData.forEach((item, idx) => {
+        if (!Array.isArray(item) || item.length === 0) return;
+        
+        const first = item[0];
+        if (!Array.isArray(first) || first.length < 2) return;
+        
+        const [criteriaName, result, details = ''] = first;
+        if (!criteriaName || result === undefined || result === null) return;
+        
+        const resultStr = typeof result === 'string' ? result : String(result);
+        totalCount++;
+        
+        if (resultStr.toLowerCase() === 'yes' || resultStr.toLowerCase() === 'few') {
+          compliantCount++;
+        } else {
+          issues.push(`- ${criteriaName}: ${resultStr} (${details || 'No detailed information'})`);
+        }
+      });
+    } else {
+      // GRI 数据是嵌套对象格式
+      Object.keys(categoryData).forEach(subCategoryName => {
+        const subCategoryData = categoryData[subCategoryName];
+        if (!subCategoryData || typeof subCategoryData !== 'object') return;
+        
+        Object.keys(subCategoryData).forEach(criterionKey => {
+          const criterionData = subCategoryData[criterionKey];
+          const parsed = parseCriterionData(criterionData, criterionKey);
+          
+          if (!parsed || parsed.result === undefined || parsed.result === null) {
+            return;
+          }
+          
+          const resultStr = typeof parsed.result === 'string' ? parsed.result : String(parsed.result);
+          totalCount++;
+          
+          if (resultStr.toLowerCase() === 'yes' || resultStr.toLowerCase() === 'few') {
+            compliantCount++;
+          } else {
+            const label = parsed.criteriaName || criterionKey;
+            issues.push(`- ${label}: ${resultStr} (${parsed.details || 'No detailed information'})`);
+          }
+        });
+      });
+    }
+    
+    const complianceRate = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 0;
+    analysis += `**Compliance**: ${compliantCount}/${totalCount} compliant (${complianceRate}%)\n`;
+    
+    if (issues.length > 0) {
+      analysis += `**Main Issues**:\n${issues.join('\n')}\n`;
+    }
+    
+    analysis += '\n';
   });
   
   return analysis;
+};
+
+// 解析准则数据（支持多种格式）
+const parseCriterionData = (raw, defaultKey) => {
+  let criteriaName;
+  let result;
+  let details;
+
+  if (Array.isArray(raw)) {
+    if (raw.length >= 4) {
+      [criteriaName, result, details] = raw;
+    } else if (raw.length === 2) {
+      [result, details] = raw;
+      criteriaName = defaultKey;
+    } else {
+      result = raw[0];
+      details = raw[1] || '';
+      criteriaName = defaultKey;
+    }
+  } else if (raw && typeof raw === 'object') {
+    result = raw.compliance || raw.result;
+    details = raw.text || raw.details;
+    criteriaName = raw.criteriaName || defaultKey;
+  } else {
+    result = raw;
+    details = '';
+    criteriaName = defaultKey;
+  }
+
+  return { criteriaName, result, details };
 };
 
 // Call Gemini API

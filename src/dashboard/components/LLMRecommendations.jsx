@@ -89,7 +89,7 @@ const CategoryChip = ({ category }) => {
   );
 };
 
-export default function LLMRecommendations({ esgData, complianceData, height = 400 }) {
+export default function LLMRecommendations({ esgData, complianceData, rawStandardsData, height = 400 }) {
   const theme = useTheme();
   const [recommendations, setRecommendations] = React.useState(null);
   const [isGenerating, setIsGenerating] = React.useState(false);
@@ -115,7 +115,9 @@ export default function LLMRecommendations({ esgData, complianceData, height = 4
         const apiKey = localStorage.getItem('GEMINI_API_KEY') || import.meta.env.VITE_GEMINI_API_KEY;
         
         if (apiKey) {
-          result = await generateLLMRecommendations(esgData, complianceData, apiKey);
+          // 使用原始标准数据（如果可用），否则使用归一化数据
+          const dataForLLM = rawStandardsData || esgData;
+          result = await generateLLMRecommendations(dataForLLM, complianceData, apiKey);
         } else {
           // If no API key, use fallback
           result = generateFallbackRecommendations(complianceData);
@@ -128,19 +130,23 @@ export default function LLMRecommendations({ esgData, complianceData, height = 4
       if (result.success) {
         setRecommendations(result.data);
         setUseLLM(useLLMService);
+        setError(null); // 清除之前的错误
       } else {
         // If LLM fails, try fallback
         const fallbackResult = generateFallbackRecommendations(complianceData);
         setRecommendations(fallbackResult.data);
         setUseLLM(false);
-        setError(`AI service unavailable: ${result.error}. Using rule-based recommendations.`);
+        // 只显示用户友好的错误信息，不显示技术细节
+        // result.error 已经包含了 "Using rule-based recommendations." 后缀
+        setError(result.error || 'AI service unavailable. Using rule-based recommendations.');
       }
     } catch (err) {
       console.error('Error generating recommendations:', err);
       const fallbackResult = generateFallbackRecommendations(complianceData);
       setRecommendations(fallbackResult.data);
       setUseLLM(false);
-      setError('Failed to generate AI recommendations. Using rule-based recommendations.');
+      // 网络错误或其他异常，显示友好提示
+      setError('AI service unavailable. Using rule-based recommendations.');
     } finally {
       setIsGenerating(false);
     }
@@ -151,7 +157,7 @@ export default function LLMRecommendations({ esgData, complianceData, height = 4
     if (esgData && complianceData) {
       generateRecommendations();
     }
-  }, [esgData, complianceData]);
+  }, [esgData, complianceData, rawStandardsData]);
 
   // Handle detail expansion
   const handleDetailExpand = (recommendation) => {
@@ -227,7 +233,7 @@ export default function LLMRecommendations({ esgData, complianceData, height = 4
                   </Typography>
                 </Box>
               ) : error ? (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert severity="info" sx={{ mb: 2 }}>
                   {error}
                 </Alert>
               ) : recommendations ? (

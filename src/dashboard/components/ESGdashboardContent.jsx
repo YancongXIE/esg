@@ -283,9 +283,14 @@ export default function ESGdashboardContent() {
   const [uploadedFile, setUploadedFile] = React.useState(null);
   const [uploadedMetricsFile, setUploadedMetricsFile] = React.useState(null);
   
-  // Data state
-  const [esgData, setEsgData] = React.useState(null);
-  const [complianceData, setComplianceData] = React.useState(null);
+  // Data state - 分别存储不同标准的数据
+  const [esgData, setEsgData] = React.useState(null); // 保留用于兼容性（合并数据）
+  const [griData, setGriData] = React.useState(null); // GRI 标准数据
+  const [s2Data, setS2Data] = React.useState(null); // AASB S2 标准数据
+  const [griComplianceData, setGriComplianceData] = React.useState(null); // GRI 合规数据
+  const [s2ComplianceData, setS2ComplianceData] = React.useState(null); // S2 合规数据
+  const [complianceData, setComplianceData] = React.useState(null); // 保留用于兼容性（合并数据）
+  const [rawStandardsData, setRawStandardsData] = React.useState(null); // 保存原始数据供 LLM 使用
   
   // Verification status
   const [isVerifying, setIsVerifying] = React.useState(false);
@@ -308,6 +313,137 @@ export default function ESGdashboardContent() {
   // Card selection state for filtering
   const [selectedCard, setSelectedCard] = React.useState(null);
 
+  // ===================== 新结果结构适配（服务器返回 { gri, s2, s3 }） =====================
+  // 归一化函数：将不同标准的数据转换成统一的嵌套结构
+  // 统一结构: { category: { subCategory: { criterionKey: [criteriaName, result, details, value] } } }
+  
+  // 归一化 S2 数据（数组格式）
+  const normalizeS2Data = (s2Data) => {
+    if (!s2Data || typeof s2Data !== 'object') {
+      console.warn('normalizeS2Data: invalid s2 data', s2Data);
+      return null;
+    }
+
+    const normalized = {};
+
+    Object.keys(s2Data).forEach((categoryName) => {
+      const items = s2Data[categoryName];
+      if (!Array.isArray(items)) {
+        console.warn(`normalizeS2Data: ${categoryName} is not an array`, items);
+        return;
+      }
+
+      const subCategoryName = categoryName;
+      const subCategoryObj = {};
+
+      items.forEach((item, idx) => {
+        if (!Array.isArray(item) || item.length === 0) {
+          return;
+        }
+
+        const first = item[0];
+        if (!Array.isArray(first) || first.length < 2) {
+          return;
+        }
+
+        const [criteriaName, result, details = '', value = ''] = first;
+        if (!criteriaName || result === undefined || result === null) {
+          return;
+        }
+
+        const key = `${categoryName}_${idx}`;
+        subCategoryObj[key] = [criteriaName, result, details, value];
+      });
+
+      if (Object.keys(subCategoryObj).length > 0) {
+        if (!normalized[categoryName]) {
+          normalized[categoryName] = {};
+        }
+        normalized[categoryName][subCategoryName] = subCategoryObj;
+      }
+    });
+
+    return normalized;
+  };
+
+  // 归一化 GRI 数据（嵌套对象格式）
+  const normalizeGRIData = (griData) => {
+    if (!griData || typeof griData !== 'object') {
+      console.warn('normalizeGRIData: invalid gri data', griData);
+      return null;
+    }
+
+    const normalized = {};
+
+    Object.keys(griData).forEach((categoryName) => {
+      const categoryData = griData[categoryName];
+      if (!categoryData || typeof categoryData !== 'object') {
+        console.warn(`normalizeGRIData: ${categoryName} is not an object`, categoryData);
+        return;
+      }
+
+      normalized[categoryName] = {};
+
+      Object.keys(categoryData).forEach((subCategoryName) => {
+        const subCategoryData = categoryData[subCategoryName];
+        if (!subCategoryData || typeof subCategoryData !== 'object') {
+          console.warn(`normalizeGRIData: ${categoryName}/${subCategoryName} is not an object`, subCategoryData);
+          return;
+        }
+
+        const subCategoryObj = {};
+
+        Object.keys(subCategoryData).forEach((criterionKey, idx) => {
+          const criterionData = subCategoryData[criterionKey];
+          
+          // GRI 数据可能是数组格式 [criteriaName, result, details, value] 或对象格式
+          if (Array.isArray(criterionData)) {
+            if (criterionData.length >= 2) {
+              const [criteriaName, result, details = '', value = ''] = criterionData;
+              if (criteriaName && result !== undefined && result !== null) {
+                subCategoryObj[criterionKey] = [criteriaName, result, details, value];
+              }
+            }
+          } else if (criterionData && typeof criterionData === 'object') {
+            // 对象格式：{ result, details, ... }
+            const result = criterionData.result || criterionData.compliance;
+            const details = criterionData.details || criterionData.text || '';
+            const criteriaName = criterionData.criteriaName || criterionKey;
+            if (result !== undefined && result !== null) {
+              subCategoryObj[criterionKey] = [criteriaName, result, details, ''];
+            }
+          }
+        });
+
+        if (Object.keys(subCategoryObj).length > 0) {
+          normalized[categoryName][subCategoryName] = subCategoryObj;
+        }
+      });
+    });
+
+    return normalized;
+  };
+
+  // 合并多个标准的数据
+  const mergeStandardsData = (standardsData) => {
+    const merged = {};
+
+    Object.keys(standardsData).forEach((standardName) => {
+      const normalizedData = standardsData[standardName];
+      if (!normalizedData || typeof normalizedData !== 'object') {
+        return;
+      }
+
+      // 合并到统一结构，使用标准名作为前缀避免冲突
+      Object.keys(normalizedData).forEach((categoryName) => {
+        const prefixedCategory = `${standardName.toUpperCase()}_${categoryName}`;
+        merged[prefixedCategory] = normalizedData[categoryName];
+      });
+    });
+
+    return merged;
+  };
+
   // Monitor filter changes
   React.useEffect(() => {
     // Filter state changed
@@ -324,41 +460,101 @@ export default function ESGdashboardContent() {
 
   // Handle verify report
   const handleVerifyReport = async () => {
+    console.log('========================================');
+    console.log('🔘 VERIFY REPORT BUTTON CLICKED');
+    console.log('========================================');
+    console.log('Uploaded File:', uploadedFile ? uploadedFile.name : 'None');
+    console.log('Selected ESG Standards:', esg);
+    
     if (!uploadedFile) {
+      console.error('❌ No PDF file uploaded');
       setVerificationError('Please upload a PDF report');
       return;
     }
 
+    // Validate that at least one ESG standard is selected
+    if (!esg || esg.length === 0) {
+      console.error('❌ No ESG standard selected');
+      setVerificationError('Please select at least one ESG standard');
+      return;
+    }
+
+    console.log('✅ Validation passed, starting API call...');
     setIsVerifying(true);
     setVerificationError(null);
 
     try {
-      let result;
-      
-      if (uploadedMetricsFile) {
-        // Send both PDF and custom metrics
-        result = await sendReportToServer(uploadedFile, uploadedMetricsFile);
-      } else {
-        // Send only PDF with built-in standard criteria
-        result = await sendReportToServer(uploadedFile, null);
-      }
+      // New API call: send PDF + array of selected standard names
+      // e.g., if user selects ["GRI", "AASB S2"], it will send ["gri", "s2"]
+      console.log('📞 Calling sendReportToServer...');
+      const result = await sendReportToServer(uploadedFile, esg);
       
       if (result.success) {
         // Extract the actual data from the server response
-        // Server returns: { standard: {...} } or { results: { standard: {...} } }
+        // 新服务器返回结构: { gri: {...}, s2: {...}, s3: {...} }
         const serverData = result.data;
+        console.log('✅ Raw server data:', serverData);
         
         // Check if data has the expected structure
         if (serverData && typeof serverData === 'object') {
-          // Use the data directly (server returns {standard: {...}})
-          const processedData = serverData;
+          // 保存原始数据供 LLM 使用
+          setRawStandardsData(serverData);
           
-          // Process returned data
-          setEsgData(processedData);
+          // 归一化所有标准的数据，分别存储
+          let hasValidData = false;
           
-          // Calculate compliance data
-          const complianceResult = calculateComplianceFromData(processedData);
-          setComplianceData(complianceResult);
+          // 处理 S2 数据
+          if (serverData.s2) {
+            const normalizedS2 = normalizeS2Data(serverData.s2);
+            if (normalizedS2 && Object.keys(normalizedS2).length > 0) {
+              setS2Data(normalizedS2);
+              const s2Compliance = calculateComplianceFromData(normalizedS2);
+              setS2ComplianceData(s2Compliance);
+              console.log('✅ Normalized S2 data:', normalizedS2);
+              hasValidData = true;
+            }
+          }
+          
+          // 处理 GRI 数据
+          if (serverData.gri) {
+            const normalizedGRI = normalizeGRIData(serverData.gri);
+            if (normalizedGRI && Object.keys(normalizedGRI).length > 0) {
+              setGriData(normalizedGRI);
+              const griCompliance = calculateComplianceFromData(normalizedGRI);
+              setGriComplianceData(griCompliance);
+              console.log('✅ Normalized GRI data:', normalizedGRI);
+              hasValidData = true;
+            }
+          }
+          
+          // S3 暂时跳过（如果有错误）
+          if (serverData.s3 && !serverData.s3.error) {
+            // 如果 S3 有数据，可以在这里添加归一化逻辑
+            console.log('S3 data available:', serverData.s3);
+          }
+          
+          // 为了兼容性，也保存合并的数据（用于 LLM 等）
+          if (hasValidData) {
+            const normalizedStandards = {};
+            if (serverData.s2) {
+              const normalizedS2 = normalizeS2Data(serverData.s2);
+              if (normalizedS2) normalizedStandards.s2 = normalizedS2;
+            }
+            if (serverData.gri) {
+              const normalizedGRI = normalizeGRIData(serverData.gri);
+              if (normalizedGRI) normalizedStandards.gri = normalizedGRI;
+            }
+            
+            const mergedData = mergeStandardsData(normalizedStandards);
+            setEsgData(mergedData);
+            
+            // 计算合并的合规数据（用于总体统计）
+            const complianceResult = calculateComplianceFromData(mergedData);
+            setComplianceData(complianceResult);
+          } else {
+            console.error('Failed to normalize any standard data from server response:', serverData);
+            setVerificationError('No valid ESG standard data found in server response');
+          }
         } else {
           console.error('Invalid data structure received from server:', serverData);
           setVerificationError('Invalid data structure received from server');
@@ -1147,19 +1343,26 @@ export default function ESGdashboardContent() {
   //   loadData();
   // }, [date1, date2]);
 
-  // Process data
-  const processedData = esgData ? processData(esgData) : {};
-  const complianceRate = complianceData?.overall?.complianceRate || 0;
-  const greenwashingRisk = complianceData?.overall?.greenwashingRisk || 0;
+  // Process data for S2
+  const processedS2Data = s2Data ? processData(s2Data) : {};
+  const s2ComplianceRate = s2ComplianceData?.overall?.complianceRate || 0;
+  const s2GreenwashingRisk = s2ComplianceData?.overall?.greenwashingRisk || 0;
 
-  // Helper function to get ratio from processed data
-  const getRatioFromData = (categoryName) => {
+  // Process data for GRI
+  const processedGriData = griData ? processData(griData) : {};
+  const griComplianceRate = griComplianceData?.overall?.complianceRate || 0;
+  const griGreenwashingRisk = griComplianceData?.overall?.greenwashingRisk || 0;
+
+  // Helper function to get ratio from processed data (for S2)
+  const getRatioFromS2Data = (categoryName) => {
+    if (!processedS2Data || Object.keys(processedS2Data).length === 0) return '0 out of 0';
+    
     // Try different possible data structures
     const possiblePaths = [
-      processedData['standard']?.[categoryName]?.ratio,
-      processedData[categoryName]?.ratio,
+      processedS2Data[categoryName]?.[categoryName]?.ratio,
+      processedS2Data[categoryName]?.ratio,
       // Try with mapped category names
-      Object.values(processedData).find(cat => 
+      Object.values(processedS2Data).find(cat => 
         Object.keys(cat).some(subCat => 
           subCat.toLowerCase().includes(categoryName.toLowerCase())
         )
@@ -1171,10 +1374,10 @@ export default function ESGdashboardContent() {
     }
     
     // If no direct match, try to find by partial name matching
-    for (const category in processedData) {
-      for (const subCategory in processedData[category]) {
+    for (const category in processedS2Data) {
+      for (const subCategory in processedS2Data[category]) {
         if (subCategory.toLowerCase().includes(categoryName.toLowerCase())) {
-          return processedData[category][subCategory].ratio;
+          return processedS2Data[category][subCategory].ratio;
         }
       }
     }
@@ -1182,25 +1385,111 @@ export default function ESGdashboardContent() {
     return '0 out of 0';
   };
 
-  // Define summary card data
-  const summaryCardsRow1 = [
-    { label: 'Scope', value: getRatioFromData('Scope') },
-    { label: 'Governance', value: getRatioFromData('Governance') },
-    { label: 'Strategy', value: getRatioFromData('Strategy') },
-    { label: 'Climate-related Risk and Opportunities', value: getRatioFromData('Climate-related risk and opportunities') },
-    { label: 'Business Model and Value Chain', value: getRatioFromData('Business model and value chain') },
-    { label: 'Strategy and Decision Making', value: getRatioFromData('Strategy and decision-making') },
-    { label: 'Greenwashing Risk', value: `${greenwashingRisk}%`, highlight: true, warning: true },
+  // Helper function to get ratio from GRI data (计算不是 "No" 的 criteria 百分比)
+  const getRatioFromGriData = (categoryName) => {
+    if (!griData || Object.keys(griData).length === 0) return '0 out of 0';
+    
+    // GRI 数据结构：{ Environmental: {...}, Social: {...}, Governance: {...} }
+    // 直接查找 categoryName
+    let targetCategory = null;
+    
+    // 精确匹配
+    if (griData[categoryName]) {
+      targetCategory = griData[categoryName];
+    } else {
+      // 部分匹配
+      for (const category in griData) {
+        if (category.toLowerCase().includes(categoryName.toLowerCase())) {
+          targetCategory = griData[category];
+          break;
+        }
+      }
+    }
+    
+    if (!targetCategory || typeof targetCategory !== 'object') {
+      return '0 out of 0';
+    }
+    
+    // 遍历该类别下的所有子类别和 criteria
+    let totalCriteria = 0;
+    let notNoCriteria = 0; // 不是 "No" 的 criteria 数量
+    
+    Object.keys(targetCategory).forEach(subCategory => {
+      const subCategoryData = targetCategory[subCategory];
+      
+      if (!subCategoryData || typeof subCategoryData !== 'object') {
+        return;
+      }
+      
+      // 遍历每个 criterion
+      Object.keys(subCategoryData).forEach(criterionKey => {
+        const criterionData = subCategoryData[criterionKey];
+        
+        if (criterionData === null || criterionData === undefined) {
+          return;
+        }
+        
+        // 提取 result 值
+        let result = null;
+        if (Array.isArray(criterionData)) {
+          // 数组格式：[criteriaName, result, details, value]
+          if (criterionData.length >= 2) {
+            result = criterionData[1];
+          }
+        } else if (typeof criterionData === 'object') {
+          // 对象格式：{ result, details, ... }
+          result = criterionData.result || criterionData.compliance;
+        } else {
+          result = criterionData;
+        }
+        
+        if (result !== undefined && result !== null) {
+          totalCriteria++;
+          
+          // 检查结果是否不是 "No"（不区分大小写）
+          const resultStr = String(result).toLowerCase().trim();
+          if (resultStr !== 'no') {
+            notNoCriteria++;
+          }
+        }
+      });
+    });
+    
+    if (totalCriteria > 0) {
+      return `${notNoCriteria} out of ${totalCriteria}`;
+    }
+    
+    return '0 out of 0';
+  };
+
+  // Define S2 summary card data
+  const s2SummaryCardsRow1 = [
+    { label: 'Scope', value: getRatioFromS2Data('Scope') },
+    { label: 'Governance', value: getRatioFromS2Data('Governance') },
+    { label: 'Strategy', value: getRatioFromS2Data('Strategy') },
+    { label: 'Climate-related Risk and Opportunities', value: getRatioFromS2Data('Climate-related risk and opportunities') },
+    { label: 'Business Model and Value Chain', value: getRatioFromS2Data('Business model and value chain') },
+    { label: 'Strategy and Decision Making', value: getRatioFromS2Data('Strategy and decision-making') },
+    { label: 'Greenwashing Risk', value: `${s2GreenwashingRisk}%`, highlight: true, warning: true },
   ];
 
-  const summaryCardsRow2 = [
-    { label: 'Financial Position and Financial Performance', value: getRatioFromData('Financial position, financial performance and cash flows') },
-    { label: 'Climate Resilience', value: getRatioFromData('Climate resilience') },
-    { label: 'Risk Management', value: getRatioFromData('Risk Management') },
-    { label: 'Metrics and Targets', value: getRatioFromData('Metrics and Targets') },
-    { label: 'Climate-related Metrics', value: getRatioFromData('Climate-related metrics') },
-    { label: 'Climate-related Targets', value: getRatioFromData('Climate-related targets') },
-    { label: 'Compliant Rate', value: `${complianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
+  const s2SummaryCardsRow2 = [
+    { label: 'Financial Position and Financial Performance', value: getRatioFromS2Data('Financial position, financial performance and cash flows') },
+    { label: 'Climate Resilience', value: getRatioFromS2Data('Climate resilience') },
+    { label: 'Risk Management', value: getRatioFromS2Data('Risk Management') },
+    { label: 'Metrics and Targets', value: getRatioFromS2Data('Metrics and Targets') },
+    { label: 'Climate-related Metrics', value: getRatioFromS2Data('Climate-related metrics') },
+    { label: 'Climate-related Targets', value: getRatioFromS2Data('Climate-related targets') },
+    { label: 'Compliant Rate', value: `${s2ComplianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
+  ];
+
+  // Define GRI summary card data (Environmental, Social, Governance)
+  const griSummaryCards = [
+    { label: 'Environmental', value: getRatioFromGriData('Environmental') },
+    { label: 'Social', value: getRatioFromGriData('Social') },
+    { label: 'Governance', value: getRatioFromGriData('Governance') },
+    { label: 'Greenwashing Risk', value: `${griGreenwashingRisk}%`, highlight: true, warning: true },
+    { label: 'Compliant Rate', value: `${griComplianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
   ];
 
   // Handle detail expansion
@@ -1219,6 +1508,535 @@ export default function ESGdashboardContent() {
       title: '',
       content: ''
     });
+  };
+
+  // 渲染 Summary Cards 的通用组件
+  const renderSummaryCards = (cards, standardName, onCardClick, selectedCardState) => {
+    const cardCount = cards.length;
+    const rows = Math.ceil(cardCount / 7);
+    
+    return (
+      <Box sx={{ 
+        display: 'grid',
+        gridTemplateRows: `repeat(${rows}, 120px)`,
+        gridTemplateColumns: 'repeat(7, 1fr)',
+        gap: 2,
+        mb: (theme) => theme.spacing(2),
+        minWidth: 'fit-content',
+        overflowX: 'auto',
+        '&::-webkit-scrollbar': {
+          height: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+          borderRadius: '4px',
+          '&:hover': {
+            background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+          },
+        },
+      }}>
+        {cards.map((item, idx) => {
+          const isSelected = selectedCardState === item.label;
+          const isClickable = !item.highlight;
+          
+          return (
+            <Card 
+              key={`${standardName}-${idx}`}
+              variant="outlined" 
+              onClick={isClickable && onCardClick ? () => onCardClick(item.label, standardName) : undefined}
+              sx={{ 
+                height: '100%',
+                width: '100%',
+                minWidth: 120,
+                position: 'relative',
+                cursor: isClickable && onCardClick ? 'pointer' : 'default',
+                transition: 'all 0.2s ease-in-out',
+                ...(item.highlight && {
+                  bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
+                }),
+                ...(item.warning && {
+                  borderLeft: '4px solid #ff9800',
+                  borderTop: `1px solid ${theme.palette.divider}`,
+                  borderRight: `1px solid ${theme.palette.divider}`,
+                  borderBottom: `1px solid ${theme.palette.divider}`,
+                }),
+                ...(isClickable && onCardClick && {
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: theme.palette.mode === 'light' 
+                      ? '0 4px 12px rgba(0, 0, 0, 0.15)' 
+                      : '0 4px 12px rgba(255, 255, 255, 0.1)',
+                    borderColor: theme.palette.primary.main,
+                  }
+                }),
+                ...(isSelected && {
+                  bgcolor: theme.palette.mode === 'light' 
+                    ? 'rgba(25, 118, 210, 0.08)' 
+                    : 'rgba(25, 118, 210, 0.2)',
+                  borderColor: theme.palette.primary.main,
+                  borderWidth: 2,
+                  transform: 'translateY(-1px)',
+                  boxShadow: theme.palette.mode === 'light' 
+                    ? '0 2px 8px rgba(25, 118, 210, 0.3)' 
+                    : '0 2px 8px rgba(25, 118, 210, 0.4)',
+                })
+              }}
+            >
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                <Typography 
+                  variant="body2" 
+                  color={isSelected ? 'primary' : 'primary'} 
+                  fontWeight={700} 
+                  noWrap
+                >
+                  {item.label}
+                </Typography>
+                <Typography 
+                  variant="h6" 
+                  color={item.highlight ? 'primary' : (isSelected ? 'primary' : 'text.primary')} 
+                  fontWeight={700}
+                >
+                  {item.value}
+                </Typography>
+                {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
+                {isSelected && (
+                  <Typography variant="caption" color="primary" fontWeight={600} sx={{ mt: 0.5 }}>
+                    ✓ Selected
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </Box>
+    );
+  };
+
+  // 获取过滤后的数据（支持指定标准）
+  const getFilteredDataForStandard = (data, standardName) => {
+    if (!data) return {};
+    
+    return Object.keys(data).reduce((filtered, category) => {
+      const categoryData = data[category];
+      
+      if (!categoryData || typeof categoryData !== 'object') {
+        return filtered;
+      }
+      
+      const filteredCategoryData = {};
+      
+      Object.keys(categoryData).forEach(subCategory => {
+        const subCategoryData = categoryData[subCategory];
+        
+        if (!subCategoryData || typeof subCategoryData !== 'object') {
+          return;
+        }
+        
+        const filteredSubCategoryData = {};
+        
+        Object.keys(subCategoryData).forEach(criterion => {
+          const criterionData = subCategoryData[criterion];
+          
+          if (criterionData === null || criterionData === undefined) {
+            return;
+          }
+          
+          let criteriaName, result, details, value;
+          if (Array.isArray(criterionData)) {
+            if (criterionData.length >= 4) {
+              [criteriaName, result, details, value] = criterionData;
+            } else if (criterionData.length === 2) {
+              [result, details] = criterionData;
+              criteriaName = criterion;
+            } else {
+              result = criterionData[0];
+              details = criterionData[1] || '';
+              criteriaName = criterion;
+            }
+          } else if (typeof criterionData === 'object') {
+            result = criterionData.compliance || criterionData.result;
+            details = criterionData.text || criterionData.details;
+            criteriaName = criterion;
+          } else {
+            result = criterionData;
+            details = '';
+            criteriaName = criterion;
+          }
+          
+          if (result === undefined || result === null) {
+            return;
+          }
+          
+          // 应用过滤器（这里简化处理，可以根据需要扩展）
+          filteredSubCategoryData[criterion] = [criteriaName, result, details, value];
+        });
+        
+        if (Object.keys(filteredSubCategoryData).length > 0) {
+          filteredCategoryData[subCategory] = filteredSubCategoryData;
+        }
+      });
+      
+      if (Object.keys(filteredCategoryData).length > 0) {
+        filtered[category] = filteredCategoryData;
+      }
+      
+      return filtered;
+    }, {});
+  };
+
+  // 获取唯一类别（支持指定标准）
+  const getUniqueCategoriesForStandard = (data) => {
+    if (!data) return [];
+    return Object.keys(data).map(category => mapCategoryToDisplay(category));
+  };
+
+  // 获取唯一结果（支持指定标准）
+  const getUniqueResultsForStandard = (data) => {
+    if (!data) return [];
+    const results = new Set();
+    Object.keys(data).forEach(category => {
+      const categoryData = data[category];
+      if (!categoryData || typeof categoryData !== 'object') return;
+      
+      Object.keys(categoryData).forEach(subCategory => {
+        const subCategoryData = categoryData[subCategory];
+        if (!subCategoryData || typeof subCategoryData !== 'object') return;
+        
+        Object.keys(subCategoryData).forEach(criterion => {
+          const criterionData = subCategoryData[criterion];
+          if (criterionData === null || criterionData === undefined) return;
+          
+          let result;
+          if (Array.isArray(criterionData)) {
+            result = criterionData.length >= 2 ? criterionData[1] : criterionData[0];
+          } else if (typeof criterionData === 'object') {
+            result = criterionData.compliance || criterionData.result;
+          } else {
+            result = criterionData;
+          }
+          
+          if (result !== undefined && result !== null) {
+            results.add(result);
+          }
+        });
+      });
+    });
+    return Array.from(results).sort();
+  };
+
+  // 处理卡片点击（支持标准名称）
+  const handleCardClickWithStandard = (cardLabel, standardName) => {
+    // 这里可以根据需要实现过滤逻辑
+    if (selectedCard === `${standardName}-${cardLabel}`) {
+      setSelectedCard(null);
+      setFilters(prev => ({
+        ...prev,
+        category: ''
+      }));
+    } else {
+      setSelectedCard(`${standardName}-${cardLabel}`);
+      setFilters(prev => ({
+        ...prev,
+        category: cardLabel,
+        criteria: '',
+        result: ''
+      }));
+    }
+  };
+
+  // 渲染 Details 表格的通用组件
+  const renderDetailsTable = (data, standardName) => {
+    const filteredData = getFilteredDataForStandard(data, standardName);
+    const uniqueCategories = getUniqueCategoriesForStandard(data);
+    const uniqueResults = getUniqueResultsForStandard(data);
+    const currentSelectedCard = selectedCard?.startsWith(`${standardName}-`) 
+      ? selectedCard.replace(`${standardName}-`, '') 
+      : null;
+
+    return (
+      <>
+        {/* Filter controls */}
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2, 
+          mb: 2, 
+          flexShrink: 0,
+          flexWrap: 'wrap',
+          alignItems: 'center'
+        }}>
+          {/* Selected card indicator */}
+          {currentSelectedCard && (
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              px: 2,
+              py: 1,
+              bgcolor: theme.palette.mode === 'light' 
+                ? 'rgba(25, 118, 210, 0.08)' 
+                : 'rgba(25, 118, 210, 0.2)',
+              borderRadius: 1,
+              border: `1px solid ${theme.palette.primary.main}`,
+              flexShrink: 0
+            }}>
+              <Typography variant="caption" color="primary" fontWeight={600}>
+                Filtering by: {currentSelectedCard}
+              </Typography>
+              <Button
+                size="small"
+                variant="text"
+                color="primary"
+                onClick={() => {
+                  setSelectedCard(null);
+                  setFilters(prev => ({ ...prev, category: '' }));
+                }}
+                sx={{ 
+                  minWidth: 'auto', 
+                  p: 0.5,
+                  fontSize: '0.75rem',
+                  '&:hover': {
+                    bgcolor: 'rgba(25, 118, 210, 0.1)'
+                  }
+                }}
+              >
+                ✕
+              </Button>
+            </Box>
+          )}
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={filters.category}
+              onChange={(e) => handleFilterChange('category', e.target.value)}
+              input={<OutlinedInput label="Category" />}
+            >
+              <MenuItem value="">
+                <em>All Categories</em>
+              </MenuItem>
+              {uniqueCategories.map(category => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <TextField
+            size="small"
+            label="Criteria"
+            value={filters.criteria}
+            onChange={(e) => handleFilterChange('criteria', e.target.value)}
+            placeholder="Search criteria..."
+            sx={{ minWidth: 200 }}
+          />
+          
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Result</InputLabel>
+            <Select
+              value={filters.result}
+              onChange={(e) => handleFilterChange('result', e.target.value)}
+              input={<OutlinedInput label="Result" />}
+            >
+              <MenuItem value="">
+                <em>All Results</em>
+              </MenuItem>
+              {uniqueResults.map(result => (
+                <MenuItem key={result} value={result}>
+                  {result}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={clearFilters}
+            sx={{ height: 40 }}
+          >
+            Clear Filters
+          </Button>
+        </Box>
+        
+        <Box sx={{ 
+          flex: 1, 
+          overflow: 'hidden',
+          minHeight: 0
+        }}>
+          <Box sx={{ 
+            height: '100%',
+            overflow: 'auto',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
+              borderRadius: '4px',
+              '&:hover': {
+                background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
+              },
+            },
+          }}>
+            <table style={{ 
+              width: '100%', 
+              borderCollapse: 'collapse',
+              minWidth: '600px'
+            }}>
+              <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                <tr style={{ 
+                  background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                  backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                }}>
+                  <th style={{ 
+                    padding: 8, 
+                    border: `1px solid ${theme.palette.divider}`, 
+                    fontWeight: 700, 
+                    width: '10%',
+                    background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                  }}>Category</th>
+                  <th style={{ 
+                    padding: 8, 
+                    border: `1px solid ${theme.palette.divider}`, 
+                    fontWeight: 700, 
+                    width: '20%',
+                    background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                  }}>Criteria</th>
+                  <th style={{ 
+                    padding: 8, 
+                    border: `1px solid ${theme.palette.divider}`, 
+                    fontWeight: 700, 
+                    width: '10%',
+                    background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                  }}>Result</th>
+                  <th style={{ 
+                    padding: 8, 
+                    border: `1px solid ${theme.palette.divider}`, 
+                    fontWeight: 700, 
+                    width: '60%',
+                    background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
+                    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
+                  }}>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  return Object.keys(filteredData).map((category, categoryIndex) => {
+                    const criteria = filteredData[category];
+                    return Object.keys(criteria).map((subCategory, subCategoryIndex) => {
+                      return Object.keys(criteria[subCategory]).map((criterion, criterionIndex) => {
+                        const [criteriaName, result, details, value] = criteria[subCategory][criterion];
+                        const isCompliant = result && typeof result === 'string' && (result.toLowerCase() === 'yes' || result.toLowerCase() === 'few');
+                        const isRisk = result && typeof result === 'string' && result.toLowerCase() === 'no';
+                        
+                        return (
+                          <tr key={`${standardName}-${categoryIndex}-${subCategoryIndex}-${criterionIndex}`}>
+                            <td style={{ 
+                              padding: 8, 
+                              border: `1px solid ${theme.palette.divider}`, 
+                              fontWeight: 500,
+                              fontSize: '0.8rem',
+                              verticalAlign: 'top',
+                              background: theme.palette.mode === 'light' ? '#fafafa' : '#2d2d2d',
+                              backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#fafafa'
+                            }}>
+                              {mapCategoryToDisplay(category)}
+                            </td>
+                            <td style={{ 
+                              padding: 8, 
+                              border: `1px solid ${theme.palette.divider}`,
+                              fontSize: '0.8rem',
+                              verticalAlign: 'top'
+                            }}>
+                              {criteriaName}
+                            </td>
+                            <td style={{ 
+                              padding: 8, 
+                              border: `1px solid ${theme.palette.divider}`,
+                              textAlign: 'center',
+                              fontWeight: 600,
+                              color: isCompliant ? theme.palette.success.main : (isRisk ? theme.palette.error.main : 'inherit'),
+                              fontSize: '0.8rem'
+                            }}>
+                              {result}
+                            </td>
+                            <td style={{ 
+                              padding: 8, 
+                              border: `1px solid ${theme.palette.divider}`,
+                              fontSize: '0.75rem',
+                              verticalAlign: 'top',
+                              maxWidth: 200,
+                              wordWrap: 'break-word'
+                            }}>
+                              {details ? (
+                                <Box>
+                                  <Typography variant="caption" color="text.secondary" sx={{ 
+                                    mb: 0.5,
+                                    lineHeight: 1.2,
+                                    maxHeight: '3.6em',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical'
+                                  }}>
+                                    {details}
+                                  </Typography>
+                                  {details.length > 150 && (
+                                    <Button 
+                                      size="small" 
+                                      variant="contained" 
+                                      color="primary"
+                                      sx={{ 
+                                        fontSize: '0.7rem', 
+                                        py: 0.5, 
+                                        px: 1, 
+                                        minWidth: 'auto',
+                                        height: '20px',
+                                        borderRadius: '4px',
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                                        '&:hover': {
+                                          boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                                          transform: 'translateY(-1px)'
+                                        },
+                                        transition: 'all 0.2s ease-in-out'
+                                      }}
+                                      onClick={() => handleDetailExpand(criteriaName, details)}
+                                    >
+                                      View Full
+                                    </Button>
+                                  )}
+                                </Box>
+                              ) : (
+                                <Typography variant="caption" color="text.secondary">
+                                  No details available
+                                </Typography>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      });
+                    });
+                  });
+                })()}
+              </tbody>
+            </table>
+          </Box>
+        </Box>
+      </>
+    );
   };
 
   // Display error message
@@ -1478,7 +2296,7 @@ export default function ESGdashboardContent() {
           <Typography component="h2" variant="h6">
             Summary
           </Typography>
-          {esgData && !isVerifying && (
+          {(griData || s2Data) && !isVerifying && (
             <Button
               variant="contained"
               color="primary"
@@ -1507,125 +2325,55 @@ export default function ESGdashboardContent() {
               Please wait while we analyze your sustainability report
             </Typography>
           </Box>
-        ) : esgData ? (
-          /* If data exists, show Summary cards */
-          <Box sx={{ 
-            display: 'grid',
-            gridTemplateRows: 'repeat(2, 120px)',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: 2,
-            mb: (theme) => theme.spacing(2),
-            minWidth: 'fit-content',
-            overflowX: 'auto',
-            '&::-webkit-scrollbar': {
-              height: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
-              borderRadius: '4px',
-              '&:hover': {
-                background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
-              },
-            },
-          }}>
-            {[...summaryCardsRow1, ...summaryCardsRow2].map((item, idx) => {
-              const isSelected = selectedCard === item.label;
-              const isClickable = !item.highlight; // Don't make highlight cards clickable (Greenwashing Risk, Compliant Rate)
-              
-              return (
-                <Card 
-                  key={idx}
-                  variant="outlined" 
-                  onClick={isClickable ? () => handleCardClick(item.label) : undefined}
-                  sx={{ 
-                    height: '100%',
-                    width: '100%',
-                    minWidth: 120,
-                    position: 'relative',
-                    cursor: isClickable ? 'pointer' : 'default',
-                    transition: 'all 0.2s ease-in-out',
-                    ...(item.highlight && {
-                      bgcolor: theme.palette.mode === 'light' ? '#f8f6ff' : 'rgba(124, 93, 250, 0.1)',
-                    }),
-                    ...(item.warning && {
-                      borderLeft: '4px solid #ff9800',
-                      borderTop: `1px solid ${theme.palette.divider}`,
-                      borderRight: `1px solid ${theme.palette.divider}`,
-                      borderBottom: `1px solid ${theme.palette.divider}`,
-                    }),
-                    ...(isClickable && {
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: theme.palette.mode === 'light' 
-                          ? '0 4px 12px rgba(0, 0, 0, 0.15)' 
-                          : '0 4px 12px rgba(255, 255, 255, 0.1)',
-                        borderColor: theme.palette.primary.main,
-                      }
-                    }),
-                    ...(isSelected && {
-                      bgcolor: theme.palette.mode === 'light' 
-                        ? 'rgba(25, 118, 210, 0.08)' 
-                        : 'rgba(25, 118, 210, 0.2)',
-                      borderColor: theme.palette.primary.main,
-                      borderWidth: 2,
-                      transform: 'translateY(-1px)',
-                      boxShadow: theme.palette.mode === 'light' 
-                        ? '0 2px 8px rgba(25, 118, 210, 0.3)' 
-                        : '0 2px 8px rgba(25, 118, 210, 0.4)',
-                    })
-                  }}
-                >
-                  <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-                    <Typography 
-                      variant="body2" 
-                      color={isSelected ? 'primary' : 'primary'} 
-                      fontWeight={700} 
-                      noWrap
-                    >
-                      {item.label}
-                    </Typography>
-                    <Typography 
-                      variant="h6" 
-                      color={item.highlight ? 'primary' : (isSelected ? 'primary' : 'text.primary')} 
-                      fontWeight={700}
-                    >
-                      {item.value}
-                    </Typography>
-                    {item.sub && <Typography variant="caption" color={item.subColor} fontWeight={600}>{item.sub}</Typography>}
-                    {isSelected && (
-                      <Typography variant="caption" color="primary" fontWeight={600} sx={{ mt: 0.5 }}>
-                        ✓ Selected
-                      </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </Box>
         ) : (
-          /* Initial state: show no content */
-          null
-        )}
+          <>
+            {/* AASB S2 Summary Section */}
+            {s2Data && esg.includes('AASB S2') && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+                  AASB S2 (Climate-related Financial Disclosures)
+                </Typography>
+                {renderSummaryCards(
+                  [...s2SummaryCardsRow1, ...s2SummaryCardsRow2],
+                  'S2',
+                  handleCardClickWithStandard,
+                  selectedCard?.startsWith('S2-') ? selectedCard.replace('S2-', '') : null
+                )}
+              </Box>
+            )}
 
-        {/* If no data and not verifying, show prompt message */}
-        {!esgData && !isVerifying && (
-          <Box sx={{ textAlign: 'center', py: 8 }}>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-              Upload your sustainability report to get started
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Please upload a PDF report (required) and optionally add custom metrics, then click "Verify Report"
-            </Typography>
-          </Box>
+            {/* GRI Summary Section */}
+            {griData && esg.includes('GRI') && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+                  GRI (Global Reporting Initiative)
+                </Typography>
+                {renderSummaryCards(
+                  griSummaryCards,
+                  'GRI',
+                  handleCardClickWithStandard,
+                  selectedCard?.startsWith('GRI-') ? selectedCard.replace('GRI-', '') : null
+                )}
+              </Box>
+            )}
+
+            {/* If no data and not verifying, show prompt message */}
+            {!griData && !s2Data && !isVerifying && (
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                  Upload your sustainability report to get started
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Please upload a PDF report, select at least one ESG standard, then click "Verify Report"
+                </Typography>
+              </Box>
+            )}
+          </>
         )}
       </Box>
 
       {/* Details Section */}
-      {(esgData || isVerifying) && (
+      {(griData || s2Data || isVerifying) && (
         <Box id="details">
           {/* Details Cards Area */}
           <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -1643,370 +2391,49 @@ export default function ESGdashboardContent() {
                 We are processing your sustainability report and extracting detailed ESG criteria information
               </Typography>
             </Box>
-          ) : esgData ? (
-            /* If data exists, show Details content */
-            <>
-              {/* ESG Criteria Details - Full width */}
-              <Card variant="outlined" sx={{ height: 600, mb: 2 }}>
-                <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
-                  <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>ESG Criteria Details</Typography>
-                  
-                  {/* Filter controls */}
-                  <Box sx={{ 
-                    display: 'flex', 
-                    gap: 2, 
-                    mb: 2, 
-                    flexShrink: 0,
-                    flexWrap: 'wrap',
-                    alignItems: 'center'
-                  }}>
-                    {/* Selected card indicator */}
-                    {selectedCard && (
-                      <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 1,
-                        px: 2,
-                        py: 1,
-                        bgcolor: theme.palette.mode === 'light' 
-                          ? 'rgba(25, 118, 210, 0.08)' 
-                          : 'rgba(25, 118, 210, 0.2)',
-                        borderRadius: 1,
-                        border: `1px solid ${theme.palette.primary.main}`,
-                        flexShrink: 0
-                      }}>
-                        <Typography variant="caption" color="primary" fontWeight={600}>
-                          Filtering by: {selectedCard}
-                        </Typography>
-                        <Button
-                          size="small"
-                          variant="text"
-                          color="primary"
-                          onClick={() => setSelectedCard(null)}
-                          sx={{ 
-                            minWidth: 'auto', 
-                            p: 0.5,
-                            fontSize: '0.75rem',
-                            '&:hover': {
-                              bgcolor: 'rgba(25, 118, 210, 0.1)'
-                            }
-                          }}
-                        >
-                          ✕
-                        </Button>
-                      </Box>
-                    )}
-                    <FormControl size="small" sx={{ minWidth: 150 }}>
-                      <InputLabel>Category</InputLabel>
-                      <Select
-                        value={filters.category}
-                        onChange={(e) => handleFilterChange('category', e.target.value)}
-                        input={<OutlinedInput label="Category" />}
-                      >
-                        <MenuItem value="">
-                          <em>All Categories</em>
-                        </MenuItem>
-                        {getUniqueCategories().map(category => (
-                          <MenuItem key={category} value={category}>
-                            {category}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    
-                    <TextField
-                      size="small"
-                      label="Criteria"
-                      value={filters.criteria}
-                      onChange={(e) => handleFilterChange('criteria', e.target.value)}
-                      placeholder="Search criteria..."
-                      sx={{ minWidth: 200 }}
-                    />
-                    
-                    <FormControl size="small" sx={{ minWidth: 120 }}>
-                      <InputLabel>Result</InputLabel>
-                      <Select
-                        value={filters.result}
-                        onChange={(e) => handleFilterChange('result', e.target.value)}
-                        input={<OutlinedInput label="Result" />}
-                      >
-                        <MenuItem value="">
-                          <em>All Results</em>
-                        </MenuItem>
-                        {getUniqueResults().map(result => (
-                          <MenuItem key={result} value={result}>
-                            {result}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={clearFilters}
-                      sx={{ height: 40 }}
-                    >
-                      Clear Filters
-                    </Button>
-                  </Box>
-                  
-                  <Box sx={{ 
-                    flex: 1, 
-                    overflow: 'hidden',
-                    minHeight: 0 // Important: ensure flex children can shrink
-                  }}>
-                    <Box sx={{ 
-                      height: '100%',
-                      overflow: 'auto',
-                      '&::-webkit-scrollbar': {
-                        width: '8px',
-                      },
-                      '&::-webkit-scrollbar-track': {
-                        background: theme.palette.mode === 'light' ? '#f1f1f1' : '#333',
-                        borderRadius: '4px',
-                      },
-                      '&::-webkit-scrollbar-thumb': {
-                        background: theme.palette.mode === 'light' ? '#c1c1c1' : '#666',
-                        borderRadius: '4px',
-                        '&:hover': {
-                          background: theme.palette.mode === 'light' ? '#a8a8a8' : '#888',
-                        },
-                      },
-                    }}>
-                      <table style={{ 
-                        width: '100%', 
-                        borderCollapse: 'collapse',
-                        minWidth: '600px'
-                      }}>
-                        <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-                          <tr style={{ 
-                            background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                            backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                          }}>
-                            <th style={{ 
-                              padding: 8, 
-                              border: `1px solid ${theme.palette.divider}`, 
-                              fontWeight: 700, 
-                              width: '10%',
-                              background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                            }}>Category</th>
-                            <th style={{ 
-                              padding: 8, 
-                              border: `1px solid ${theme.palette.divider}`, 
-                              fontWeight: 700, 
-                              width: '20%',
-                              background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                            }}>Criteria</th>
-                            <th style={{ 
-                              padding: 8, 
-                              border: `1px solid ${theme.palette.divider}`, 
-                              fontWeight: 700, 
-                              width: '10%',
-                              background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                            }}>Result</th>
-                            <th style={{ 
-                              padding: 8, 
-                              border: `1px solid ${theme.palette.divider}`, 
-                              fontWeight: 700, 
-                              width: '60%',
-                              background: theme.palette.mode === 'light' ? '#f8f6ff' : '#1e1e1e',
-                              backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : '#f8f6ff'
-                            }}>Details</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(() => {
-                            const filteredData = getFilteredData();
-                            return Object.keys(filteredData).map((category, categoryIndex) => {
-                              const criteria = filteredData[category];
-                              return Object.keys(criteria).map((subCategory, subCategoryIndex) => {
-                                return Object.keys(criteria[subCategory]).map((criterion, criterionIndex) => {
-                                  const [criteriaName, result, details, value] = criteria[subCategory][criterion];
-                                  const isCompliant = result.toLowerCase() === 'yes' || result.toLowerCase() === 'few';
-                                  const isRisk = result.toLowerCase() === 'no';
-                                  
-                                  return (
-                                    <tr key={`${categoryIndex}-${subCategoryIndex}-${criterionIndex}`}>
-                                      <td style={{ 
-                                        padding: 8, 
-                                        border: `1px solid ${theme.palette.divider}`, 
-                                        fontWeight: 500,
-                                        fontSize: '0.8rem',
-                                        verticalAlign: 'top',
-                                        background: theme.palette.mode === 'light' ? '#fafafa' : '#2d2d2d',
-                                        backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#fafafa'
-                                      }}>
-                                        {mapCategoryToDisplay(category)}
-                                      </td>
-                                      <td style={{ 
-                                        padding: 8, 
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        fontSize: '0.8rem',
-                                        verticalAlign: 'top'
-                                      }}>
-                                        {criteriaName}
-                                      </td>
-                                      <td style={{ 
-                                        padding: 8, 
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        textAlign: 'center',
-                                        fontWeight: 600,
-                                        color: isCompliant ? 'success.main' : 'error.main',
-                                        fontSize: '0.8rem'
-                                      }}>
-                                        {result}
-                                      </td>
-                                      <td style={{ 
-                                        padding: 8, 
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        fontSize: '0.75rem',
-                                        verticalAlign: 'top',
-                                        maxWidth: 200,
-                                        wordWrap: 'break-word'
-                                      }}>
-                                        {details ? (
-                                          <Box>
-                                            <Typography variant="caption" color="text.secondary" sx={{ 
-                                              mb: 0.5,
-                                              lineHeight: 1.2,
-                                              maxHeight: '3.6em', // 3 rows height (1.2 * 3)
-                                              overflow: 'hidden',
-                                              textOverflow: 'ellipsis',
-                                              display: '-webkit-box',
-                                              WebkitLineClamp: 3,
-                                              WebkitBoxOrient: 'vertical'
-                                            }}>
-                                              {details}
-                                            </Typography>
-                                            {details.length > 150 && (
-                                              <Button 
-                                                size="small" 
-                                                variant="contained" 
-                                                color="primary"
-                                                sx={{ 
-                                                  fontSize: '0.7rem', 
-                                                  py: 0.5, 
-                                                  px: 1, 
-                                                  minWidth: 'auto',
-                                                  height: '20px',
-                                                  borderRadius: '4px',
-                                                  textTransform: 'none',
-                                                  fontWeight: 600,
-                                                  boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-                                                  '&:hover': {
-                                                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-                                                    transform: 'translateY(-1px)'
-                                                  },
-                                                  transition: 'all 0.2s ease-in-out'
-                                                }}
-                                                onClick={() => handleDetailExpand(criteriaName, details)}
-                                              >
-                                                View Full
-                                              </Button>
-                                            )}
-                                          </Box>
-                                        ) : (
-                                          <Typography variant="caption" color="text.secondary">
-                                            No details available
-                                          </Typography>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  );
-                                });
-                              });
-                            });
-                          })()}
-                        </tbody>
-                      </table>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-
-              {/* Two-column layout below - Commented out AASB S2 and Materiality Matrix */}
-              <Grid container spacing={2} columns={12}>
-                {/* AASB S2 and Materiality Matrix - 6 columns - Commented out */}
-                {/* <Grid size={{ xs: 12, lg: 6 }} id="materiality-matrix">
-                  <Card variant="outlined" sx={{ height: 400 }}>
-                    <CardContent>
-                      <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>AASB S2 and Materiality Matrix</Typography>
-                      <Box sx={{ width: '100%', mb: 1 }}>
-                        <Typography variant="caption" color="text.secondary">Title 1</Typography>
-                        <Button size="small" variant="outlined" sx={{ ml: 1, fontSize: 12 }}>Metric 1</Button>
-                      </Box>
-                      <Box sx={{ width: '100%', mb: 1 }}>
-                        <Box sx={{ height: 16, bgcolor: theme.palette.mode === 'light' ? '#ede7f6' : 'rgba(124, 93, 250, 0.2)', borderRadius: 1, mb: 1 }}>
-                          <Box sx={{ width: '85%', height: '100%', bgcolor: '#7c5dfa', borderRadius: 1 }} />
-                        </Box>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, mt: 1 }}>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}></Box>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>A</Box>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>B</Box>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>C</Box>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>D</Box>
-                          <Box sx={{ p: 1, textAlign: 'center', fontSize: 10, fontWeight: 600, color: 'text.secondary' }}>E</Box>
-                          {[
-                            { label: 'Data 1', values: [86, 56, 21, 18, 67] },
-                            { label: 'Data 2', values: [46, 30, 77, 69, 20] },
-                            { label: 'Data 3', values: [87, 93, 47, 56, 44] },
-                            { label: 'Data 4', values: [24, 34, 10, 100, 15] },
-                            { label: 'Data 5', values: [65, 69, 29, 96, 78] },
-                          ].map((row, i) => (
-                            <React.Fragment key={i}>
-                              <Box sx={{ p: 1, fontSize: 10, fontWeight: 600, color: 'text.secondary', display: 'flex', alignItems: 'center' }}>
-                                {row.label}
-                              </Box>
-                              {row.values.map((value, j) => {
-                                const intensity = Math.min(100, Math.max(0, value));
-                                const bgColor = `hsl(260, 70%, ${100 - intensity * 0.6}%)`;
-                                return (
-                                  <Box
-                                    key={j}
-                                    sx={{
-                                      p: 1,
-                                      fontSize: 10,
-                                      textAlign: 'center',
-                                      bgcolor: bgColor,
-                                      color: intensity > 50 ? 'white' : 'text.primary',
-                                      borderRadius: 0.5,
-                                      fontWeight: 600,
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      minHeight: 24,
-                                    }}
-                                  >
-                                    {value}
-                                  </Box>
-                                );
-                              })}
-                            </React.Fragment>
-                          ))}
-                        </Box>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid> */}
-                
-                {/* Recommendations - 12 columns (full width) */}
-                <Grid size={{ xs: 12 }} id="ai-recommendations">
-                  <LLMRecommendations 
-                    esgData={esgData} 
-                    complianceData={complianceData} 
-                    height={400}
-                  />
-                </Grid>
-              </Grid>
-            </>
           ) : (
-            /* Initial state: show no content */
-            null
+            <>
+              {/* AASB S2 Details Section */}
+              {s2Data && esg.includes('AASB S2') && (
+                <Card variant="outlined" sx={{ height: 600, mb: 2 }}>
+                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+                    <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>
+                      AASB S2 Criteria Details
+                    </Typography>
+                    {renderDetailsTable(s2Data, 'S2')}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* GRI Details Section */}
+              {griData && esg.includes('GRI') && (
+                <Card variant="outlined" sx={{ height: 600, mb: 2 }}>
+                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+                    <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>
+                      GRI Criteria Details
+                    </Typography>
+                    {renderDetailsTable(griData, 'GRI')}
+                  </CardContent>
+                </Card>
+              )}
+            </>
           )}
+        </Box>
+      )}
+
+      {/* AI Recommendations Section */}
+      {(griData || s2Data) && !isVerifying && (
+        <Box id="ai-recommendations" sx={{ mt: 4 }}>
+          <Grid container spacing={2} columns={12}>
+            <Grid size={{ xs: 12 }}>
+              <LLMRecommendations 
+                esgData={esgData} 
+                complianceData={complianceData}
+                rawStandardsData={rawStandardsData}
+                height={400}
+              />
+            </Grid>
+          </Grid>
         </Box>
       )}
 
