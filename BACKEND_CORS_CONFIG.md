@@ -258,3 +258,4 @@ fetch('https://esg.rmit-aihub.org.au/dashboard_process', {
 3. 重新测试前端应用
 4. 检查浏览器控制台，确认不再有 CORS 错误
 
+
