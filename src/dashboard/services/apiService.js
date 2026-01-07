@@ -15,7 +15,7 @@ const getServerUrl = () => {
   }
   
   // 生产环境使用完整 URL
-  return 'https://api.esgverifai.com/dashboard_process';
+  return 'https://esg.rmit-aihub.org.au/dashboard_process';
 };
 
 const SERVER_URL = getServerUrl();
