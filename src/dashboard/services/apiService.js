@@ -1,7 +1,24 @@
 // API service - handle file upload and server communication
-// 使用相对路径，通过 Vite 代理转发到后端，避免浏览器直接访问自签名 HTTPS 证书导致 Failed to fetch
-// 如果需要在不同环境使用不同 URL，可以通过环境变量 VITE_BACKEND_URL 覆盖
-const SERVER_URL = import.meta.env.VITE_BACKEND_URL || '/dashboard_process';
+// 根据环境选择 API URL：
+// - 开发环境：使用相对路径，通过 Vite 代理转发到后端（避免 CORS 问题）
+// - 生产环境：使用完整的后端 URL
+// 可以通过环境变量 VITE_BACKEND_URL 覆盖默认值
+const getServerUrl = () => {
+  // 优先使用环境变量
+  if (import.meta.env.VITE_BACKEND_URL) {
+    return import.meta.env.VITE_BACKEND_URL;
+  }
+  
+  // 开发环境使用相对路径（通过 Vite 代理）
+  if (import.meta.env.DEV) {
+    return '/dashboard_process';
+  }
+  
+  // 生产环境使用完整 URL
+  return 'https://esg.rmit-aihub.org.au/dashboard_process';
+};
+
+const SERVER_URL = getServerUrl();
 
 // Convert file to base64 encoding
 const fileToBase64 = (file) => {
