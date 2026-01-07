@@ -1,6 +1,24 @@
 // API service - handle file upload and server communication
-// 使用相对路径，通过 Vite 代理转发到后端，避免浏览器直接访问自签名 HTTPS 证书导致 Failed to fetch
-const SERVER_URL = '/dashboard_process';
+// 根据环境选择 API URL：
+// - 开发环境：使用相对路径，通过 Vite 代理转发到后端（避免 CORS 问题）
+// - 生产环境：使用完整的后端 URL
+// 可以通过环境变量 VITE_BACKEND_URL 覆盖默认值
+const getServerUrl = () => {
+  // 优先使用环境变量
+  if (import.meta.env.VITE_BACKEND_URL) {
+    return import.meta.env.VITE_BACKEND_URL;
+  }
+  
+  // 开发环境使用相对路径（通过 Vite 代理）
+  if (import.meta.env.DEV) {
+    return '/dashboard_process';
+  }
+  
+  // 生产环境使用完整 URL
+  return 'https://api.esgverifai.com/dashboard_process';
+};
+
+const SERVER_URL = getServerUrl();
 
 // Convert file to base64 encoding
 const fileToBase64 = (file) => {
@@ -256,6 +274,17 @@ export const sendReportToServer_legacy = async (pdfFile, metricsFile) => {
       if (fetchError.name === 'AbortError') {
         throw new Error('Request timeout - server took too long to respond');
       }
+      
+      // 处理网络错误（Failed to fetch）
+      if (fetchError.message === 'Failed to fetch' || fetchError.name === 'TypeError') {
+        // 检查是否是 CORS 错误
+        if (fetchError.message.includes('CORS') || fetchError.message.includes('cross-origin')) {
+          throw new Error('CORS error: The server does not allow requests from this origin. Please check server CORS configuration.');
+        }
+        // 检查是否是网络连接问题
+        throw new Error(`Network error: Unable to connect to ${SERVER_URL}. Please check: 1) Server is running, 2) CORS is configured, 3) Network connection is available.`);
+      }
+      
       throw fetchError;
     }
   } catch (error) {
@@ -314,12 +343,20 @@ export const sendReportToServer = async (pdfFile, selectedStandards = []) => {
     const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
 
     try {
+      // Log request details for debugging (only in development)
+      if (import.meta.env.DEV) {
+        console.log('Sending request to:', SERVER_URL);
+        console.log('Payload size:', JSON.stringify(payload).length, 'bytes');
+        console.log('Standards:', standardsArray);
+      }
+      
       // Send request to server
       const response = await fetch(SERVER_URL, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(payload),
         signal: controller.signal,
+        mode: 'cors', // Explicitly request CORS
       });
 
       clearTimeout(timeoutId);
@@ -343,6 +380,24 @@ export const sendReportToServer = async (pdfFile, selectedStandards = []) => {
       if (fetchError.name === 'AbortError') {
         throw new Error('Request timeout - server took too long to respond');
       }
+      
+      // 处理网络错误（Failed to fetch）
+      if (fetchError.message === 'Failed to fetch' || fetchError.name === 'TypeError') {
+        // 检查是否是 CORS 错误
+        if (fetchError.message.includes('CORS') || fetchError.message.includes('cross-origin')) {
+          throw new Error('CORS error: The server does not allow requests from this origin. Please check server CORS configuration.');
+        }
+        
+        // Failed to fetch 通常是 CORS 问题（当 Python 代码可以工作但浏览器不行时）
+        const currentOrigin = window.location.origin;
+        throw new Error(
+          `CORS Configuration Required: The server at ${SERVER_URL} is not allowing requests from ${currentOrigin}. ` +
+          `Your Python code works because it doesn't have CORS restrictions, but browsers do. ` +
+          `Please configure the backend server to allow CORS from your frontend domain. ` +
+          `Required headers: Access-Control-Allow-Origin: ${currentOrigin} (or *), Access-Control-Allow-Methods: POST, OPTIONS, Access-Control-Allow-Headers: Content-Type`
+        );
+      }
+      
       throw fetchError;
     }
   } catch (error) {
