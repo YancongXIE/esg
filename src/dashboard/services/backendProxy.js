@@ -19,7 +19,6 @@ export const fetchWebContent = async (url) => {
     
     return await response.json();
   } catch (error) {
-    console.error('Backend proxy failed:', error);
     throw error;
   }
 };

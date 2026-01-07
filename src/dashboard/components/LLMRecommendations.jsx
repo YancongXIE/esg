@@ -141,7 +141,6 @@ export default function LLMRecommendations({ esgData, complianceData, rawStandar
         setError(result.error || 'AI service unavailable. Using rule-based recommendations.');
       }
     } catch (err) {
-      console.error('Error generating recommendations:', err);
       const fallbackResult = generateFallbackRecommendations(complianceData);
       setRecommendations(fallbackResult.data);
       setUseLLM(false);

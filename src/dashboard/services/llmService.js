@@ -317,24 +317,46 @@ export const generateLLMRecommendations = async (esgData, complianceData, apiKey
 
     if (!response.ok) {
       const errorText = await response.text();
-      let errorMessage = `Gemini API error: ${response.status} ${response.statusText}`;
+      let errorMessage = `Gemini API error: ${response.status} (${response.statusText})`;
       
       // Try to parse error details
       try {
         const errorData = JSON.parse(errorText);
-        if (errorData.error && errorData.error.details) {
-          const apiKeyError = errorData.error.details.find(detail => 
-            detail.reason === 'API_KEY_INVALID'
-          );
-          
-          if (apiKeyError) {
-            errorMessage = 'API key invalid. Please ensure you are using the correct Gemini API key (starting with "AIza") and that the key has access to Gemini API.';
-          } else if (errorData.error.message) {
+        if (errorData.error) {
+          // Handle 403 Forbidden errors with detailed messages
+          if (response.status === 403) {
+            const errorMsg = errorData.error.message || '';
+            
+            if (errorMsg.includes('API_KEY_INVALID') || errorMsg.includes('API key not valid') || errorMsg.includes('API key')) {
+              errorMessage = 'API key invalid or expired. Please check your Gemini API key in the .env file (VITE_GEMINI_API_KEY) or localStorage. Using rule-based recommendations.';
+            } else if (errorMsg.includes('quota') || errorMsg.includes('Quota') || errorMsg.includes('exceeded')) {
+              errorMessage = 'API quota exceeded. The free tier limit has been reached. Please enable billing or wait for quota reset. Using rule-based recommendations.';
+            } else if (errorMsg.includes('billing') || errorMsg.includes('Billing')) {
+              errorMessage = 'Billing not enabled. Please enable billing for your Google Cloud project to use the Gemini API. Using rule-based recommendations.';
+            } else if (errorMsg.includes('permission') || errorMsg.includes('Permission') || errorMsg.includes('denied')) {
+              errorMessage = 'Permission denied. The API key does not have access to the Gemini API. Please check API key permissions. Using rule-based recommendations.';
+            } else {
+              errorMessage = `API access denied (403): ${errorMsg || 'Please check your API key configuration and permissions.'} Using rule-based recommendations.`;
+            }
+          } else if (errorData.error && errorData.error.details) {
+            const apiKeyError = errorData.error.details.find(detail => 
+              detail.reason === 'API_KEY_INVALID'
+            );
+            
+            if (apiKeyError) {
+              errorMessage = 'API key invalid. Please ensure you are using the correct Gemini API key (starting with "AIza") and that the key has access to Gemini API.';
+            } else if (errorData.error.message) {
+              errorMessage = `API error: ${errorData.error.message}`;
+            }
+          } else if (errorData.error && errorData.error.message) {
             errorMessage = `API error: ${errorData.error.message}`;
           }
         }
       } catch (e) {
-        // If unable to parse error details, use default error message
+        // If unable to parse error details, provide helpful message for 403
+        if (response.status === 403) {
+          errorMessage = 'API access denied (403). Possible reasons: invalid API key, quota exceeded, or billing not enabled. Please check your Gemini API key configuration.';
+        }
       }
       
       throw new Error(errorMessage);
@@ -387,7 +409,6 @@ export const generateLLMRecommendations = async (esgData, complianceData, apiKey
       throw new Error('Invalid response format from Gemini API');
     }
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
     return {
       success: false,
       error: error.message

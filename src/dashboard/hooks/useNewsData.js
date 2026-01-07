@@ -20,7 +20,6 @@ export const useNewsData = () => {
       setAustralianNews(australianData);
       setLastUpdated(new Date());
     } catch (err) {
-      console.error('Failed to fetch news:', err);
       setError('Failed to load news. Please try again later.');
     } finally {
       setLoading(false);

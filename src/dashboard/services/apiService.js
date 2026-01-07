@@ -206,7 +206,6 @@ export const sendReportToServer_legacy = async (pdfFile, metricsFile) => {
         };
         }
       } catch (error) {
-        console.error('Error reading metrics file:', error);
         // Continue with built-in criteria only
       }
     }
@@ -260,7 +259,6 @@ export const sendReportToServer_legacy = async (pdfFile, metricsFile) => {
       throw fetchError;
     }
   } catch (error) {
-    console.error('Error sending report to server:', error);
     return {
       success: false,
       error: error.message
@@ -276,7 +274,7 @@ const mapStandardNameToAPI = (displayName) => {
   const mapping = {
     'GRI': 'gri',
     'AASB S2': 's2',
-    'AASB Scope 3': 's3'
+    'AASB Scope 3': 'scope3'  // 后端期望 'scope3' 而不是 's3'
   };
   
   return mapping[displayName] || displayName.toLowerCase().replace(/\s+/g, '');
@@ -310,76 +308,27 @@ export const sendReportToServer = async (pdfFile, selectedStandards = []) => {
       'Content-Type': 'application/json'
     };
 
-    // Log API call details for testing
-    console.log('========================================');
-    console.log('📤 API CALL TO SERVER');
-    console.log('========================================');
-    console.log('URL:', SERVER_URL);
-    console.log('Method:', 'POST');
-    console.log('Headers:', headers);
-    console.log('Selected Standards (Display):', selectedStandards);
-    console.log('Standards Array (API Format):', standardsArray);
-    console.log('PDF File Name:', pdfFile.name);
-    console.log('PDF File Size:', (pdfFile.size / 1024 / 1024).toFixed(2), 'MB');
-    console.log('PDF Base64 Length:', pdfBase64.length, 'characters');
-    console.log('PDF Base64 Preview (first 100 chars):', pdfBase64.substring(0, 100) + '...');
-    console.log('PDF Base64 Preview (last 100 chars):', '...' + pdfBase64.substring(pdfBase64.length - 100));
-    
-    // Log payload structure (without full base64 to avoid console clutter)
-    const payloadPreview = {
-      pdf_base64: `[${pdfBase64.length} characters - base64 encoded PDF]`,
-      standards: standardsArray
-    };
-    console.log('📦 Payload Structure:', payloadPreview);
-    console.log('📦 Payload JSON (with truncated base64):', JSON.stringify({
-      pdf_base64: pdfBase64.substring(0, 200) + '...[truncated - ' + (pdfBase64.length - 200) + ' more characters]',
-      standards: standardsArray
-    }, null, 2));
-    
-    // Log the actual full payload size for reference
-    const fullPayloadString = JSON.stringify(payload);
-    console.log('📦 Full Payload Size:', (fullPayloadString.length / 1024).toFixed(2), 'KB');
-    console.log('📦 Full Payload (first 500 chars):', fullPayloadString.substring(0, 500) + '...');
-    console.log('========================================');
 
     // Create AbortController for timeout control
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
 
     try {
-      console.log('🌐 Attempting to send request to server...');
       // Send request to server
       const response = await fetch(SERVER_URL, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(payload),
         signal: controller.signal,
-        // Note: SSL verification should be enabled in production
-        // Disabled here for testing purposes
       });
-      console.log('✅ Request sent, waiting for response...');
 
       clearTimeout(timeoutId);
 
-      // Log response details
-      console.log('========================================');
-      console.log('📥 API RESPONSE FROM SERVER');
-      console.log('========================================');
-      console.log('Status:', response.status, response.statusText);
-      console.log('Response Headers:', Object.fromEntries(response.headers.entries()));
-
       if (!response.ok) {
-        console.error('❌ HTTP Error:', response.status, response.statusText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Response Data:', data);
-      console.log('Response Status Code:', data.statusCode);
-      if (data.results) {
-        console.log('Results Keys:', Object.keys(data.results));
-      }
-      console.log('========================================');
       
       if (data.statusCode === 200) {
         return {
@@ -387,33 +336,16 @@ export const sendReportToServer = async (pdfFile, selectedStandards = []) => {
           data: data.results
         };
       } else {
-        console.error('❌ Server returned error status:', data.statusCode);
-        console.error('Error message:', data.error);
         throw new Error(data.error || 'Server returned an error');
       }
     } catch (fetchError) {
       clearTimeout(timeoutId);
-      console.error('========================================');
-      console.error('❌ API CALL ERROR');
-      console.error('========================================');
-      console.error('Error Type:', fetchError.name);
-      console.error('Error Message:', fetchError.message);
       if (fetchError.name === 'AbortError') {
-        console.error('Request Timeout: Server took too long to respond (>5 minutes)');
         throw new Error('Request timeout - server took too long to respond');
       }
-      console.error('Full Error:', fetchError);
-      console.error('========================================');
       throw fetchError;
     }
   } catch (error) {
-    console.error('========================================');
-    console.error('❌ ERROR SENDING REPORT TO SERVER');
-    console.error('========================================');
-    console.error('Error:', error);
-    console.error('Error Message:', error.message);
-    console.error('Stack:', error.stack);
-    console.error('========================================');
     return {
       success: false,
       error: error.message

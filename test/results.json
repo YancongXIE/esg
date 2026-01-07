@@ -1,0 +1,1909 @@
+{
+  "statusCode": 200,
+  "results": {
+    "gri": {
+      "Environmental": {
+        "Emissions": [
+          [
+            "Direct (Scope 1) GHG emissions",
+            "Yes",
+            "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 22 (Based on scope 1,2 & 3 emission in calendar year 2015, SHV’s carbon emissions was 76,6646 tonnes of...)",
+            "96.84"
+          ],
+          [
+            "Energy indirect (Scope 2) GHG emissions",
+            "Yes",
+            "Page 22 (Based on scope 1,2 & 3 emission in calendar year 2015, SHV’s carbon emissions was 76,6646 tonnes of...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...)",
+            "95.65"
+          ],
+          [
+            "Other indirect (Scope 3) GHG emissions",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+            "94.87"
+          ],
+          [
+            "Air emissions (e.g., SOx, NOx, VOCs, particulates)",
+            "Yes",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 22 (Based on scope 1,2 & 3 emission in calendar year 2015, SHV’s carbon emissions was 76,6646 tonnes of...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...)",
+            "94.90"
+          ]
+        ],
+        "Energy": [
+          [
+            "Energy consumption within the organization",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Energy consumption outside the organization",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Energy saved due to conservation and efficiency",
+            "Yes",
+            "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+            "96.57"
+          ]
+        ],
+        "Water": [
+          [
+            "Total water withdrawal",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Water sources",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Water discharged",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Water recycled and reused",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Waste": [
+          [
+            "Total waste generation by type and disposal method",
+            "Yes",
+            "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...)",
+            "95.87"
+          ],
+          [
+            "Hazardous waste generation and management",
+            "Yes",
+            "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+            "96.01"
+          ],
+          [
+            "Non-hazardous waste generation and management",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+            "95.92"
+          ]
+        ],
+        "Biodiversity": [
+          [
+            "Impacts on biodiversity",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Management of impacts on biodiversity",
+            "Few",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+            "96.55"
+          ],
+          [
+            "Conservation efforts",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Supplier environmental issues": [
+          [
+            "Environmental impact of suppliers",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Management of environmental impacts of suppliers",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+            "96.13"
+          ]
+        ]
+      },
+      "Social": {
+        "Labor Practices and Decent Work": [
+          [
+            "Employment (e.g., employee demographics, turnover)",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Labor relations (e.g., collective bargaining)",
+            "Few",
+            "Page 28 (A list of the main memberships of industry or other associations, and national or international advo...)",
+            "96.41"
+          ],
+          [
+            "Occupational health and safety (e.g., injury rates, fatalities)",
+            "Few",
+            "Page 14 (MTIFR measures the number of medically treated injuries per million hours worked. We have exceeded o...)",
+            "96.80"
+          ],
+          [
+            "Training and education",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Diversity and equal opportunity",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Child labor",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Forced or compulsory labor",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Remuneration",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Human Rights": [
+          [
+            "Human rights assessment",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Grievance mechanisms",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Incidents of discrimination",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Child labor",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Forced or compulsory labor",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Freedom of association and collective bargaining",
+            "Yes",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (We play an active role within the bee and pollination industries including the sponsorship and suppo...), Page 9 (The responsibility for the operation and administration of the company is delegated, by the Board, t...)",
+            "94.17"
+          ],
+          [
+            "Indigenous rights",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Product Responsibility": [
+          [
+            "Customer health and safety",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Product and service labeling",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Marketing communications",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Data privacy and security",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Responsible marketing",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Product and service recall",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Community Impact": [
+          [
+            "Operations with local community impact",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Nature and extent of local community engagement",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Grievance mechanisms for community members",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Significant investment in community development",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Supplier social issues": [
+          [
+            "Assessment of labor practices and human rights of suppliers",
+            "Yes",
+            "Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+            "95.89"
+          ],
+          [
+            "Management of labor practices and human rights of suppliers",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 12 (All aspects of food safety including policy, product recalls, compliance with regulated and voluntar...)",
+            "96.43"
+          ]
+        ]
+      },
+      "Governance": {
+        "Leadership Structure": [
+          [
+            "Board structure and composition",
+            "Yes",
+            "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (We play an active role within the bee and pollination industries including the sponsorship and suppo...)",
+            "93.48"
+          ],
+          [
+            "Executive compensation",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Shareholder rights",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Role of the board in sustainability oversight",
+            "Yes",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...)",
+            "95.67"
+          ]
+        ],
+        "Ethics and Integrity": [
+          [
+            "Code of conduct",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Anti-corruption policies and procedures",
+            "Few",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+            "94.94"
+          ],
+          [
+            "Whistleblower mechanisms",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Conflicts of interest",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Risk Management": [
+          [
+            "Identification and assessment of economic, environmental, and social risks",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+            "96.75"
+          ],
+          [
+            "Management of risks",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Strategy for managing climate-related risks and opportunities",
+            "Yes",
+            "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+            "95.77"
+          ]
+        ],
+        "Stakeholder Engagement": [
+          [
+            "Identification of stakeholders",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Stakeholder engagement processes",
+            "No",
+            "",
+            "0.00"
+          ],
+          [
+            "Consideration of stakeholder feedback",
+            "No",
+            "",
+            "0.00"
+          ]
+        ],
+        "Supply Chain Management": [
+          [
+            "Management of economic, environmental, and social impacts in the supply chain",
+            "Yes",
+            "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+            "96.45"
+          ]
+        ],
+        "Regulatory Compliance": [
+          [
+            "Non-compliance with laws and regulations",
+            "Few",
+            "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+            "94.30"
+          ]
+        ]
+      }
+    },
+    "scope3": {
+      "Scope 3 Categories": [
+        [
+          "A[17](1);Purchased goods and services",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](2);Capital goods",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](3);Fuel- and energy-related activities not included in Scope 1 or 2",
+          "Yes",
+          "Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.65"
+        ],
+        [
+          "A[17](4);Upstream transportation and distribution",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](5);Waste generated in operations",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](6);Business travel",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](7);Employee commuting",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](8);Upstream leased assets",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](9);Downstream transportation and distribution",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](10);Processing of sold products",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](11);Use of sold products",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](12);End-of-life treatment of sold products",
+          "Yes",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.57"
+        ],
+        [
+          "A[17](13);Downstream leased assets",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](14);Franchises",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "A[17](15);Investments",
+          "No",
+          "",
+          "0.00"
+        ]
+      ],
+      "Greenhouse Gas Protocol": [
+        [
+          "B23;29(a)(ii) requires entity to disclose greenhouse gas emissions as per the Greenhouse Gas Protocol (2004) and Scope 3 emissions in accordance with 29 (a)",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 9 (The development of this report has been informed by the Global Reporting Initiative (GRI) Standards....), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "95.94"
+        ],
+        [
+          "B24;Must use the Greenhouse Gas Protocol (2004) unless a jurisdiction or exchange requires a different method",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "96.10"
+        ],
+        [
+          "B25;Disclose Scope 1, Scope 2, and Scope 3 emissions regardless of jurisdictional requirement",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.70"
+        ]
+      ],
+      "Measurement Approach, inputs and assumptions": [
+        [
+          "B26(a);Disclose the measurement approach, inputs and assumptions it uses to measure its greenhouse gas emissions. See B27",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "96.73"
+        ],
+        [
+          "B26(b);The applicable method if the entity doesn't use the Greenhouse Gas Protocol and measurement. See B28",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "B26(c);Disclose the emission factors that best represent the entity’s activities for measuring its greenhouse gas emissions. See B29",
+          "Yes",
+          "Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.25"
+        ]
+      ],
+      "Measurement approach set out in the Greenhouse Gas Protocol": [
+        [
+          "B27(a);Disclose the measurement approach used see 29 (a)(iii) (such as equity share or control approach) when disclosing its greenhouse gas emissions.",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "97.07"
+        ],
+        [
+          "B27(b);The reason for the entity’s choice of measurement approach see 29 (a)(iii), and how it aligns with the disclosure objective in 27",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.45"
+        ]
+      ],
+      "Other methods and measurement approaches": [
+        [
+          "B28(a);Disclose the method, use 29(a)(ii), (B24-B25) or C4(a) and measurement approach used to determine its emissions",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 29 (Page 16 1 Disclosure descriptions have been summarised. For detailed descriptions refer to the GRI S...)",
+          "96.77"
+        ],
+        [
+          "B28(b);Provide reason for the entity’s choice of method and measurement approach, and how it aligns with the disclosure objective in 27",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.39"
+        ]
+      ],
+      "Emission factors": [
+        [
+          "B29;Disclose the measurement approach, inputs, and assumptions for its greenhouse gas emissions. No specific factors are required, but the entity must choose those that best reflect its activities",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.51"
+        ]
+      ],
+      "Scope 3 greenhouse gas emissions": [
+        [
+          "B32;Guided by 29(a)(vi) disclose Scope 3 emissions by category across full value chain and specify which of the 15 GHG Protocol categories are included Link to A[17](1-15)",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...)",
+          "96.72"
+        ],
+        [
+          "B33;Regardless of method used, entity must disclose Scope 3 categories included see 29(a)(vi)(1)",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 29 (Page 16 1 Disclosure descriptions have been summarised. For detailed descriptions refer to the GRI S...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...)",
+          "96.17"
+        ],
+        [
+          "B34;When a significant event or change occurs, an entity must reassess climate-related risks and Scope 3 categories in its value chain, including which entities to measure for Scope 3 emissions.",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.16"
+        ],
+        [
+          "B34(a);A major change in the entity’s value chain, such as a supplier changing its operations and significantly affecting its greenhouse gas emissions.",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.14"
+        ],
+        [
+          "B34(b);Significant change in the entityís business model, activities, or structure (e.g., merger or acquisition)",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "95.87"
+        ],
+        [
+          "B34(c );Significant change in the entityís exposure to climate-related risks and opportunities (e.g., unforeseen regulatory change)",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.70"
+        ],
+        [
+          "B35;Entity may reassess Scope 3 category coverage more frequently than required see B34",
+          "Yes",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "96.21"
+        ],
+        [
+          "B36;Define value chain scope using all reasonable and supportable information available at reporting date",
+          "Yes",
+          "Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...)",
+          "96.35"
+        ],
+        [
+          "B37;Entities involved in asset management, banking, or insurance must disclose financed emissions see B58–AusB63.1",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (We play an active role within the bee and pollination industries including the sponsorship and suppo...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...)",
+          "96.61"
+        ]
+      ],
+      "Scope 3 meaurement framework": [
+        [
+          "B38;Scope 3 measurements must use a method, inputs, and assumptions that accurately reflect these emissions.  Guidance for preparing Scope 3 emissions disclosures is provided in paragraphs B40–B54.",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "96.90"
+        ],
+        [
+          "B39;Use all reasonable and supportable information, without excessive cost or effort when selecting the measurement approach, inputs, and assumptions for measuring Scope 3",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.46"
+        ],
+        [
+          "B40;Prioritise inputs and assumptions used to measure Scope 3 greenhouse emissions using four characteristics below see B40 (a) to B40 (d)",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.58"
+        ],
+        [
+          "B40(a);Prioritise data based on direct measurement see B46-49",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "B40(b);Prioritise data from specific activities within the value chain see B46-B49",
+          "Yes",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "97.46"
+        ],
+        [
+          "B40(c);Timely data that faithfully represents the jurisdiction of and technology use for value chain activities and its greenhouse gas emission see B50-B52",
+          "Yes",
+          "Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+          "97.26"
+        ],
+        [
+          "B40(d);Use verified data B53-B54",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "B41;A jurisdictional authority or listing exchange requires a method other than the Greenhouse Gas Protocol (see paragraphs B24–B25), or the entity uses the transition relief described in paragraph C4(a).",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "96.32"
+        ],
+        [
+          "B42;Use judgment to prioritise the measurement approach, inputs, and assumptions for its emissions, considering the characteristics in paragraph B40. Balance timely data, which may lack details on technology, jurisdiction, or activity, with older data, which may be more representative but less current.",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our irrigation system is optimised to deliver the moisture and nutrient to the trees based on their...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 18 (Audits of our food safety system by two major customers and our external food safety certifying body...)",
+          "96.92"
+        ]
+      ],
+      "Data based on direct measurement": [
+        [
+          "B43;Prioritse direct measurement when quantifying scope 3 greenhouse gas emissions.",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.79"
+        ],
+        [
+          "B44;Estimation on scope 3 greenhouse gas emissions can be used when direct measurement is challenging",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.89"
+        ],
+        [
+          "B45;Estimating Scope 3 greenhouse gas emissions means making approximate calculations based on assumptions and relevant data. When an entity uses estimation, it will likely rely on two types of information",
+          "Yes",
+          "Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.99"
+        ],
+        [
+          "B45(a);Activity data represents the entity’s actions that cause greenhouse gas emissions. For example, the entity might use distance traveled to represent the transport of goods",
+          "Yes",
+          "Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.25"
+        ],
+        [
+          "B45(b);Emission factors convert activity data into greenhouse gas emissions. For example, the entity converts the distance traveled (activity data) into emissions using emission factors",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 3 (Select Harvests achieves this by consuming both water and energy more efficiently, recycling/reducin...)",
+          "96.22"
+        ]
+      ],
+      "Data from specific activities within the entity's value chain": [
+        [
+          "B46;An entity’s Scope 3 greenhouse gas emissions measurement will use either primary data (directly from activities in its value chain), secondary data (not directly from its value chain), or a mix of both",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.77"
+        ],
+        [
+          "B47;When measuring Scope 3 greenhouse gas emissions, primary data is more likely to accurately reflect the entity’s value chain and emissions than secondary data. Therefore, the entity should prioritize primary data, all else being equal",
+          "Yes",
+          "Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.94"
+        ],
+        [
+          "B48;Primary data for Scope 3 emissions comes from suppliers or value chain partners and relates to specific activities. Examples include meter readings, utility bills, or other methods. This data can be collected internally or externally. Data from specific activities in an entity’s value chain gives a more accurate picture of its operations, providing a better basis for measuring Scope 3 emissions.",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "96.10"
+        ],
+        [
+          "B49;Secondary data is not directly from the entity’s activities. It includes third-party or industry-average data, such as from published databases, government stats, research studies, and industry groups to estimate emissions. It can also include primary data from one activity (proxy data) used to estimate emissions for another activity. The entity must ensure that the data accurately represents its activities.",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.69"
+        ]
+      ],
+      "Timely data that faithfully represents the jurisdiction of and technology use for value chain activities and its greenhouse gas emission": [
+        [
+          "B50;If using secondary data, prioritize data that reflects the technology used in the activity, e.g., aircraft type, distance, and travel class, to estimate emissions",
+          "Yes",
+          "Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.49"
+        ],
+        [
+          "B51;If using secondary data, prioritize activity or emissions data that matches the jurisdiction where the activity occurred.",
+          "Yes",
+          "Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "97.24"
+        ],
+        [
+          "B52;If an entity uses secondary data, it shall prioritise activity or emissions data that is timely and representative of the entity’s value chain activity during the reporting period.",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.22"
+        ]
+      ],
+      "Verify data": [
+        [
+          "B53;Prioritise Scope 3 greenhouse gas emissions data that is verified.",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "96.85"
+        ],
+        [
+          "B54;Verified Scope 3 emissions data can be checked internally or externally, for example through on-site checks, reviewing calculations, or comparing with other sources. If verification is too costly or difficult, such as when data comes from distant value chain entities, unverified data may be used",
+          "Yes",
+          "Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Audits of our food safety system by two major customers and our external food safety certifying body...)",
+          "96.62"
+        ]
+      ],
+      "Disclosure of inputs to Scope 3 greenhouse gas emissions": [
+        [
+          "B55;Disclose how Scope 3 emissions are measured, including approach, inputs, assumptions, and data quality, to show how value chain activities and emissions are represented",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "96.68"
+        ],
+        [
+          "B56(a);Disclose how much of its Scope 3 emissions are measured using data from specific activities within its value chain",
+          "Yes",
+          "Page 9 (The health and wellbeing of those who supply our raw materials, those who consume our products and t...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.46"
+        ],
+        [
+          "B56(b);The entity shall disclose how much of its Scope 3 emissions are measured using verified data.",
+          "Yes",
+          "Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...)",
+          "96.83"
+        ],
+        [
+          "B57;If Scope 3 emissions cannot be estimated, disclose how they are managed",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 9 (We recognise that many of our natural resources are finite and that we have a role to play in ensuri...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.66"
+        ]
+      ],
+      "Financed emissions": [
+        [
+          "B58;Financial insitutions face credit, market, reputational and other financial and operational risks from the greenhouse gas emissions of their clients or counterparties. High-emission clients may be affected by policy changes, technology shifts, or market changes, which in turn affect the institution. Measuring financed emissions helps institutions understand exposure and adapt their financial activities.",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.51"
+        ],
+        [
+          "B59 (a);Disclose absolute gross Scope 3 greenhouse gas emissions for the reporting period, including upstream and downstream emissions. Entities involved in financial activities must disclose additional and specific information about Category 15 emissions (financed emissions) for asset management",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.74"
+        ],
+        [
+          "B59 (b);Disclose absolute gross Scope 3 greenhouse gas emissions for the reporting period, including upstream and downstream emissions. Entities involved in financial activities must disclose additional and specific information about Category 15 emissions (financed emissions) for commercial banking",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.73"
+        ],
+        [
+          "B59 (c);Disclose absolute gross Scope 3 greenhouse gas emissions for the reporting period, including upstream and downstream emissions. Entities involved in financial activities must disclose additional and specific information about Category 15 emissions (financed emissions) for insurance",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.80"
+        ],
+        [
+          "B60;Disclose its financed emissions following the same requirement for scope, measurement approach, and data quality as specified in paragraph 29(a)",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "96.95"
+        ]
+      ],
+      "Asset management": [
+        [
+          "B61(a);Entity participates in assest management shall disclose its gross financed emission, disaggregated by Scope 1, Scope 2, and Scope 3 greenhouse gas emissions",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.22"
+        ],
+        [
+          "B61(b);Total amount of assets under management (AUM) includes the financed emissions disclosure",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.05"
+        ],
+        [
+          "B61(c);Show the percentage of total AUM included. If it’s less than 100%, explain what’s excluded, including the types of assets and their AUM amounts.",
+          "Yes",
+          "Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...)",
+          "96.44"
+        ],
+        [
+          "B61(d);Methodology used to calculate financed emissions and methods allocation for its share of emissions in relation to size of investments",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.52"
+        ]
+      ],
+      "Commercial banking": [
+        [
+          "B62(a);Entity that participates in commercial banking shall disclose its absolute gross financed emissions, disaggregated by Scope 1, Scope 2, Scope 3 greenhouse gas emissions for each industy by asset class",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+          "96.11"
+        ],
+        [
+          "B62(a)(i);Industry disaggregation of financed emissions must use Global industry classification standard (GICS) 6-digit codes, reflecting the latest version as of the reporting date",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "96.67"
+        ],
+        [
+          "B62(a)(ii);Disclose financed emissions for loans, project finance, bonds, equity, and undrawn loan commitments. If other asset classes are included, explain why they are relevant",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "96.46"
+        ],
+        [
+          "B62(b);Gross exposure to each industry by asset class as per the currency of the entity's financial statements",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "95.48"
+        ],
+        [
+          "B62 (b)(i);Gross exposure for funded amounts calculated as funded carrying amounts (before loss allowance), per Australian Accounting Standards (AAS) or other GAAP",
+          "Yes",
+          "Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 24 (During FY 2017 our orchards used 77.84 GL of water on 17,875 acres under management to produce 14,10...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "95.43"
+        ],
+        [
+          "B62 (b)(ii);Disclose full amount of undrawn loan commitments separately from drawn portion",
+          "Few",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...)",
+          "95.29"
+        ],
+        [
+          "B62(c);Percentage of gross exposure included in the financed emissions calculation",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.18"
+        ],
+        [
+          "B62(c )(i);If less than 100% of gross exposure is included in financed emissions calculation, explain the exclusions and types of assets excluded",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.14"
+        ],
+        [
+          "B62(c )(ii);For the funded amount, exclude gross exposure impacts of risk mitigation, if applicable",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.73"
+        ],
+        [
+          "B62(c )(iii);Disclose separately the percentage of undrawn loan commitments included in financed emissions calculation",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+          "96.15"
+        ],
+        [
+          "B62(d);Method used to calculate financed emissions, including how emissions are allocated based on gross exposure",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.94"
+        ]
+      ],
+      "Insurance": [
+        [
+          "B63(a);Entity in the insurance industry shall disclose its total financed emissions by Scope 1, Scope 2, and Scope 3, for each industry and asset class",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.81"
+        ],
+        [
+          "B63(a)(i);Classify counterparties by industry using the latest 6-digit GICS code.",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "B63(a)(ii);Include financed emissions for loans, bonds, equity, and undrawn loan commitments. If other asset classes are included, explain why they are relevant",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.40"
+        ],
+        [
+          "B63(b);Gross exposure for each industry and asset class is presented in the currency of the entity's financial statement",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "95.73"
+        ],
+        [
+          "B63(b)(i);Funded gross exposure calculated as funded carrying amounts (before loss allowance), per AAS or GAAP",
+          "Yes",
+          "Page 24 (During FY 2017 our orchards used 77.84 GL of water on 17,875 acres under management to produce 14,10...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+          "95.39"
+        ],
+        [
+          "B63(b)(ii);Full amount of undrawn loan commitments disclosed separately from drawn amounts",
+          "Yes",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.10"
+        ],
+        [
+          "B63(c);Percentage of gross exposure included in the financed emissions calculation",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.18"
+        ],
+        [
+          "B63(c )(i);If less than 100% of gross exposure is included in the financed emissions calculation, explain exclusions and asset types excluded",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.30"
+        ],
+        [
+          "B63(c )(ii);Disclose separately the percentage of undrawn loan commitments included in financed emissions calculation",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 3 (Our goals include: minimising environmental impacts, improving our diversity by growing our business...)",
+          "96.15"
+        ],
+        [
+          "B63(d);Method used to calculate financed emissions, including how emissions are allocated based on gross exposure",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.94"
+        ],
+        [
+          "AusB63.1;Use the latest GICS version available at the reporting date, including all updates up to August 2024.",
+          "Few",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.58"
+        ]
+      ]
+    },
+    "s2": {
+      "Scope": [
+        [
+          "3(a)(i);Identify climate-related physical risks the entity is exposed to",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.84"
+        ],
+        [
+          "3(a)(ii);Identify climate-related transition risks the entity is exposed to",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.71"
+        ],
+        [
+          "3(b);Identify climate-related opportunities available to the entity",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.06"
+        ],
+        [
+          "4;Disclose climate-related risks and opportunities that could not reasonably be expected to affect an entity’s prospects are outside the scope of this Standard",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "95.52"
+        ]
+      ],
+      "Governance": [
+        [
+          "5;State the objective of financial disclosures on governance: understanding governance processes, controls and procedures uses to monitor, manage and oversee climate-related risks and opportunities",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.84"
+        ],
+        [
+          "6(a);Identify governance body(s)/individual(s) responsible for oversight of climate-related risks/opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.65"
+        ],
+        [
+          "6(a)(i);Describe how responsibilities for climate-related risks and opportunities are reflected in terms of reference, mandates, role descriptions, and other policies applicable to body(s) or individual(s)",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.05"
+        ],
+        [
+          "6(a)(ii);Describe how body(s)/individual(s) determines appropriate skills and competencies",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...)",
+          "96.13"
+        ],
+        [
+          "6(a)(iii);Explain how and how often the body(s)/individual(s) is informed about climate related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.59"
+        ],
+        [
+          "6(a)(iv);Identify body(s)/individual(s) takes climate-related risks and opportunities when overseeing entity's strategy, its decisions on major transactions, risk management process and policies, including the body(s)or individual(s) has considered trade-foofs associated with risks and opportunities",
+          "Yes",
+          "Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Requests (NCR) • Continuous monitoring, updating and implementing of systems to ensure all regulator...)",
+          "96.78"
+        ],
+        [
+          "6(a)(v);Identify the body(s)/individual(s) oversees targest related to climate-related risks and opportunities, monitors progress towards those targets, how related performance metrics are included in remuneration policies",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "97.29"
+        ],
+        [
+          "6(b);Is climate-related risk and opportunity oversight delegated to a specific management-level role or committee?",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.03"
+        ],
+        [
+          "6(b)(i);If delegated, how is oversight exercused by management or committee?",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "6(b)(ii);Management uses controls and procedures to support the oversight of cliamte related risk and procedure, how are they integrated with other internal functions",
+          "Yes",
+          "Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "96.99"
+        ],
+        [
+          "7;The entity avoid unnecessary duplication in disclosures (e.g., providing integrated disclosures instead of separate ones when oversight is integrated)",
+          "Yes",
+          "Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "97.11"
+        ],
+        [
+          "Aus7.1;The entity voluntarily applied AASB S1 to disclose other sustainability-related risks and opportunities in addition to climate-related risks in its general purpose financial reports, and if so, does it still avoid duplication in disclosures",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 18 (Audits of our food safety system by two major customers and our external food safety certifying body...)",
+          "96.61"
+        ]
+      ],
+      "Strategy": [
+        [
+          "8;Disclose its overall strategy for managing climate-related risks and opportunities in its general purpose financial reports",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.89"
+        ],
+        [
+          "9(a);Entity disclose information to enable users of general purpose financial reports to understand climate-related risks and opportunities that could affect the entity prospects",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.01"
+        ],
+        [
+          "9(b);Current and anticipated effects of climate-related risks and pportunities on business model and value chain",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.75"
+        ],
+        [
+          "9(c);Effects of climate-related risks and opportunities on strategy and decision-making, including climate-related transition plan",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.83"
+        ],
+        [
+          "9(d);Effects of climate-related risks and opportunities on financial position, performance and cash flows (current and future), and how climate-related risk and opportunities are factored into the financial planning",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.37"
+        ],
+        [
+          "9(e);Climate resilience of the strategy and business model to climate-related changes development, and uncertainties based on identified climate-related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.21"
+        ]
+      ],
+      "Climate-related risk and opportunities": [
+        [
+          "10(a);Entity disclose climate-related risks and opportunities that could reasonably affect its future prospects",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "95.71"
+        ],
+        [
+          "10(b);For each identified climate-related risk, has the entity explained whether it is a physical risk or a transition risk?",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.78"
+        ],
+        [
+          "10(c);For each identified climate-related risk and opportunity, has the entity specified the expected time horizon (short, medium, or long term) for its effects?",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.73"
+        ],
+        [
+          "10(d);Explain how entity defines short, medium, and long term, and how these align with its strategic planning horizons?",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.54"
+        ],
+        [
+          "11;Use all reasonable and supportable information (past, current, forecasted) available at the reporting date to identify climate-related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.92"
+        ]
+      ],
+      "Business model and value chain": [
+        [
+          "13(a);Disclose current and anticipated effects of climate-related risk and opportunities on business model and value chain on financial reports",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.17"
+        ],
+        [
+          "13(b);Where in the business model and value chain climate-related risks and opportunities are concentrated",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.46"
+        ]
+      ],
+      "Strategy and decision-making": [
+        [
+          "14(a);Disclose how it has responded to, and plans to respond to, climate-related risks and opportunities in its strategy and decision-making, including how it will achieve climate-related targets it has set and any legally required targets",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.46"
+        ],
+        [
+          "14(a)(i);Disclose current and anticipated changes to its business model and resource allocation to address climate-related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.97"
+        ],
+        [
+          "14(a)(ii);Disclose current and anticipated direct mitigation and adaptation efforts",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...)",
+          "96.37"
+        ],
+        [
+          "14(a)(iii);Disclose current and anticipated indirect mitigation and adaptation efforts",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.41"
+        ],
+        [
+          "14(a)(iv);Disclose any climate-related transition plan, including the key assumptions used in developing the plan and the dependencies it relies on",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.84"
+        ],
+        [
+          "14(a)(v);Disclose how entity plan for achieving climate-related targets including greenhouse gas emissions targets",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.83"
+        ],
+        [
+          "14(b);How it is currently resourcing, and plans to resource, the activities described in paragraph 14(a)",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...)",
+          "97.37"
+        ],
+        [
+          "14(c);Disclose quantitative and qualitative information on the progress of plans from previous reporting periods (as described in paragraph 14(a))?",
+          "Yes",
+          "Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.98"
+        ]
+      ],
+      "Financial position, financial performance and cash flows": [
+        [
+          "15(a);Current financial effects of climate-related risk and opportunities on its financial position, financial performance, and cash flows for the reporting period",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.64"
+        ],
+        [
+          "15(b);Anticipated short, medium, and long-term effects of climate-related risks and opportunities on its financial position, performance, and cash flows, including how they are reflected in financial planning",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "95.66"
+        ],
+        [
+          "16(a);Disclose quantitative and qualitative information on how climate-related risks and opportunities affected its financial position, financial performance, and cash flows during the reporting period",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.30"
+        ],
+        [
+          "16(b);Entity identified climate-related risks and opportunities (per para 16(a)) that could cause a material adjustment to asset or liability carrying amounts in the next annual reporting period",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.65"
+        ],
+        [
+          "16(c);Disclose how it expects its financial position to change over the short, medium, and long term, given its strategy for managing climate-related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.18"
+        ],
+        [
+          "16(c)(i);Disclose investment and disposal plans (e.g., capex, acquisitions, divestments, joint ventures, business transformation, innovation, new business areas, asset retirements), including plans not yet contractually committed",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (We play an active role within the bee and pollination industries including the sponsorship and suppo...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.33"
+        ],
+        [
+          "16(c)(ii);Disclose its planned sources of funding to implement its climate-related strategy",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.57"
+        ],
+        [
+          "16(d);Disclose how its financial performance and cash flows are expected to change over the short, medium, and long term, given its strategy to manage climate-related risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.20"
+        ],
+        [
+          "17;Disclose quantitative information as either a single amount or a range",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (As these trees grow into full maturity our production will increase from regions of lower water stre...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "95.46"
+        ],
+        [
+          "18(a);Used all reasonable and supportable information available at the reporting date, without undue cost or effort, to prepare disclosures of anticipated financial effects on climate-related risk/opportunity",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.75"
+        ],
+        [
+          "18(b);Use of an approach commensurate with available skills, capabilities, and resources for preparing disclosures of anticipated financial effects",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.52"
+        ],
+        [
+          "19(a);Entity claimed a disclosure exemption from providing quantitative information on the financial effects of a climate-related risk/opportunity",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.18"
+        ],
+        [
+          "19(b);Entity claimed a disclosure exemption from providing quantitative information because the measurement uncertainty is so high that the disclosure would not be useful",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.66"
+        ],
+        [
+          "20;Disclosure exemption from providing quantitative information because it lacks the skills, capabilities, or resources to prepare it",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.42"
+        ],
+        [
+          "21(a);If the entity applied a disclosure exemption under paragraphs 19–20, has it explained why quantitative information was not provided?",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 29 (Page 16 1 Disclosure descriptions have been summarised. For detailed descriptions refer to the GRI S...)",
+          "96.00"
+        ],
+        [
+          "21(b);Provided qualitative information about the financial effects, including the line items, totals, and subtotals in financial statements that are likely to be affected, or have been affected by climate-related risk/opportunity",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Food Safety refers to the standards and processes used to prevent and remove risks of food borne ill...)",
+          "96.18"
+        ],
+        [
+          "21(c);The entity provided quantitative information on the combined financial effects of climate-related risks and opportunities, unless it determined such disclosure would not be useful",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.49"
+        ]
+      ],
+      "Climate resilience": [
+        [
+          "22;Disclose information that enables users to understand the resilience of its strategy and business model to climate-related changes, developments, and uncertainties",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.25"
+        ],
+        [
+          "22;Entity used climate-related scenario analysis to assess its climate resilience, using an approach appropriate to its circumstances",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.95"
+        ],
+        [
+          "22(a);Disclose its assessment of climate resilience as at the reporting date",
+          "Few",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.81"
+        ],
+        [
+          "22(a)(i);Disclose the implications of its climate resilience assessment for its strategy and business model, including how it would respond to the identified scenario effects",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "97.01"
+        ],
+        [
+          "22(a)(ii);Disclose the significant areas of uncertainty considered in its assessment of climate resilience",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.63"
+        ],
+        [
+          "22(a)(iii);Disclose its capacity to adjust or adapt its strategy and business model to climate change over the short, medium, and long term",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.18"
+        ],
+        [
+          "22(a)(iii)(1);Disclose the availability and flexibility of its existing financial resources to respond to scenario analysis outcomes, including addressing climate risks and opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.97"
+        ],
+        [
+          "22(a)(iii)(2);Disclose its ability to redeploy, repurpose, upgrade, or decommission existing assets",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (We have installed best practice irrigation systems to deliver water efficiently with reduced system...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "95.40"
+        ],
+        [
+          "22(a)(iii)(3);Disclose the effect of its current and planned investments in climate-related mitigation, adoptation and opportunities for climate resilience",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...)",
+          "96.78"
+        ],
+        [
+          "22(b)(i);Disclose how and when its climate-related scenario analysis was carried out, including the inputs used",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.54"
+        ],
+        [
+          "22(b)(i)(1);Disclose which climate-related scenarios it used for the analysis and the sources of those scenarios",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.68"
+        ],
+        [
+          "22(b)(i)(2);Disclose whether the analysis included a diverse range of climate-related scenarios",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.77"
+        ],
+        [
+          "22(b)(i)(3);Disclose  climate-related scenarios used for the analysis are associated with climate-related transition risks or climate-related physical risks",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.53"
+        ],
+        [
+          "22(b)(i)(4);Disclose whether one of the scenarios is aligned with the latest international climate agreement",
+          "Yes",
+          "Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.18"
+        ],
+        [
+          "22(b)(i)(5);Explaine why its chosen climate-related scenarios are relevant for assessing resilience",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "97.07"
+        ],
+        [
+          "22(b)(i)(6);Disclose the time horizons used in its climate-related scenario analysis",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.91"
+        ],
+        [
+          "22(b)(i)(7);Disclose the scope of operations covered in the scenario analysis",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.58"
+        ],
+        [
+          "22(b)(ii)(1);Key assumptions in scenario analysis for climate-related policies in the jurisdictions in which the entity operates",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.81"
+        ],
+        [
+          "22(b)(ii)(2);Disclose assumptions about macroeconomic trends in its scenario analysis",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.71"
+        ],
+        [
+          "22(b)(ii)(3);Disclose assumptions about national or regional variables (e.g., weather, demographics, land use, infrastructure, resources)",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.66"
+        ],
+        [
+          "22(b)(ii)(4);Disclose assumptions about energy usage and mix",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "22(b)(ii)(5);Disclose assumptions about developments in technology",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "22(iii);Disclose the reporting period in which the climate-related scenario analysis was carried out",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.55"
+        ],
+        [
+          "Aus23.1;Entity referred to and considered the applicability of cross-industry metric categories (as described in paragraph 29) when preparing disclosures required under paragraphs 13–22",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "96.85"
+        ]
+      ],
+      "Risk Management": [
+        [
+          "24;Disclose its processes to identify, assess, prioritise, and monitor climate-related risks and opportunities, including how these are integrated into overall risk managementntity Disclose its processes to identify, assess, prioritise, and monitor climate-related risks and opportunities, including how these are integrated into overall risk management",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Requests (NCR) • Continuous monitoring, updating and implementing of systems to ensure all regulator...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 14 (The success of our business is underpinned by the knowledge, experience and talent of our people. Th...)",
+          "93.83"
+        ],
+        [
+          "25(a);Disclose the processes and related policies it uses to identify, assess, prioritise, and monitor climate-related risks",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.25"
+        ],
+        [
+          "25(a)(i);Disclose the inputs and parameters it uses in its processes (e.g., data sources, scope of operations)",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "96.27"
+        ],
+        [
+          "25(a)(ii);Disclose whether and how it uses climate-related scenario analysis to inform risk identification",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "97.24"
+        ],
+        [
+          "25(a)(iii);Disclose how it assesses the nature, likelihood, and magnitude of climate-related risks (e.g., qualitative factors, quantitative thresholds)",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.49"
+        ],
+        [
+          "25(a)(iv);Disclose whether and how it prioritises climate-related risks relative to other types of risk?",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.12"
+        ],
+        [
+          "25(a)(v);Disclose how it monitors climate-related risks",
+          "Few",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.90"
+        ],
+        [
+          "25(a)(vi);Disclose whether and how its processes for climate-related risk management compared with the previous reporting period",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.84"
+        ],
+        [
+          "25(b);Disclose the processes it uses to identify, assess, prioritise, and monitor climate-related opportunities",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.68"
+        ],
+        [
+          "25(b);Disclose whether and how it uses climate-related scenario analysis to inform its identification of climate-related opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.75"
+        ],
+        [
+          "25(c);Disclose the extent to which, and how, its processes for identifying, assessing, prioritising, and monitoring climate-related risks and opportunities are integrated into and inform its overall risk management process",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...)",
+          "95.30"
+        ],
+        [
+          "26;Has the entity avoided unnecessary duplication when preparing disclosures required under paragraph 25 (risk management)",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 21 (We have reviewed water risk assessment using the standard Aqueduct5 water risk atlas which indicates...)",
+          "96.64"
+        ],
+        [
+          "26;If oversight of sustainability-related risks and opportunities is managed on an integrated basis, has the entity provided integrated risk management disclosures instead of separate disclosures for each risk and opportunity",
+          "Yes",
+          "Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "96.74"
+        ],
+        [
+          "Aus26.1;If the entity has voluntarily applied AASB S1, has it avoided repeating information across climate-related and broader sustainability risk disclosures in its general purpose financial reports",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.54"
+        ]
+      ],
+      "Metrics and Targets": [
+        [
+          "27;Disclose metrics and targets that enable users to understand its performance in managing climate-related risks and opportunities, including progress towards its own targets and those required by law or regulation",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.26"
+        ],
+        [
+          "28 (a);Disclose information relevant to cross-industry metric categories (see paragraphs 29–31)",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...)",
+          "97.04"
+        ],
+        [
+          "28(c );Disclose entity's climate-related targets and legally required targets, to mitigate or adapt to climate-related risk/opportunities, including metrics used by governance body or management to measure progress",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.29"
+        ]
+      ],
+      "Climate-related metrics": [
+        [
+          "29 (a)(i);Disclose informattion relevant to the cross-industry metric cagetories of GHG emissions for the reporting period, expressed in metric tonnes of CO₂e",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 5 (This facility has the capacity to process 25,000 tonnes of almonds per year. In FY 2017 a further $3...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...)",
+          "96.81"
+        ],
+        [
+          "29(a)(i)(1);Disclose its Scope 1 GHG emissions",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "29(a)(i)(2);Disclose its Scope 2 GHG emissions",
+          "Yes",
+          "Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.62"
+        ],
+        [
+          "29(a)(i)(3);Disclose its Scope 3 GHG emissions",
+          "Few",
+          "Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...)",
+          "95.72"
+        ],
+        [
+          "29(a)(ii);GHG measurement according to Corporate Accounting and Reporting Standard 2024, or required by juridictional authority with this methodology (see paragraph B23-B25)",
+          "Yes",
+          "Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 11 (Economic Forum Global Risks Report 2017 12th Edition. 2 GRI’s Sustainability Topics for Sectors and...)",
+          "96.62"
+        ],
+        [
+          "29(a)(iii);Disclose the approach it uses to measure its GHG emissions (see B26–B29)",
+          "Yes",
+          "Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...)",
+          "96.42"
+        ],
+        [
+          "29(a)(iii)(1);Disclose the measurement approach, inputs, and assumptions used to measure its GHG emissions",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "96.31"
+        ],
+        [
+          "29(a)(iii)(2);Disclose the reasons why it chose its measurement approach, inputs, and assumptions to measure its GHG emissions",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.23"
+        ],
+        [
+          "29(a)(iii)(3);Disclose any changes made to its measurement approach, inputs, and assumptions during the reporting period, and the reasons for those changes",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "95.12"
+        ],
+        [
+          "29(a)(iv);Disclose Scope 1 and Scope 2 greenhouse gas emissions",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "94.59"
+        ],
+        [
+          "29(a)(iv)(1);Disclose Scope 1 and Scope 2 greenhouse gas emissions from the consolidated accounting group",
+          "Yes",
+          "Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "95.73"
+        ],
+        [
+          "29(a)(iv)(2);Disclose Scope 1 and Scope 2 greenhouse gas emissions from the other investees, including associates, joint ventures, and unconsolidated subsidiaries",
+          "Yes",
+          "Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 28 (A list of the main memberships of industry or other associations, and national or international advo...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 22 (Based on scope 1,2 & 3 emission in calendar year 2015, SHV’s carbon emissions was 76,6646 tonnes of...)",
+          "96.34"
+        ],
+        [
+          "29(a)(v);Scope 2 GHG emissions are disclosed on a location-based basis, with information provided about contractual instruments relevant to users’ understanding",
+          "Yes",
+          "Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.26"
+        ],
+        [
+          "29(a)(vi)(1);Scope 3 GHG emissions disclosure identifies which categories are included, consistent with the GHG Protocol Corporate Value Chain Standard (2011).",
+          "Yes",
+          "Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 9 (The development of this report has been informed by the Global Reporting Initiative (GRI) Standards....), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...)",
+          "96.06"
+        ],
+        [
+          "29(a)(vi)(2);If engaged in asset management, commercial banking, or insurance, Scope 3 disclosure includes additional information on Category 15 financed emissions.",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.65"
+        ],
+        [
+          "29(b);Amount and % of assets/business activities vulnerable to climate-related transition risks",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (The Board of Directors is responsible for guiding and monitoring the company on behalf of the shareh...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.00"
+        ],
+        [
+          "29(c);Amount and % of assets/business activities vulnerable to climate-related physical risks",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "95.96"
+        ],
+        [
+          "29(d);Amount and % of assets/business activities aligned with climate-related opportunities",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "96.81"
+        ],
+        [
+          "29(e);Amount of capital expenditure, financing, or investment deployed towards climate-related risks and opportunities",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...)",
+          "96.73"
+        ],
+        [
+          "29(f)(i);Disclosure of whether and how an internal carbon price is applied in decision-making (e.g., investments, transfer pricing, scenario analysis)",
+          "Yes",
+          "Page 20 (Our approach to mitigate these risks is guided by our risk management strategy. We are cognisant of...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.43"
+        ],
+        [
+          "29(f)(ii);Disclosure of the carbon price per metric tonne of GHG emissions used to assess costs",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.07"
+        ],
+        [
+          "29(g)(i);Disclosure of whether and how climate-related considerations are factored into executive remuneration",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our team is committed to sustainable farm management practices and closely monitors all resources th...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "95.90"
+        ],
+        [
+          "29(g)(ii);Disclosure of the percentage of executive remuneration in the current period linked to climate-related considerations",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...)",
+          "97.37"
+        ],
+        [
+          "30;Disclosures under 29(b)–(d) are prepared using all reasonable and supportable information available at the reporting date, without undue cost or effort.",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 28 (A statement from the most senior decision-maker of the organisation about the relevance of sustainab...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "95.91"
+        ],
+        [
+          "31;Disclosures under 29(b)–(g) are prepared with reference to guidance in paragraphs B64–B65",
+          "Yes",
+          "Page 29 (Page 16 1 Disclosure descriptions have been summarised. For detailed descriptions refer to the GRI S...), Page 28 (Page 7 http://selectharvests.com.au/governance/ 1 Disclosure descriptions have been summarised. For...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 30 (1 Disclosure descriptions have been summarised. For detailed descriptions refer to the GRI Standards...)",
+          "96.92"
+        ]
+      ],
+      "Climate-related targets": [
+        [
+          "33;Quantitative and qualitative climate-related targets set by the entity (including legally required targets and GHG emissions targets) are disclosed.",
+          "Yes",
+          "Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "97.01"
+        ],
+        [
+          "33(a);The metric used to set the target is disclosed.",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "33(b);Objective of the target (e.g., mitigation, adaptation, science-based initiatives)",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.43"
+        ],
+        [
+          "33(c);Part of the entity the target applies to",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "33(d);Period over which the target applies",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "33(e);Base period from which progress is measured",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "33(f);Milestones and interim targets",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "33(g);Whether the target is absolute or intensity-based",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Our diversification strategy will add circa 5% (338) productive hectares in lower water stress regio...)",
+          "95.66"
+        ],
+        [
+          "33(h);How the latest international agreement on climate change, including jurisdictional commitments, has informed the target.",
+          "Yes",
+          "Page 20 (Agreement (http://unfccc.int/2860.php) which commits to hold the increase in the global average temp...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...)",
+          "96.51"
+        ],
+        [
+          "34;Disclosure of the approach to setting and reviewing each climate-related target, and how progress is monitored.",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 11 (In this first report, we have not undertaken any specific external stakeholder engagement to determi...)",
+          "97.16"
+        ],
+        [
+          "34(a);Whether the target and methodology for setting it have been validated by a third party",
+          "Yes",
+          "Page 21 (Our orchard management team reviews the irrigation and fertigation application on a weekly basis to...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "96.17"
+        ],
+        [
+          "34(b);Processes used to reviewing the target",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "34(c);Metrics used to monitor target progress",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "34(d);Revisions to the target and reasons",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "35;Performance against each climate-related target and trend or changes in performance analysis",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (A desktop review to develop a longer list of sustainability impacts • Review of company risk registe...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...)",
+          "97.21"
+        ],
+        [
+          "36(a);GHG emissions target, disclosure of which greenhouse gases are covered.",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Select Harvests refers to all our subsidiaries and the information in this report covers all sites w...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.83"
+        ],
+        [
+          "36(b);Whether Scope 1, 2, or 3 GHG are covered by the target",
+          "Yes",
+          "Page 9 (Our approach to sustainability is focused on three key strategic priority areas: 1. Developing benef...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...)",
+          "95.27"
+        ],
+        [
+          "36(c);For each GHG emissions target, disclosure of whether it is gross or net. If net, gross target must also be disclosed.",
+          "Yes",
+          "Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 9 (Venture (JV) farms. The report does not cover investment entities where we do not have operational c...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.16"
+        ],
+        [
+          "36(d);Target was derived using a sectoral decarbonisation approach",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...)",
+          "96.81"
+        ],
+        [
+          "36(e);Disclosure of the entity’s planned use of carbon credits to offset GHG emissions in achieving net targets",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 18 (Control Point (HACCP) principles to manage and control food safety, regulatory and quality risks thr...)",
+          "97.07"
+        ],
+        [
+          "36(e)(i);Disclosure of the extent to which, and how, achieving any net target relies on carbon credits.",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 21 (Water management is critical to our agriculture based operation. Water will always be a high priorit...), Page 9 (Our first report covers activities across the business for the 12-month period to the end of FY 2017...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...), Page 18 (Practices (GMP) are the rules and conditions used to ensure the safety of the products across the su...)",
+          "96.34"
+        ],
+        [
+          "36(e)(ii);Third-party schemes verify/certify the carbon credits",
+          "No",
+          "",
+          "0.00"
+        ],
+        [
+          "36(e)(iii);Type of carbon credit (nature-based, tech-based, removal/reduction)",
+          "Yes",
+          "Page 24 (As a result of the Project H2E construction, all farm waste produced from our harvest operations wil...), Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 9 (Select Harvests aims to operate a sustainable business based on 3 platforms: environmental, social/w...), Page 28 (A list of externally-developed economic, environmental and social charters, principles, or other ini...), Page 21 (As these trees grow into full maturity our production will increase from regions of lower water stre...)",
+          "96.00"
+        ],
+        [
+          "36(e)(iv);Disclore of other factors relevant to credibility and integrity of carbon credits",
+          "Yes",
+          "Page 20 (Our business relies on efficient orchard production, which is the main source of revenue. Our growin...), Page 24 (Our diversification strategy with acquisition of productive and new acreage is aimed at mitigating t...)",
+          "96.39"
+        ],
+        [
+          "Aus37.1;In setting and monitoring progress towards targets (paras 33–34), the entity refers to and considers the applicability of cross-industry metrics (para 29).",
+          "Yes",
+          "Page 20 (Weather events have always represented a source of risk and potential disruption to any horticultura...), Page 9 (Management Standard AS/NZ ISO 31000:2009) is in place to identify, analyse, assess, manage and monit...), Page 21 (To secure water supply our team uses a diverse water strategy that analyses risks and manages the wa...), Page 11 (In developing the content of our report, we have been guided by the GRI’s principles for defining re...), Page 24 (We are progressing a program to install low energy LED lights across all of our almond processing fa...)",
+          "96.64"
+        ]
+      ]
+    }
+  }
+}

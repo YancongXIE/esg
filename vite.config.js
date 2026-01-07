@@ -31,11 +31,12 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/esgtoday/, ''),
       },
       // Proxy for ESG dashboard backend (PDF processing)
-      // 前端调用相对路径 `/dashboard_process`，由 Vite 代理到后端 IP
+      // 前端调用相对路径 `/dashboard_process`，由 Vite 代理到后端服务器
+      // 注意：证书主机名为 esg.rmit-aihub.org.au，使用该主机名以避免证书错误
       '/dashboard_process': {
-        target: 'https://3.24.35.11',
+        target: 'https://esg.rmit-aihub.org.au',
         changeOrigin: true,
-        secure: false, // 接受自签名证书，仅用于开发环境
+        secure: true, // 使用证书中的实际主机名，证书验证应该通过
       }
     }
   }

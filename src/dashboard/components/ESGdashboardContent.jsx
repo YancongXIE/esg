@@ -13,7 +13,6 @@ const esgOptions = ['GRI', 'AASB S2', 'AASB Scope 3'];
 const processData = (data) => {
   // Validate data structure
   if (!data || typeof data !== 'object') {
-    console.error('Invalid data structure:', data);
     return {};
   }
   
@@ -25,7 +24,6 @@ const processData = (data) => {
     
     // Validate category data
     if (!categoryData || typeof categoryData !== 'object') {
-      console.warn(`Invalid category data for ${category}:`, categoryData);
       return;
     }
     
@@ -37,7 +35,6 @@ const processData = (data) => {
       
       // Validate subcategory data
       if (!subCategoryData || typeof subCategoryData !== 'object') {
-        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
         return;
       }
       
@@ -55,7 +52,6 @@ const processData = (data) => {
         
         // Validate criterion data format
         if (!criterionData) {
-          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
           return;
         }
         
@@ -106,7 +102,6 @@ const processData = (data) => {
 const calculateComplianceRate = (data) => {
   // Validate data structure
   if (!data || typeof data !== 'object') {
-    console.error('Invalid data structure in calculateComplianceRate:', data);
     return 0;
   }
   
@@ -118,7 +113,6 @@ const calculateComplianceRate = (data) => {
     
     // Validate category data
     if (!categoryData || typeof categoryData !== 'object') {
-      console.warn(`Invalid category data for ${category}:`, categoryData);
       return;
     }
     
@@ -127,7 +121,6 @@ const calculateComplianceRate = (data) => {
       
       // Validate subcategory data
       if (!subCategoryData || typeof subCategoryData !== 'object') {
-        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
         return;
       }
       
@@ -141,7 +134,6 @@ const calculateComplianceRate = (data) => {
         
         // Validate criterion data format
         if (!criterionData) {
-          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
           return;
         }
         
@@ -181,7 +173,6 @@ const calculateComplianceRate = (data) => {
 const calculateGreenwashingRisk = (data) => {
   // Validate data structure
   if (!data || typeof data !== 'object') {
-    console.error('Invalid data structure in calculateGreenwashingRisk:', data);
     return 0;
   }
   
@@ -193,7 +184,6 @@ const calculateGreenwashingRisk = (data) => {
     
     // Validate category data
     if (!categoryData || typeof categoryData !== 'object') {
-      console.warn(`Invalid category data for ${category}:`, categoryData);
       return;
     }
     
@@ -202,7 +192,6 @@ const calculateGreenwashingRisk = (data) => {
       
       // Validate subcategory data
       if (!subCategoryData || typeof subCategoryData !== 'object') {
-        console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
         return;
       }
       
@@ -216,7 +205,6 @@ const calculateGreenwashingRisk = (data) => {
         
         // Validate criterion data format
         if (!criterionData) {
-          console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
           return;
         }
         
@@ -287,8 +275,10 @@ export default function ESGdashboardContent() {
   const [esgData, setEsgData] = React.useState(null); // 保留用于兼容性（合并数据）
   const [griData, setGriData] = React.useState(null); // GRI 标准数据
   const [s2Data, setS2Data] = React.useState(null); // AASB S2 标准数据
+  const [s3Data, setS3Data] = React.useState(null); // AASB Scope 3 标准数据
   const [griComplianceData, setGriComplianceData] = React.useState(null); // GRI 合规数据
   const [s2ComplianceData, setS2ComplianceData] = React.useState(null); // S2 合规数据
+  const [s3ComplianceData, setS3ComplianceData] = React.useState(null); // S3 合规数据
   const [complianceData, setComplianceData] = React.useState(null); // 保留用于兼容性（合并数据）
   const [rawStandardsData, setRawStandardsData] = React.useState(null); // 保存原始数据供 LLM 使用
   
@@ -318,9 +308,9 @@ export default function ESGdashboardContent() {
   // 统一结构: { category: { subCategory: { criterionKey: [criteriaName, result, details, value] } } }
   
   // 归一化 S2 数据（数组格式）
+  // 格式：results.s2.Scope = [[criteriaName, result, details, value], ...]
   const normalizeS2Data = (s2Data) => {
     if (!s2Data || typeof s2Data !== 'object') {
-      console.warn('normalizeS2Data: invalid s2 data', s2Data);
       return null;
     }
 
@@ -329,7 +319,6 @@ export default function ESGdashboardContent() {
     Object.keys(s2Data).forEach((categoryName) => {
       const items = s2Data[categoryName];
       if (!Array.isArray(items)) {
-        console.warn(`normalizeS2Data: ${categoryName} is not an array`, items);
         return;
       }
 
@@ -337,16 +326,12 @@ export default function ESGdashboardContent() {
       const subCategoryObj = {};
 
       items.forEach((item, idx) => {
-        if (!Array.isArray(item) || item.length === 0) {
+        // 直接处理数组格式：[criteriaName, result, details, value]
+        if (!Array.isArray(item) || item.length < 2) {
           return;
         }
 
-        const first = item[0];
-        if (!Array.isArray(first) || first.length < 2) {
-          return;
-        }
-
-        const [criteriaName, result, details = '', value = ''] = first;
+        const [criteriaName, result, details = '', value = ''] = item;
         if (!criteriaName || result === undefined || result === null) {
           return;
         }
@@ -367,58 +352,98 @@ export default function ESGdashboardContent() {
   };
 
   // 归一化 GRI 数据（嵌套对象格式）
+  // 格式：results.gri.Environmental.Energy = [[criteriaName, result, details, value], ...]
   const normalizeGRIData = (griData) => {
     if (!griData || typeof griData !== 'object') {
-      console.warn('normalizeGRIData: invalid gri data', griData);
       return null;
     }
 
     const normalized = {};
 
     Object.keys(griData).forEach((categoryName) => {
+      // 大类：Environmental, Social, Governance
       const categoryData = griData[categoryName];
       if (!categoryData || typeof categoryData !== 'object') {
-        console.warn(`normalizeGRIData: ${categoryName} is not an object`, categoryData);
         return;
       }
 
       normalized[categoryName] = {};
 
       Object.keys(categoryData).forEach((subCategoryName) => {
+        // 小类：Energy, Water, Waste, etc.
         const subCategoryData = categoryData[subCategoryName];
-        if (!subCategoryData || typeof subCategoryData !== 'object') {
-          console.warn(`normalizeGRIData: ${categoryName}/${subCategoryName} is not an object`, subCategoryData);
+        
+        // GRI 数据格式：subCategoryData 是一个数组，每个元素是 [criteriaName, result, details, value]
+        if (!Array.isArray(subCategoryData)) {
           return;
         }
 
         const subCategoryObj = {};
 
-        Object.keys(subCategoryData).forEach((criterionKey, idx) => {
-          const criterionData = subCategoryData[criterionKey];
-          
-          // GRI 数据可能是数组格式 [criteriaName, result, details, value] 或对象格式
-          if (Array.isArray(criterionData)) {
-            if (criterionData.length >= 2) {
-              const [criteriaName, result, details = '', value = ''] = criterionData;
-              if (criteriaName && result !== undefined && result !== null) {
-                subCategoryObj[criterionKey] = [criteriaName, result, details, value];
-              }
-            }
-          } else if (criterionData && typeof criterionData === 'object') {
-            // 对象格式：{ result, details, ... }
-            const result = criterionData.result || criterionData.compliance;
-            const details = criterionData.details || criterionData.text || '';
-            const criteriaName = criterionData.criteriaName || criterionKey;
-            if (result !== undefined && result !== null) {
-              subCategoryObj[criterionKey] = [criteriaName, result, details, ''];
-            }
+        subCategoryData.forEach((item, idx) => {
+          // 每个 item 是数组格式：[criteriaName, result, details, value]
+          if (!Array.isArray(item) || item.length < 2) {
+            return;
           }
+
+          const [criteriaName, result, details = '', value = ''] = item;
+          if (!criteriaName || result === undefined || result === null) {
+            return;
+          }
+
+          const key = `${subCategoryName}_${idx}`;
+          subCategoryObj[key] = [criteriaName, result, details, value];
         });
 
         if (Object.keys(subCategoryObj).length > 0) {
           normalized[categoryName][subCategoryName] = subCategoryObj;
         }
       });
+    });
+
+    return normalized;
+  };
+
+  // 归一化 Scope 3 数据（数组格式，类似 S2）
+  // 格式：results.scope3["Scope 3 Categories"] = [[criteriaName, result, details, value], ...]
+  const normalizeS3Data = (s3Data) => {
+    if (!s3Data || typeof s3Data !== 'object') {
+      return null;
+    }
+
+    const normalized = {};
+
+    Object.keys(s3Data).forEach((categoryName) => {
+      const items = s3Data[categoryName];
+      
+      if (!Array.isArray(items)) {
+        return;
+      }
+
+      const subCategoryName = categoryName;
+      const subCategoryObj = {};
+
+      items.forEach((item, idx) => {
+        // 直接处理数组格式：[criteriaName, result, details, value]
+        if (!Array.isArray(item) || item.length < 2) {
+          return;
+        }
+
+        const [criteriaName, result, details = '', value = ''] = item;
+        if (!criteriaName || result === undefined || result === null) {
+          return;
+        }
+
+        const key = `${categoryName}_${idx}`;
+        subCategoryObj[key] = [criteriaName, result, details, value];
+      });
+
+      if (Object.keys(subCategoryObj).length > 0) {
+        if (!normalized[categoryName]) {
+          normalized[categoryName] = {};
+        }
+        normalized[categoryName][subCategoryName] = subCategoryObj;
+      }
     });
 
     return normalized;
@@ -460,40 +485,30 @@ export default function ESGdashboardContent() {
 
   // Handle verify report
   const handleVerifyReport = async () => {
-    console.log('========================================');
-    console.log('🔘 VERIFY REPORT BUTTON CLICKED');
-    console.log('========================================');
-    console.log('Uploaded File:', uploadedFile ? uploadedFile.name : 'None');
-    console.log('Selected ESG Standards:', esg);
     
     if (!uploadedFile) {
-      console.error('❌ No PDF file uploaded');
       setVerificationError('Please upload a PDF report');
       return;
     }
 
     // Validate that at least one ESG standard is selected
     if (!esg || esg.length === 0) {
-      console.error('❌ No ESG standard selected');
       setVerificationError('Please select at least one ESG standard');
       return;
     }
 
-    console.log('✅ Validation passed, starting API call...');
     setIsVerifying(true);
     setVerificationError(null);
 
     try {
       // New API call: send PDF + array of selected standard names
       // e.g., if user selects ["GRI", "AASB S2"], it will send ["gri", "s2"]
-      console.log('📞 Calling sendReportToServer...');
       const result = await sendReportToServer(uploadedFile, esg);
       
       if (result.success) {
         // Extract the actual data from the server response
         // 新服务器返回结构: { gri: {...}, s2: {...}, s3: {...} }
         const serverData = result.data;
-        console.log('✅ Raw server data:', serverData);
         
         // Check if data has the expected structure
         if (serverData && typeof serverData === 'object') {
@@ -510,7 +525,6 @@ export default function ESGdashboardContent() {
               setS2Data(normalizedS2);
               const s2Compliance = calculateComplianceFromData(normalizedS2);
               setS2ComplianceData(s2Compliance);
-              console.log('✅ Normalized S2 data:', normalizedS2);
               hasValidData = true;
             }
           }
@@ -522,15 +536,20 @@ export default function ESGdashboardContent() {
               setGriData(normalizedGRI);
               const griCompliance = calculateComplianceFromData(normalizedGRI);
               setGriComplianceData(griCompliance);
-              console.log('✅ Normalized GRI data:', normalizedGRI);
               hasValidData = true;
             }
           }
           
-          // S3 暂时跳过（如果有错误）
-          if (serverData.s3 && !serverData.s3.error) {
-            // 如果 S3 有数据，可以在这里添加归一化逻辑
-            console.log('S3 data available:', serverData.s3);
+          // 处理 Scope 3 数据（支持 scope3 和 s3 两种字段名）
+          const s3DataRaw = serverData.scope3 || serverData.s3;
+          if (s3DataRaw && !s3DataRaw.error) {
+            const normalizedS3 = normalizeS3Data(s3DataRaw);
+            if (normalizedS3 && Object.keys(normalizedS3).length > 0) {
+              setS3Data(normalizedS3);
+              const s3Compliance = calculateComplianceFromData(normalizedS3);
+              setS3ComplianceData(s3Compliance);
+              hasValidData = true;
+            }
           }
           
           // 为了兼容性，也保存合并的数据（用于 LLM 等）
@@ -544,6 +563,11 @@ export default function ESGdashboardContent() {
               const normalizedGRI = normalizeGRIData(serverData.gri);
               if (normalizedGRI) normalizedStandards.gri = normalizedGRI;
             }
+            const s3DataRaw = serverData.scope3 || serverData.s3;
+            if (s3DataRaw && !s3DataRaw.error) {
+              const normalizedS3 = normalizeS3Data(s3DataRaw);
+              if (normalizedS3) normalizedStandards.scope3 = normalizedS3;
+            }
             
             const mergedData = mergeStandardsData(normalizedStandards);
             setEsgData(mergedData);
@@ -552,19 +576,15 @@ export default function ESGdashboardContent() {
             const complianceResult = calculateComplianceFromData(mergedData);
             setComplianceData(complianceResult);
           } else {
-            console.error('Failed to normalize any standard data from server response:', serverData);
             setVerificationError('No valid ESG standard data found in server response');
           }
         } else {
-          console.error('Invalid data structure received from server:', serverData);
           setVerificationError('Invalid data structure received from server');
         }
       } else {
-        console.error('Server returned error:', result.error);
         setVerificationError(result.error || 'Failed to verify report');
       }
     } catch (error) {
-      console.error('Verification error:', error);
       setVerificationError(error.message || 'An error occurred during verification');
     } finally {
       setIsVerifying(false);
@@ -573,12 +593,7 @@ export default function ESGdashboardContent() {
 
   // Generate and download PDF report
   const generatePDFReport = () => {
-    console.log('PDF generation started');
-    console.log('esgData:', esgData);
-    console.log('complianceData:', complianceData);
-    
     if (!esgData || !complianceData) {
-      console.error('Missing data for PDF generation');
       alert('No analysis data available. Please run the analysis first.');
       return;
     }
@@ -864,7 +879,6 @@ export default function ESGdashboardContent() {
       // Prepare table data
       const tableData = [];
       const filteredData = getFilteredData();
-      console.log('filteredData:', filteredData);
       
       Object.keys(filteredData).forEach(category => {
         const categoryData = filteredData[category];
@@ -882,7 +896,6 @@ export default function ESGdashboardContent() {
         });
       });
 
-      console.log('tableData:', tableData);
 
       // Add table
       if (tableData.length > 0) {
@@ -918,7 +931,6 @@ export default function ESGdashboardContent() {
             },
           });
         } catch (tableError) {
-          console.warn('AutoTable failed, using simple text format:', tableError);
           // Fallback to simple text format
           doc.setFontSize(12);
           doc.setFont('helvetica', 'normal');
@@ -950,11 +962,8 @@ export default function ESGdashboardContent() {
 
       // Download the PDF
       const fileName = `ESG_Verification_Report_${new Date().toISOString().split('T')[0]}.pdf`;
-      console.log('Saving PDF as:', fileName);
       doc.save(fileName);
-      console.log('PDF generation completed successfully');
     } catch (error) {
-      console.error('Error generating PDF:', error);
       alert('Error generating PDF report. Please try again.');
     }
   };
@@ -963,7 +972,6 @@ export default function ESGdashboardContent() {
   const calculateComplianceFromData = (data) => {
     // Validate data structure
     if (!data || typeof data !== 'object') {
-      console.error('Invalid data structure in calculateComplianceFromData:', data);
       return {
         overall: {
           totalCriteria: 0,
@@ -984,7 +992,6 @@ export default function ESGdashboardContent() {
       
       // Validate category data
       if (!categoryData || typeof categoryData !== 'object') {
-        console.warn(`Invalid category data for ${category}:`, categoryData);
         return;
       }
       
@@ -993,7 +1000,6 @@ export default function ESGdashboardContent() {
         
         // Validate subcategory data
         if (!subCategoryData || typeof subCategoryData !== 'object') {
-          console.warn(`Invalid subcategory data for ${category}/${subCategory}:`, subCategoryData);
           return;
         }
         
@@ -1007,7 +1013,6 @@ export default function ESGdashboardContent() {
           
           // Validate criterion data format
           if (!criterionData) {
-            console.warn(`Invalid criterion data for ${category}/${subCategory}/${criterion}:`, criterionData);
             return;
           }
           
@@ -1353,6 +1358,11 @@ export default function ESGdashboardContent() {
   const griComplianceRate = griComplianceData?.overall?.complianceRate || 0;
   const griGreenwashingRisk = griComplianceData?.overall?.greenwashingRisk || 0;
 
+  // Process data for Scope 3
+  const processedS3Data = s3Data ? processData(s3Data) : {};
+  const s3ComplianceRate = s3ComplianceData?.overall?.complianceRate || 0;
+  const s3GreenwashingRisk = s3ComplianceData?.overall?.greenwashingRisk || 0;
+
   // Helper function to get ratio from processed data (for S2)
   const getRatioFromS2Data = (categoryName) => {
     if (!processedS2Data || Object.keys(processedS2Data).length === 0) return '0 out of 0';
@@ -1483,6 +1493,38 @@ export default function ESGdashboardContent() {
     { label: 'Compliant Rate', value: `${s2ComplianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
   ];
 
+  // Helper function to get ratio from Scope 3 data (类似 S2)
+  const getRatioFromS3Data = (categoryName) => {
+    if (!processedS3Data || Object.keys(processedS3Data).length === 0) return '0 out of 0';
+    
+    // Try different possible data structures
+    const possiblePaths = [
+      processedS3Data[categoryName]?.[categoryName]?.ratio,
+      processedS3Data[categoryName]?.ratio,
+      // Try with mapped category names
+      Object.values(processedS3Data).find(cat => 
+        Object.keys(cat).some(subCat => 
+          subCat.toLowerCase().includes(categoryName.toLowerCase())
+        )
+      )?.ratio
+    ];
+    
+    for (const path of possiblePaths) {
+      if (path) return path;
+    }
+    
+    // If no direct match, try to find by partial name matching
+    for (const category in processedS3Data) {
+      for (const subCategory in processedS3Data[category]) {
+        if (subCategory.toLowerCase().includes(categoryName.toLowerCase())) {
+          return processedS3Data[category][subCategory].ratio;
+        }
+      }
+    }
+    
+    return '0 out of 0';
+  };
+
   // Define GRI summary card data (Environmental, Social, Governance)
   const griSummaryCards = [
     { label: 'Environmental', value: getRatioFromGriData('Environmental') },
@@ -1490,6 +1532,18 @@ export default function ESGdashboardContent() {
     { label: 'Governance', value: getRatioFromGriData('Governance') },
     { label: 'Greenwashing Risk', value: `${griGreenwashingRisk}%`, highlight: true, warning: true },
     { label: 'Compliant Rate', value: `${griComplianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
+  ];
+
+  // Define Scope 3 summary card data
+  const s3SummaryCards = [
+    { label: 'Scope 3 Categories', value: getRatioFromS3Data('Scope 3 Categories') },
+    { label: 'Greenhouse Gas Protocol', value: getRatioFromS3Data('Greenhouse Gas Protocol') },
+    { label: 'Measurement Approach', value: getRatioFromS3Data('Measurement Approach, inputs and assumptions') },
+    { label: 'Scope 3 Emissions', value: getRatioFromS3Data('Scope 3 greenhouse gas emissions') },
+    { label: 'Measurement Framework', value: getRatioFromS3Data('Scope 3 meaurement framework') },
+    { label: 'Data Disclosure', value: getRatioFromS3Data('Disclosure of inputs to Scope 3 greenhouse gas emissions') },
+    { label: 'Greenwashing Risk', value: `${s3GreenwashingRisk}%`, highlight: true, warning: true },
+    { label: 'Compliant Rate', value: `${s3ComplianceRate}%`, highlight: true, warning: true, sub: 'vs prev 11.6K (+10%)', subColor: 'success.main' },
   ];
 
   // Handle detail expansion
@@ -2296,7 +2350,7 @@ export default function ESGdashboardContent() {
           <Typography component="h2" variant="h6">
             Summary
           </Typography>
-          {(griData || s2Data) && !isVerifying && (
+          {(griData || s2Data || s3Data) && !isVerifying && (
             <Button
               variant="contained"
               color="primary"
@@ -2357,8 +2411,23 @@ export default function ESGdashboardContent() {
               </Box>
             )}
 
+            {/* AASB Scope 3 Summary Section */}
+            {s3Data && esg.includes('AASB Scope 3') && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+                  AASB Scope 3 (Greenhouse Gas Emissions)
+                </Typography>
+                {renderSummaryCards(
+                  s3SummaryCards,
+                  'S3',
+                  handleCardClickWithStandard,
+                  selectedCard?.startsWith('S3-') ? selectedCard.replace('S3-', '') : null
+                )}
+              </Box>
+            )}
+
             {/* If no data and not verifying, show prompt message */}
-            {!griData && !s2Data && !isVerifying && (
+            {!griData && !s2Data && !s3Data && !isVerifying && (
               <Box sx={{ textAlign: 'center', py: 8 }}>
                 <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
                   Upload your sustainability report to get started
@@ -2373,7 +2442,7 @@ export default function ESGdashboardContent() {
       </Box>
 
       {/* Details Section */}
-      {(griData || s2Data || isVerifying) && (
+      {(griData || s2Data || s3Data || isVerifying) && (
         <Box id="details">
           {/* Details Cards Area */}
           <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -2416,13 +2485,25 @@ export default function ESGdashboardContent() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* AASB Scope 3 Details Section */}
+              {s3Data && esg.includes('AASB Scope 3') && (
+                <Card variant="outlined" sx={{ height: 600, mb: 2 }}>
+                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+                    <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2, flexShrink: 0 }}>
+                      AASB Scope 3 Criteria Details
+                    </Typography>
+                    {renderDetailsTable(s3Data, 'S3')}
+                  </CardContent>
+                </Card>
+              )}
             </>
           )}
         </Box>
       )}
 
       {/* AI Recommendations Section */}
-      {(griData || s2Data) && !isVerifying && (
+      {(griData || s2Data || s3Data) && !isVerifying && (
         <Box id="ai-recommendations" sx={{ mt: 4 }}>
           <Grid container spacing={2} columns={12}>
             <Grid size={{ xs: 12 }}>
