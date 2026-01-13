@@ -31,9 +31,9 @@ const PriorityChip = ({ priority }) => {
       case 'High':
         return { bg: theme.palette.error.main, color: 'white' };
       case 'Medium':
-        return { bg: theme.palette.warning.main, color: 'white' };
+        return { bg: '#f5e639', color: 'black' };
       case 'Low':
-        return { bg: theme.palette.success.main, color: 'white' };
+        return { bg: '#4caf50', color: 'white' };
       default:
         return { bg: theme.palette.grey[500], color: 'white' };
     }
@@ -57,35 +57,17 @@ const PriorityChip = ({ priority }) => {
 };
 
 const CategoryChip = ({ category }) => {
-  const theme = useTheme();
-  
-  const getCategoryColor = () => {
-    switch (category) {
-      case 'Governance':
-        return { bg: theme.palette.primary.main, color: 'white' };
-      case 'Environment':
-        return { bg: theme.palette.success.main, color: 'white' };
-      case 'Social':
-        return { bg: theme.palette.secondary.main, color: 'white' };
-      default:
-        return { bg: theme.palette.grey[500], color: 'white' };
-    }
-  };
-
-  const colors = getCategoryColor();
-  
   return (
-    <Chip
-      label={category}
-      size="small"
+    <Typography
+      variant="body2"
       sx={{
-        backgroundColor: colors.bg,
-        color: colors.color,
-        fontWeight: 600,
+        fontWeight: 700,
         fontSize: '0.7rem',
-        height: 20
+        color: 'text.primary'
       }}
-    />
+    >
+      {category}
+    </Typography>
   );
 };
 

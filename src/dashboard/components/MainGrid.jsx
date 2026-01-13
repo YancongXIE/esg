@@ -108,7 +108,7 @@ const taskReminderData = [
 const esgScores = {
   Environmental: { score: 78, status: 'good', color: '#4caf50' },
   Social: { score: 65, status: 'warning', color: '#ff9800' },
-  Governance: { score: 82, status: 'good', color: '#ccc6c6' },
+  Governance: { score: 82, status: 'good', color: '#b4bbb3' },
 };
 
 const priorityActions = [

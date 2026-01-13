@@ -213,6 +213,56 @@ export default function Footer() {
           >
             <LinkedInIcon />
           </IconButton>
+          <IconButton
+            component="a"
+            href="https://rmit-aihub.org.au/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RMIT Enterprise AI Hub"
+            sx={{ 
+              alignSelf: 'center',
+              p: 0.5,
+              '&:hover': {
+                opacity: 0.8
+              }
+            }}
+          >
+            <Box
+              component="img"
+              src="/Enterprise_AI_Hub.png"
+              alt="RMIT Enterprise AI Hub"
+              sx={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain'
+              }}
+            />
+          </IconButton>
+          <IconButton
+            component="a"
+            href="https://www.rmit.edu.au/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RMIT University"
+            sx={{ 
+              alignSelf: 'center',
+              p: 0.5,
+              '&:hover': {
+                opacity: 0.8
+              }
+            }}
+          >
+            <Box
+              component="img"
+              src="/RMIT.png"
+              alt="RMIT University"
+              sx={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain'
+              }}
+            />
+          </IconButton>
         </Stack>
       </Box>
     </Container>

@@ -293,15 +293,62 @@ export default function ESGdashboardContent() {
     content: ''
   });
 
-  // Filter state
-  const [filters, setFilters] = React.useState({
+  // Filter state - 为每个标准创建独立的状态
+  const [griFilters, setGriFilters] = React.useState({
+    category: '',
+    criteria: '',
+    result: ''
+  });
+  const [s2Filters, setS2Filters] = React.useState({
+    category: '',
+    criteria: '',
+    result: ''
+  });
+  const [s3Filters, setS3Filters] = React.useState({
     category: '',
     criteria: '',
     result: ''
   });
 
-  // Card selection state for filtering
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  // Card selection state for filtering - 为每个标准创建独立的状态
+  const [griSelectedCard, setGriSelectedCard] = React.useState(null);
+  const [s2SelectedCard, setS2SelectedCard] = React.useState(null);
+  const [s3SelectedCard, setS3SelectedCard] = React.useState(null);
+  
+  // 辅助函数：根据标准名称获取对应的过滤器和选中卡片
+  const getFiltersForStandard = (standardName) => {
+    switch(standardName) {
+      case 'GRI': return griFilters;
+      case 'S2': return s2Filters;
+      case 'S3': return s3Filters;
+      default: return { category: '', criteria: '', result: '' };
+    }
+  };
+  
+  const getSelectedCardForStandard = (standardName) => {
+    switch(standardName) {
+      case 'GRI': return griSelectedCard;
+      case 'S2': return s2SelectedCard;
+      case 'S3': return s3SelectedCard;
+      default: return null;
+    }
+  };
+  
+  const setFiltersForStandard = (standardName, filters) => {
+    switch(standardName) {
+      case 'GRI': setGriFilters(filters); break;
+      case 'S2': setS2Filters(filters); break;
+      case 'S3': setS3Filters(filters); break;
+    }
+  };
+  
+  const setSelectedCardForStandard = (standardName, card) => {
+    switch(standardName) {
+      case 'GRI': setGriSelectedCard(card); break;
+      case 'S2': setS2SelectedCard(card); break;
+      case 'S3': setS3SelectedCard(card); break;
+    }
+  };
 
   // ===================== 新结果结构适配（服务器返回 { gri, s2, s3 }） =====================
   // 归一化函数：将不同标准的数据转换成统一的嵌套结构
@@ -469,10 +516,10 @@ export default function ESGdashboardContent() {
     return merged;
   };
 
-  // Monitor filter changes
-  React.useEffect(() => {
-    // Filter state changed
-  }, [filters, selectedCard]);
+  // Monitor filter changes (已分离为各标准独立状态，此 useEffect 不再需要)
+  // React.useEffect(() => {
+  //   // Filter state changed
+  // }, [griFilters, s2Filters, s3Filters, griSelectedCard, s2SelectedCard, s3SelectedCard]);
 
   // Handle file upload
   const handleFileUpload = (file, type) => {
@@ -526,6 +573,12 @@ export default function ESGdashboardContent() {
               const s2Compliance = calculateComplianceFromData(normalizedS2);
               setS2ComplianceData(s2Compliance);
               hasValidData = true;
+            } else {
+              // 如果归一化失败，尝试直接使用原始数据
+              if (serverData.s2 && typeof serverData.s2 === 'object' && Object.keys(serverData.s2).length > 0) {
+                setS2Data(serverData.s2);
+                hasValidData = true;
+              }
             }
           }
           
@@ -549,6 +602,12 @@ export default function ESGdashboardContent() {
               const s3Compliance = calculateComplianceFromData(normalizedS3);
               setS3ComplianceData(s3Compliance);
               hasValidData = true;
+            } else {
+              // 如果归一化失败，尝试直接使用原始数据
+              if (s3DataRaw && typeof s3DataRaw === 'object' && Object.keys(s3DataRaw).length > 0) {
+                setS3Data(s3DataRaw);
+                hasValidData = true;
+              }
             }
           }
           
@@ -876,9 +935,9 @@ export default function ESGdashboardContent() {
       doc.text('Detailed Analysis', margin, yPosition);
       yPosition += 15;
 
-      // Prepare table data
+      // Prepare table data (PDF should show all data, no filtering)
       const tableData = [];
-      const filteredData = getFilteredData();
+      const filteredData = esgData || {}; // Use all data for PDF export
       
       Object.keys(filteredData).forEach(category => {
         const categoryData = filteredData[category];
@@ -1122,137 +1181,30 @@ export default function ESGdashboardContent() {
     return Array.from(results).sort();
   };
 
-  // Filter data
+  // Filter data (旧函数，已废弃，保留用于兼容性，但不使用过滤器)
+  // 注意：此函数已不再使用，因为我们现在使用 getFilteredDataForStandard
+  // PDF 导出时直接使用 esgData，不进行过滤
   const getFilteredData = () => {
-    if (!esgData) return {};
-    
-    return Object.keys(esgData).reduce((filtered, category) => {
-      const categoryData = esgData[category];
-      
-      // Validate category data
-      if (!categoryData || typeof categoryData !== 'object') {
-        return filtered;
-      }
-      
-      const filteredCategoryData = {};
-      
-      Object.keys(categoryData).forEach(subCategory => {
-        const subCategoryData = categoryData[subCategory];
-        
-        // Validate subcategory data
-        if (!subCategoryData || typeof subCategoryData !== 'object') {
-          return;
-        }
-        
-        const filteredSubCategoryData = {};
-        
-        Object.keys(subCategoryData).forEach(criterion => {
-          const criterionData = subCategoryData[criterion];
-          
-          // Skip if criterion data is None/null
-          if (criterionData === null || criterionData === undefined) {
-            return;
-          }
-          
-          // Handle different data formats
-          let criteriaName, result, details, value;
-          if (Array.isArray(criterionData)) {
-            // Handle array format: ['criteria_name', 'result', 'details', 'value']
-            if (criterionData.length >= 4) {
-              [criteriaName, result, details, value] = criterionData;
-            } else if (criterionData.length === 2) {
-              [result, details] = criterionData;
-              criteriaName = criterion; // Use criterion key as criteria name
-            } else {
-              result = criterionData[0];
-              details = criterionData[1] || '';
-              criteriaName = criterion;
-            }
-          } else if (typeof criterionData === 'object') {
-            result = criterionData.compliance || criterionData.result;
-            details = criterionData.text || criterionData.details;
-            criteriaName = criterion;
-          } else {
-            result = criterionData;
-            details = '';
-            criteriaName = criterion;
-          }
-          
-          if (result === undefined || result === null) {
-            return;
-          }
-          
-          // Category filter - check both main category and subcategory
-          const mappedCategory = mapCategoryToDisplay(category);
-          
-          // For "standard" category, we need to check if the subcategory matches the card
-          if (filters.category === 'standard' && category === 'standard') {
-            // Check if this subcategory matches the selected card
-            const cardToSubCategoryMap = {
-              'Scope': 'Scope',
-              'Governance': 'Governance',
-              'Strategy': 'Strategy',
-              'Climate-related Risk and Opportunities': 'Climate-related risk and opportunities',
-              'Business Model and Value Chain': 'Business model and value chain',
-              'Strategy and Decision Making': 'Strategy and decision-making',
-              'Financial Position and Financial Performance': 'Financial position, financial performance and cash flows',
-              'Climate Resilience': 'Climate resilience',
-              'Risk Management': 'Risk Management',
-              'Metrics and Targets': 'Metrics and Targets',
-              'Climate-related Metrics': 'Climate-related metrics',
-              'Climate-related Targets': 'Climate-related targets'
-            };
-            
-            const expectedSubCategory = cardToSubCategoryMap[selectedCard];
-            if (expectedSubCategory && subCategory !== expectedSubCategory) {
-              return;
-            }
-          } else if (filters.category && mappedCategory !== filters.category) {
-            return;
-          }
-          
-          // Criteria filter
-          if (filters.criteria && !criteriaName.toLowerCase().includes(filters.criteria.toLowerCase())) {
-            return;
-          }
-          
-          // Result filter
-          if (filters.result && result !== filters.result) {
-            return;
-          }
-          
-          filteredSubCategoryData[criterion] = [criteriaName, result, details, value];
-        });
-        
-        if (Object.keys(filteredSubCategoryData).length > 0) {
-          filteredCategoryData[subCategory] = filteredSubCategoryData;
-        }
-      });
-      
-      if (Object.keys(filteredCategoryData).length > 0) {
-        filtered[category] = filteredCategoryData;
-      }
-      
-      return filtered;
-    }, {});
+    // 返回所有数据，不进行过滤（用于 PDF 导出）
+    return esgData || {};
   };
 
-  // Handle filter change
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
+  // Handle filter change (支持标准名称)
+  const handleFilterChange = (filterType, value, standardName) => {
+    setFiltersForStandard(standardName, prev => ({
       ...prev,
       [filterType]: value
     }));
   };
 
-  // Clear all filters
-  const clearFilters = () => {
-    setFilters({
+  // Clear all filters (支持标准名称)
+  const clearFilters = (standardName) => {
+    setFiltersForStandard(standardName, {
       category: '',
       criteria: '',
       result: ''
     });
-    setSelectedCard(null);
+    setSelectedCardForStandard(standardName, null);
   };
 
   // Handle card click for filtering
@@ -1674,11 +1626,60 @@ export default function ESGdashboardContent() {
   const getFilteredDataForStandard = (data, standardName) => {
     if (!data) return {};
     
+    // 获取当前标准对应的过滤器和选中卡片
+    const filters = getFiltersForStandard(standardName);
+    const currentSelectedCard = getSelectedCardForStandard(standardName);
+    
     return Object.keys(data).reduce((filtered, category) => {
       const categoryData = data[category];
       
       if (!categoryData || typeof categoryData !== 'object') {
         return filtered;
+      }
+      
+      // 应用 category 过滤器
+      // 对于 GRI: category 是 "Environmental", "Social", "Governance"
+      // 对于 S2: category 是 "Scope", "Governance", "Strategy" 等
+      // 对于 S3: category 是 "Scope 3 Categories", "Greenhouse Gas Protocol" 等
+      const mappedCategory = mapCategoryToDisplay(category);
+      
+      // 如果选中了卡片，检查是否匹配
+      if (currentSelectedCard) {
+        // 对于 S2，需要特殊处理卡片到类别的映射
+        if (standardName === 'S2') {
+          const cardToCategoryMap = {
+            'Scope': 'Scope',
+            'Governance': 'Governance',
+            'Strategy': 'Strategy',
+            'Climate-related Risk and Opportunities': 'Climate-related risk and opportunities',
+            'Business Model and Value Chain': 'Business model and value chain',
+            'Strategy and Decision Making': 'Strategy and decision-making',
+            'Financial Position and Financial Performance': 'Financial position, financial performance and cash flows',
+            'Climate Resilience': 'Climate resilience',
+            'Risk Management': 'Risk Management',
+            'Metrics and Targets': 'Metrics and Targets',
+            'Climate-related Metrics': 'Climate-related metrics',
+            'Climate-related Targets': 'Climate-related targets'
+          };
+          const expectedCategory = cardToCategoryMap[currentSelectedCard];
+          if (expectedCategory && category !== expectedCategory) {
+            return filtered;
+          }
+        } else {
+          // 对于 GRI 和 S3，直接比较 category（不区分大小写）
+          const categoryMatch = category.toLowerCase() === currentSelectedCard.toLowerCase() || 
+                               mappedCategory.toLowerCase() === currentSelectedCard.toLowerCase();
+          if (!categoryMatch) {
+            return filtered;
+          }
+        }
+      } else if (filters.category) {
+        // 如果没有选中卡片，使用 filters.category（不区分大小写）
+        const categoryMatch = category.toLowerCase() === filters.category.toLowerCase() || 
+                             mappedCategory.toLowerCase() === filters.category.toLowerCase();
+        if (!categoryMatch) {
+          return filtered;
+        }
       }
       
       const filteredCategoryData = {};
@@ -1725,7 +1726,16 @@ export default function ESGdashboardContent() {
             return;
           }
           
-          // 应用过滤器（这里简化处理，可以根据需要扩展）
+          // 应用 criteria 过滤器
+          if (filters.criteria && criteriaName && !criteriaName.toLowerCase().includes(filters.criteria.toLowerCase())) {
+            return;
+          }
+          
+          // 应用 result 过滤器
+          if (filters.result && result !== filters.result) {
+            return;
+          }
+          
           filteredSubCategoryData[criterion] = [criteriaName, result, details, value];
         });
         
@@ -1745,7 +1755,18 @@ export default function ESGdashboardContent() {
   // 获取唯一类别（支持指定标准）
   const getUniqueCategoriesForStandard = (data) => {
     if (!data) return [];
-    return Object.keys(data).map(category => mapCategoryToDisplay(category));
+    const categories = new Set();
+    Object.keys(data).forEach(category => {
+      // 对于 GRI，直接使用 category 名称（Environmental, Social, Governance）
+      // 对于 S2 和 S3，使用 mapCategoryToDisplay 映射
+      const displayCategory = mapCategoryToDisplay(category);
+      categories.add(displayCategory);
+      // 同时添加原始 category 名称，以便过滤时能匹配
+      if (displayCategory !== category) {
+        categories.add(category);
+      }
+    });
+    return Array.from(categories).sort();
   };
 
   // 获取唯一结果（支持指定标准）
@@ -1784,16 +1805,19 @@ export default function ESGdashboardContent() {
 
   // 处理卡片点击（支持标准名称）
   const handleCardClickWithStandard = (cardLabel, standardName) => {
-    // 这里可以根据需要实现过滤逻辑
-    if (selectedCard === `${standardName}-${cardLabel}`) {
-      setSelectedCard(null);
-      setFilters(prev => ({
+    const currentSelectedCard = getSelectedCardForStandard(standardName);
+    
+    // 如果点击的是已选中的卡片，则取消选择
+    if (currentSelectedCard === cardLabel) {
+      setSelectedCardForStandard(standardName, null);
+      setFiltersForStandard(standardName, prev => ({
         ...prev,
         category: ''
       }));
     } else {
-      setSelectedCard(`${standardName}-${cardLabel}`);
-      setFilters(prev => ({
+      // 否则选择新卡片并设置过滤器
+      setSelectedCardForStandard(standardName, cardLabel);
+      setFiltersForStandard(standardName, prev => ({
         ...prev,
         category: cardLabel,
         criteria: '',
@@ -1807,9 +1831,8 @@ export default function ESGdashboardContent() {
     const filteredData = getFilteredDataForStandard(data, standardName);
     const uniqueCategories = getUniqueCategoriesForStandard(data);
     const uniqueResults = getUniqueResultsForStandard(data);
-    const currentSelectedCard = selectedCard?.startsWith(`${standardName}-`) 
-      ? selectedCard.replace(`${standardName}-`, '') 
-      : null;
+    const filters = getFiltersForStandard(standardName);
+    const currentSelectedCard = getSelectedCardForStandard(standardName);
 
     return (
       <>
@@ -1845,8 +1868,8 @@ export default function ESGdashboardContent() {
                 variant="text"
                 color="primary"
                 onClick={() => {
-                  setSelectedCard(null);
-                  setFilters(prev => ({ ...prev, category: '' }));
+                  setSelectedCardForStandard(standardName, null);
+                  setFiltersForStandard(standardName, prev => ({ ...prev, category: '' }));
                 }}
                 sx={{ 
                   minWidth: 'auto', 
@@ -1865,7 +1888,7 @@ export default function ESGdashboardContent() {
             <InputLabel>Category</InputLabel>
             <Select
               value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
+              onChange={(e) => handleFilterChange('category', e.target.value, standardName)}
               input={<OutlinedInput label="Category" />}
             >
               <MenuItem value="">
@@ -1883,7 +1906,7 @@ export default function ESGdashboardContent() {
             size="small"
             label="Criteria"
             value={filters.criteria}
-            onChange={(e) => handleFilterChange('criteria', e.target.value)}
+            onChange={(e) => handleFilterChange('criteria', e.target.value, standardName)}
             placeholder="Search criteria..."
             sx={{ minWidth: 200 }}
           />
@@ -1892,7 +1915,7 @@ export default function ESGdashboardContent() {
             <InputLabel>Result</InputLabel>
             <Select
               value={filters.result}
-              onChange={(e) => handleFilterChange('result', e.target.value)}
+              onChange={(e) => handleFilterChange('result', e.target.value, standardName)}
               input={<OutlinedInput label="Result" />}
             >
               <MenuItem value="">
@@ -1909,7 +1932,7 @@ export default function ESGdashboardContent() {
           <Button
             variant="outlined"
             size="small"
-            onClick={clearFilters}
+            onClick={() => clearFilters(standardName)}
             sx={{ height: 40 }}
           >
             Clear Filters
@@ -1985,11 +2008,37 @@ export default function ESGdashboardContent() {
               </thead>
               <tbody>
                 {(() => {
+                  // 检查是否有数据
+                  const hasData = Object.keys(filteredData).length > 0;
+                  
+                  if (!hasData) {
+                    return (
+                      <tr>
+                        <td colSpan={4} style={{ 
+                          padding: 24, 
+                          textAlign: 'center', 
+                          color: theme.palette.text.secondary,
+                          border: `1px solid ${theme.palette.divider}`
+                        }}>
+                          <Typography variant="body2">
+                            {Object.keys(data || {}).length === 0 
+                              ? 'No data available for this standard'
+                              : 'No results match the current filters'}
+                          </Typography>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  
                   return Object.keys(filteredData).map((category, categoryIndex) => {
                     const criteria = filteredData[category];
+                    if (!criteria || typeof criteria !== 'object') return null;
                     return Object.keys(criteria).map((subCategory, subCategoryIndex) => {
+                      if (!criteria[subCategory] || typeof criteria[subCategory] !== 'object') return null;
                       return Object.keys(criteria[subCategory]).map((criterion, criterionIndex) => {
-                        const [criteriaName, result, details, value] = criteria[subCategory][criterion];
+                        const criterionData = criteria[subCategory][criterion];
+                        if (!Array.isArray(criterionData) || criterionData.length < 2) return null;
+                        const [criteriaName, result, details, value] = criterionData;
                         const isCompliant = result && typeof result === 'string' && (result.toLowerCase() === 'yes' || result.toLowerCase() === 'few');
                         const isRisk = result && typeof result === 'string' && result.toLowerCase() === 'no';
                         
@@ -2391,7 +2440,7 @@ export default function ESGdashboardContent() {
                   [...s2SummaryCardsRow1, ...s2SummaryCardsRow2],
                   'S2',
                   handleCardClickWithStandard,
-                  selectedCard?.startsWith('S2-') ? selectedCard.replace('S2-', '') : null
+                  getSelectedCardForStandard('S2')
                 )}
               </Box>
             )}
@@ -2406,7 +2455,7 @@ export default function ESGdashboardContent() {
                   griSummaryCards,
                   'GRI',
                   handleCardClickWithStandard,
-                  selectedCard?.startsWith('GRI-') ? selectedCard.replace('GRI-', '') : null
+                  getSelectedCardForStandard('GRI')
                 )}
               </Box>
             )}
@@ -2421,7 +2470,7 @@ export default function ESGdashboardContent() {
                   s3SummaryCards,
                   'S3',
                   handleCardClickWithStandard,
-                  selectedCard?.startsWith('S3-') ? selectedCard.replace('S3-', '') : null
+                  getSelectedCardForStandard('S3')
                 )}
               </Box>
             )}
