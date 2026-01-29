@@ -260,6 +260,30 @@ const mapCategoryToDisplay = (categoryName) => {
   return mapping[categoryName] || categoryName;
 };
 
+// 格式化 Category-wise Summary 中的条目名称
+const formatCategorySummaryLabel = (category, subCategory) => {
+  const displayCategory = mapCategoryToDisplay(category);
+  let label = `${displayCategory} - ${subCategory}`;
+
+  // 1) 避免类似 "SCOPE3_Verify data - Verify data" 的重复
+  // 如果 displayCategory 以 subCategory 结尾，说明已经包含了子项名，就不再追加
+  if (
+    typeof displayCategory === 'string' &&
+    typeof subCategory === 'string' &&
+    displayCategory.toLowerCase().endsWith(subCategory.toLowerCase())
+  ) {
+    label = displayCategory;
+  }
+
+  // 2) 统一做长度截断，避免超长文本占满整行
+  const MAX_LABEL_LENGTH = 80;
+  if (label.length > MAX_LABEL_LENGTH) {
+    label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+  }
+
+  return label;
+};
+
 export default function ESGdashboardContent() {
   const theme = useTheme();
   const [metrics, setMetrics] = React.useState([]);
@@ -735,11 +759,23 @@ export default function ESGdashboardContent() {
         Object.keys(categoryData).forEach(subCategory => {
           const summary = categoryData[subCategory];
           if (summary && summary.ratio) {
-            const categoryText = `${mapCategoryToDisplay(category)} - ${subCategory}`;
+            const categoryText = formatCategorySummaryLabel(category, subCategory);
             const ratioParts = summary.ratio.split(' out of ');
             const ratioText = ratioParts.length === 2
               ? `${ratioParts[0]} out of ${ratioParts[1]}`
               : summary.ratio;
+
+            // 如果当前页剩余空间不足，换到新的一页并加上续页标题
+            if (yPosition > pageHeight - 30) {
+              doc.addPage();
+              yPosition = margin;
+              doc.setFontSize(16);
+              doc.setFont('helvetica', 'bold');
+              doc.text('Category-wise Summary (cont.)', margin, yPosition);
+              yPosition += 15;
+              doc.setFontSize(12);
+              doc.setFont('helvetica', 'normal');
+            }
 
             // Check if text is too long and needs to be split
             if (categoryText.length > 50) {
@@ -759,6 +795,18 @@ export default function ESGdashboardContent() {
               // First line
               doc.text(line1.trim(), margin, yPosition);
               yPosition += 6;
+
+              // 如果第二行要写到页面底部附近，也先分页
+              if (yPosition > pageHeight - 20) {
+                doc.addPage();
+                yPosition = margin;
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Category-wise Summary (cont.)', margin, yPosition);
+                yPosition += 15;
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+              }
               
               // Second line with numbers
               doc.text(line2.trim() + ': ', margin, yPosition);
@@ -779,151 +827,116 @@ export default function ESGdashboardContent() {
       });
       yPosition += 15;
 
-      // Check if we need a new page
+      // Check if we need a new page before AI section
       if (yPosition > pageHeight - 100) {
         doc.addPage();
         yPosition = 20;
       }
 
-      // AASB S2 and Materiality Matrix section
-      doc.setFontSize(16);
-      doc.setFont('helvetica', 'bold');
-      doc.text('AASB S2 and Materiality Matrix', margin, yPosition);
-      yPosition += 15;
+      // ===== AI-Powered Recommendations section (with pagination support) =====
+      const addAIHeader = (isContinuation = false) => {
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text(
+          isContinuation ? 'AI-Powered Recommendations (cont.)' : 'AI-Powered Recommendations',
+          margin,
+          yPosition
+        );
+        yPosition += 15;
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+      };
 
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'normal');
-      doc.text('This section provides analysis of AASB S2 compliance and materiality assessment.', margin, yPosition);
-      yPosition += 10;
-      doc.text('For detailed materiality matrix and heatmap visualization, please refer to the dashboard.', margin, yPosition);
-      yPosition += 20;
+      const ensureAIPageSpace = (lines = 1) => {
+        const lineHeight = 6;
+        if (yPosition + lines * lineHeight > pageHeight - 20) {
+          doc.addPage();
+          yPosition = 20;
+          addAIHeader(true);
+        }
+      };
 
-      // Check if we need a new page
-      if (yPosition > pageHeight - 100) {
-        doc.addPage();
-        yPosition = 20;
-      }
+      const writeAIHeading = (text) => {
+        ensureAIPageSpace(2);
+        doc.setFont('helvetica', 'bold');
+        doc.text(text, margin, yPosition);
+        yPosition += 8;
+        doc.setFont('helvetica', 'normal');
+      };
 
-      // AI Recommendations section
-      doc.setFontSize(16);
-      doc.setFont('helvetica', 'bold');
-      doc.text('AI-Powered Recommendations', margin, yPosition);
-      yPosition += 15;
+      const writeAIBullet = (text) => {
+        ensureAIPageSpace(1);
+        doc.setFont('helvetica', 'normal');
+        doc.text(text, margin, yPosition);
+        yPosition += 6;
+      };
 
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'normal');
-      doc.text('Based on the comprehensive ESG analysis, here are detailed recommendations:', margin, yPosition);
-      yPosition += 10;
+      // 初始 AI 标题
+      addAIHeader(false);
+      writeAIBullet('Based on the comprehensive ESG analysis, here are detailed recommendations:');
+      yPosition += 4;
       
       // Add detailed recommendations based on compliance rate
       if (complianceData.overall.complianceRate < 50) {
-        doc.setFont('helvetica', 'bold');
-        doc.text('CRITICAL PRIORITY - Immediate Action Required:', margin, yPosition);
-        yPosition += 8;
-        doc.setFont('helvetica', 'normal');
-        doc.text('• Implement comprehensive ESG reporting framework immediately', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Establish dedicated ESG team and governance structure', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Conduct gap analysis to identify specific compliance deficiencies', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Develop action plan with clear timelines and responsibilities', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Consider engaging external ESG consultants for expertise', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Implement regular ESG training for all staff levels', margin, yPosition);
-        yPosition += 10;
+        writeAIHeading('CRITICAL PRIORITY - Immediate Action Required:');
+        writeAIBullet('• Implement comprehensive ESG reporting framework immediately');
+        writeAIBullet('• Establish dedicated ESG team and governance structure');
+        writeAIBullet('• Conduct gap analysis to identify specific compliance deficiencies');
+        writeAIBullet('• Develop action plan with clear timelines and responsibilities');
+        writeAIBullet('• Consider engaging external ESG consultants for expertise');
+        writeAIBullet('• Implement regular ESG training for all staff levels');
+        yPosition += 4;
       } else if (complianceData.overall.complianceRate < 80) {
-        doc.setFont('helvetica', 'bold');
-        doc.text('IMPROVEMENT PRIORITY - Focus on Specific Areas:', margin, yPosition);
-        yPosition += 8;
-        doc.setFont('helvetica', 'normal');
-        doc.text('• Identify and address specific ESG criteria with low compliance', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Enhance data collection and reporting processes', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Strengthen ESG risk management and monitoring systems', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Improve stakeholder engagement and communication strategies', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Consider setting up ESG performance metrics and KPIs', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Review and update ESG policies and procedures', margin, yPosition);
-        yPosition += 10;
+        writeAIHeading('IMPROVEMENT PRIORITY - Focus on Specific Areas:');
+        writeAIBullet('• Identify and address specific ESG criteria with low compliance');
+        writeAIBullet('• Enhance data collection and reporting processes');
+        writeAIBullet('• Strengthen ESG risk management and monitoring systems');
+        writeAIBullet('• Improve stakeholder engagement and communication strategies');
+        writeAIBullet('• Consider setting up ESG performance metrics and KPIs');
+        writeAIBullet('• Review and update ESG policies and procedures');
+        yPosition += 4;
       } else {
-        doc.setFont('helvetica', 'bold');
-        doc.text('EXCELLENCE MAINTENANCE - Advanced ESG Initiatives:', margin, yPosition);
-        yPosition += 8;
-        doc.setFont('helvetica', 'normal');
-        doc.text('• Maintain high ESG standards and continue monitoring', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Consider advanced ESG initiatives and stakeholder engagement', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Explore innovative sustainability practices and technologies', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Lead industry best practices and share knowledge', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Consider ESG certification and third-party verification', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Develop long-term sustainability strategy and roadmap', margin, yPosition);
-        yPosition += 10;
+        writeAIHeading('EXCELLENCE MAINTENANCE - Advanced ESG Initiatives:');
+        writeAIBullet('• Maintain high ESG standards and continue monitoring');
+        writeAIBullet('• Consider advanced ESG initiatives and stakeholder engagement');
+        writeAIBullet('• Explore innovative sustainability practices and technologies');
+        writeAIBullet('• Lead industry best practices and share knowledge');
+        writeAIBullet('• Consider ESG certification and third-party verification');
+        writeAIBullet('• Develop long-term sustainability strategy and roadmap');
+        yPosition += 4;
       }
       
       // Add general recommendations for all compliance levels
-      doc.setFont('helvetica', 'bold');
-      doc.text('GENERAL RECOMMENDATIONS FOR ALL ORGANIZATIONS:', margin, yPosition);
-      yPosition += 8;
-      doc.setFont('helvetica', 'normal');
-      doc.text('• Regular review and updates of ESG policies (quarterly recommended)', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Consider third-party ESG verification for enhanced credibility', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Implement ESG performance tracking and reporting systems', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Develop ESG communication strategy for stakeholders', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Stay updated with evolving ESG standards and regulations', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Integrate ESG considerations into business strategy and decision-making', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Establish ESG risk assessment and mitigation procedures', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Consider ESG impact on financial performance and valuation', margin, yPosition);
-      yPosition += 10;
+      writeAIHeading('GENERAL RECOMMENDATIONS FOR ALL ORGANIZATIONS:');
+      writeAIBullet('• Regular review and updates of ESG policies (quarterly recommended)');
+      writeAIBullet('• Consider third-party ESG verification for enhanced credibility');
+      writeAIBullet('• Implement ESG performance tracking and reporting systems');
+      writeAIBullet('• Develop ESG communication strategy for stakeholders');
+      writeAIBullet('• Stay updated with evolving ESG standards and regulations');
+      writeAIBullet('• Integrate ESG considerations into business strategy and decision-making');
+      writeAIBullet('• Establish ESG risk assessment and mitigation procedures');
+      writeAIBullet('• Consider ESG impact on financial performance and valuation');
+      yPosition += 4;
       
       // Add specific recommendations based on greenwashing risk
       if (complianceData.overall.greenwashingRisk > 20) {
-        doc.setFont('helvetica', 'bold');
-        doc.text('GREENWASHING RISK MITIGATION:', margin, yPosition);
-        yPosition += 8;
-        doc.setFont('helvetica', 'normal');
-        doc.text('• Ensure all ESG claims are substantiated with evidence', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Implement transparent reporting and disclosure practices', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Avoid overstating ESG achievements or commitments', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Consider independent ESG verification and certification', margin, yPosition);
-        yPosition += 6;
-        doc.text('• Develop clear ESG communication guidelines', margin, yPosition);
-        yPosition += 10;
+        writeAIHeading('GREENWASHING RISK MITIGATION:');
+        writeAIBullet('• Ensure all ESG claims are substantiated with evidence');
+        writeAIBullet('• Implement transparent reporting and disclosure practices');
+        writeAIBullet('• Avoid overstating ESG achievements or commitments');
+        writeAIBullet('• Consider independent ESG verification and certification');
+        writeAIBullet('• Develop clear ESG communication guidelines');
+        yPosition += 4;
       }
       
       // Add technology and AI recommendations
-      doc.setFont('helvetica', 'bold');
-      doc.text('TECHNOLOGY AND AI ENHANCEMENT:', margin, yPosition);
-      yPosition += 8;
-      doc.setFont('helvetica', 'normal');
-      doc.text('• Leverage AI-powered ESG analysis tools for continuous monitoring', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Implement automated ESG data collection and reporting systems', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Use predictive analytics for ESG risk assessment', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Consider blockchain for ESG data transparency and verification', margin, yPosition);
-      yPosition += 6;
-      doc.text('• Explore ESG-focused fintech solutions and platforms', margin, yPosition);
-      yPosition += 20;
+      writeAIHeading('TECHNOLOGY AND AI ENHANCEMENT:');
+      writeAIBullet('• Leverage AI-powered ESG analysis tools for continuous monitoring');
+      writeAIBullet('• Implement automated ESG data collection and reporting systems');
+      writeAIBullet('• Use predictive analytics for ESG risk assessment');
+      writeAIBullet('• Consider blockchain for ESG data transparency and verification');
+      writeAIBullet('• Explore ESG-focused fintech solutions and platforms');
+      yPosition += 10;
 
       // Check if we need a new page
       if (yPosition > pageHeight - 100) {
