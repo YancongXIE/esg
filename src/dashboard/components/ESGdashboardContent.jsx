@@ -662,6 +662,7 @@ export default function ESGdashboardContent() {
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 20;
+      const valueColumnX = pageWidth - margin; // 右对齐的数值列
       let yPosition = 20;
 
       // Title
@@ -685,27 +686,31 @@ export default function ESGdashboardContent() {
 
       doc.setFontSize(12);
       doc.setFont('helvetica', 'normal');
+      // Overall Compliance Rate
       doc.text('Overall Compliance Rate: ', margin, yPosition);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${complianceData.overall.complianceRate}%`, margin + 85, yPosition);
+      doc.text(`${complianceData.overall.complianceRate}%`, valueColumnX, yPosition, { align: 'right' });
       yPosition += 8;
       
+      // Greenwashing Risk
       doc.setFont('helvetica', 'normal');
       doc.text('Greenwashing Risk: ', margin, yPosition);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${complianceData.overall.greenwashingRisk}%`, margin + 65, yPosition);
+      doc.text(`${complianceData.overall.greenwashingRisk}%`, valueColumnX, yPosition, { align: 'right' });
       yPosition += 8;
       
+      // Total Criteria
       doc.setFont('helvetica', 'normal');
       doc.text('Total Criteria: ', margin, yPosition);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${complianceData.overall.totalCriteria}`, margin + 55, yPosition);
+      doc.text(`${complianceData.overall.totalCriteria}`, valueColumnX, yPosition, { align: 'right' });
       yPosition += 8;
       
+      // Compliant Criteria
       doc.setFont('helvetica', 'normal');
       doc.text('Compliant Criteria: ', margin, yPosition);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${complianceData.overall.compliantCriteria}`, margin + 70, yPosition);
+      doc.text(`${complianceData.overall.compliantCriteria}`, valueColumnX, yPosition, { align: 'right' });
       yPosition += 20;
 
       // Check if we need a new page
@@ -730,47 +735,44 @@ export default function ESGdashboardContent() {
         Object.keys(categoryData).forEach(subCategory => {
           const summary = categoryData[subCategory];
           if (summary && summary.ratio) {
-            // Split the ratio to highlight numbers
+            const categoryText = `${mapCategoryToDisplay(category)} - ${subCategory}`;
             const ratioParts = summary.ratio.split(' out of ');
-            if (ratioParts.length === 2) {
-              const categoryText = `${mapCategoryToDisplay(category)} - ${subCategory}`;
+            const ratioText = ratioParts.length === 2
+              ? `${ratioParts[0]} out of ${ratioParts[1]}`
+              : summary.ratio;
+
+            // Check if text is too long and needs to be split
+            if (categoryText.length > 50) {
+              // Split long text into multiple lines
+              const words = categoryText.split(' ');
+              let line1 = '';
+              let line2 = '';
               
-              // Check if text is too long and needs to be split
-              if (categoryText.length > 50) {
-                // Split long text into multiple lines
-                const words = categoryText.split(' ');
-                let line1 = '';
-                let line2 = '';
-                
-                for (let i = 0; i < words.length; i++) {
-                  if (i < words.length / 2) {
-                    line1 += words[i] + ' ';
-                  } else {
-                    line2 += words[i] + ' ';
-                  }
+              for (let i = 0; i < words.length; i++) {
+                if (i < words.length / 2) {
+                  line1 += words[i] + ' ';
+                } else {
+                  line2 += words[i] + ' ';
                 }
-                
-                // First line
-                doc.text(line1.trim(), margin, yPosition);
-                yPosition += 6;
-                
-                // Second line with numbers
-                doc.text(line2.trim() + ': ', margin, yPosition);
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${ratioParts[0]} out of `, margin + 120, yPosition);
-                doc.text(ratioParts[1], margin + 140, yPosition);
-                doc.setFont('helvetica', 'normal');
-              } else {
-                // Short text, single line
-                doc.text(categoryText + ': ', margin, yPosition);
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${ratioParts[0]} out of `, margin + 120, yPosition);
-                doc.text(ratioParts[1], margin + 140, yPosition);
-                doc.setFont('helvetica', 'normal');
               }
+              
+              // First line
+              doc.text(line1.trim(), margin, yPosition);
+              yPosition += 6;
+              
+              // Second line with numbers
+              doc.text(line2.trim() + ': ', margin, yPosition);
+              doc.setFont('helvetica', 'bold');
+              doc.text(ratioText, valueColumnX, yPosition, { align: 'right' });
+              doc.setFont('helvetica', 'normal');
             } else {
-              doc.text(`${mapCategoryToDisplay(category)} - ${subCategory}: ${summary.ratio}`, margin, yPosition);
+              // Short text, single line
+              doc.text(categoryText + ': ', margin, yPosition);
+              doc.setFont('helvetica', 'bold');
+              doc.text(ratioText, valueColumnX, yPosition, { align: 'right' });
+              doc.setFont('helvetica', 'normal');
             }
+
             yPosition += 8;
           }
         });

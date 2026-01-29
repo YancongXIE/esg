@@ -113,21 +113,21 @@ const processESGDataForLLM = (esgData) => {
     }
   } else {
     // 处理归一化数据格式
-    Object.keys(esgData).forEach(category => {
-      const categoryData = esgData[category];
+  Object.keys(esgData).forEach(category => {
+    const categoryData = esgData[category];
       if (!categoryData || typeof categoryData !== 'object') return;
       
-      analysis += `\n### ${category.toUpperCase()} CATEGORY\n`;
-      
-      Object.keys(categoryData).forEach(subCategory => {
-        const subCategoryData = categoryData[subCategory];
+    analysis += `\n### ${category.toUpperCase()} CATEGORY\n`;
+    
+    Object.keys(categoryData).forEach(subCategory => {
+      const subCategoryData = categoryData[subCategory];
         if (!subCategoryData || typeof subCategoryData !== 'object') return;
         
-        let compliantCount = 0;
-        let totalCount = 0;
-        const issues = [];
-        
-        Object.keys(subCategoryData).forEach(criterion => {
+      let compliantCount = 0;
+      let totalCount = 0;
+      const issues = [];
+      
+      Object.keys(subCategoryData).forEach(criterion => {
           const raw = subCategoryData[criterion];
           const parsed = parseCriterionData(raw, criterion);
           
@@ -136,23 +136,23 @@ const processESGDataForLLM = (esgData) => {
           }
 
           const resultStr = typeof parsed.result === 'string' ? parsed.result : String(parsed.result);
-          totalCount++;
-          
+        totalCount++;
+        
           if (resultStr.toLowerCase() === 'yes' || resultStr.toLowerCase() === 'few') {
-            compliantCount++;
-          } else {
+          compliantCount++;
+        } else {
             const label = parsed.criteriaName || criterion;
             issues.push(`- ${label}: ${resultStr} (${parsed.details || 'No detailed information'})`);
-          }
-        });
-        
-        const complianceRate = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 0;
-        analysis += `\n**${subCategory}**: ${compliantCount}/${totalCount} compliant (${complianceRate}%)\n`;
-        
-        if (issues.length > 0) {
-          analysis += `**Main Issues**:\n${issues.join('\n')}\n`;
         }
       });
+      
+      const complianceRate = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 0;
+      analysis += `\n**${subCategory}**: ${compliantCount}/${totalCount} compliant (${complianceRate}%)\n`;
+      
+      if (issues.length > 0) {
+        analysis += `**Main Issues**:\n${issues.join('\n')}\n`;
+      }
+    });
     });
   }
   
@@ -339,13 +339,13 @@ export const generateLLMRecommendations = async (esgData, complianceData, apiKey
               errorMessage = `API access denied (403): ${errorMsg || 'Please check your API key configuration and permissions.'} Using rule-based recommendations.`;
             }
           } else if (errorData.error && errorData.error.details) {
-            const apiKeyError = errorData.error.details.find(detail => 
-              detail.reason === 'API_KEY_INVALID'
-            );
-            
-            if (apiKeyError) {
-              errorMessage = 'API key invalid. Please ensure you are using the correct Gemini API key (starting with "AIza") and that the key has access to Gemini API.';
-            } else if (errorData.error.message) {
+          const apiKeyError = errorData.error.details.find(detail => 
+            detail.reason === 'API_KEY_INVALID'
+          );
+          
+          if (apiKeyError) {
+            errorMessage = 'API key invalid. Please ensure you are using the correct Gemini API key (starting with "AIza") and that the key has access to Gemini API.';
+          } else if (errorData.error.message) {
               errorMessage = `API error: ${errorData.error.message}`;
             }
           } else if (errorData.error && errorData.error.message) {
